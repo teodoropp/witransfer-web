@@ -5,7 +5,16 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Eye, EyeOff, Loader2, AlertCircle, Building2, ArrowLeft, QrCode, X } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  AlertCircle,
+  Building2,
+  ArrowLeft,
+  QrCode,
+  X,
+} from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
 export default function LoginPage() {
@@ -126,8 +135,7 @@ export default function LoginPage() {
         {/* Botão de Voltar para o Site */}
         <button
           onClick={() => (window.location.href = "https://www.witransfer.org")}
-          className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all"
-        >
+          className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all">
           <ArrowLeft size={16} />
           <span>Voltar para o site</span>
         </button>
@@ -168,7 +176,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 pl-4 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[5px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
+                  className="w-full h-14 pl-4 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
                   placeholder="admin@witransfer.com"
                   disabled={loading}
                   required
@@ -187,7 +195,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 pl-4 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[5px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
+                  className="w-full h-14 pl-4 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
                   placeholder="••••••••"
                   disabled={loading}
                   required
@@ -213,7 +221,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 bg-[#902ad1] text-white rounded-[5px] font-bold uppercase tracking-widest text-sm shadow-xl shadow-[#902ad1]/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+                className="w-full h-14 bg-[#902ad1] text-white rounded-[10px] font-bold uppercase tracking-widest text-sm shadow-xl shadow-[#902ad1]/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
                 {loading ? (
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
@@ -226,16 +234,20 @@ export default function LoginPage() {
           <div className="mt-12 space-y-4">
             <div className="flex items-center gap-4">
               <div className="h-[1px] flex-1 bg-slate-200" />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ou</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                ou
+              </span>
               <div className="h-[1px] flex-1 bg-slate-200" />
             </div>
 
             <button
               type="button"
               onClick={() => setShowQRModal(true)}
-              className="w-full h-14 bg-slate-50 border-2 border-slate-200 rounded-[5px] flex items-center justify-center gap-3 text-primary font-bold hover:bg-white hover:border-[#902ad1] transition-all group"
-            >
-              <Building2 size={20} className="text-primary/60 group-hover:text-[#902ad1] transition-colors" />
+              className="w-full h-14 bg-slate-50 border-2 border-slate-200 rounded-[10px] flex items-center justify-center gap-3 text-primary font-bold hover:bg-white hover:border-[#902ad1] transition-all group">
+              <Building2
+                size={20}
+                className="text-primary/60 group-hover:text-[#902ad1] transition-colors"
+              />
               <span>Seja um parceiro WiTransfer</span>
             </button>
           </div>
@@ -244,19 +256,16 @@ export default function LoginPage() {
 
       {/* Modal QR Code para Registo via App */}
       {showQRModal && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
-          onClick={() => setShowQRModal(false)}
-        >
-          <div 
+          onClick={() => setShowQRModal(false)}>
+          <div
             className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
+            onClick={(e) => e.stopPropagation()}>
             {/* Botão Fechar */}
             <button
               onClick={() => setShowQRModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center"
-            >
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
               <X size={18} />
             </button>
 
@@ -268,9 +277,11 @@ export default function LoginPage() {
             <h3 className="text-2xl font-bold text-slate-800 mb-3 tracking-tight">
               Registo de Parceiros
             </h3>
-            
+
             <p className="text-slate-500 text-sm leading-relaxed mb-6 font-medium">
-              Por motivos de segurança e facilidade na validação de documentos, a criação de contas de parceiros WiTransfer é realizada **exclusivamente através da nossa aplicação móvel**.
+              Por motivos de segurança e facilidade na validação de documentos,
+              a criação de contas de parceiros WiTransfer é realizada
+              **exclusivamente através da nossa aplicação móvel**.
             </p>
 
             {/* QR Code Container */}
@@ -288,8 +299,7 @@ export default function LoginPage() {
             {/* Botão de Download Direto (Mobile fallback) */}
             <a
               href="https://www.witransfer.org/witransfer.apk"
-              className="text-xs font-bold text-[#902ad1] hover:underline mb-2 block"
-            >
+              className="text-xs font-bold text-[#902ad1] hover:underline mb-2 block">
               Está no telemóvel? Descarregue o APK diretamente aqui
             </a>
 

@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-white rounded-[5px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
+        <div className="max-w-md w-full bg-white rounded-[10px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
           <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-green-100">
             <CheckCircle2 size={40} />
           </div>
@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
           </p>
           <button
             onClick={() => router.push("/login")}
-            className="w-full h-14 bg-primary text-white rounded-[5px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20"
+            className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20"
           >
             Entrar Agora
           </button>
@@ -142,7 +142,7 @@ export default function ResetPasswordPage() {
           </div>
 
           {errorMsg && (
-            <div className={`mb-8 p-4 flex items-center gap-3 text-sm animate-in fade-in slide-in-from-top-1 rounded-r-md ${errorMsg.includes('expirou') ? 'bg-orange-50 border-l-4 border-orange-500 text-orange-700' : 'bg-red-50 border-l-4 border-red-500 text-red-700'}`}>
+            <div className={`mb-8 p-4 flex items-center gap-3 text-sm animate-in fade-in slide-in-from-top-1 rounded-[10px] ${errorMsg.includes('expirou') ? 'bg-orange-50 border-l-4 border-orange-500 text-orange-700' : 'bg-red-50 border-l-4 border-red-500 text-red-700'}`}>
               <AlertCircle size={18} className="shrink-0" />
               <p className="font-medium">{errorMsg}</p>
             </div>
@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[5px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
+                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -184,7 +184,7 @@ export default function ResetPasswordPage() {
                   type={showPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[5px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
+                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -196,7 +196,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 bg-primary text-white rounded-[5px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70"
+                className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" size={20} />

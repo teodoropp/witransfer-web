@@ -54,7 +54,7 @@ export default function RecuperarPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-white rounded-[5px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
+        <div className="max-w-md w-full bg-white rounded-[10px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
           <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-green-100">
             <CheckCircle2 size={40} />
           </div>
@@ -67,7 +67,7 @@ export default function RecuperarPasswordPage() {
           </p>
           <button
             onClick={() => router.push("/login")}
-            className="w-full h-14 bg-primary text-white rounded-[5px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20">
+            className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20">
             Voltar ao Login
           </button>
         </div>
@@ -160,7 +160,7 @@ export default function RecuperarPasswordPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 pl-14 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[5px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
+                  className="w-full h-14 pl-14 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
                   placeholder="seu@email.com"
                   required
                   disabled={loading}
@@ -172,7 +172,7 @@ export default function RecuperarPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 bg-primary text-white rounded-[5px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70">
+                className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70">
                 {loading ? (
                   <Loader2 className="animate-spin" size={20} />
                 ) : (

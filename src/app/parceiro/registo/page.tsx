@@ -116,7 +116,7 @@ export default function RegistoParceiroPage() {
           <div className="w-full space-y-4 pt-4 border-t border-slate-100">
             <button
               onClick={() => router.push("/login")}
-              className="w-full h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[5px] font-bold uppercase tracking-widest text-[10px] transition-all"
+              className="w-full h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[10px] font-bold uppercase tracking-widest text-[10px] transition-all"
             >
               Fazer Login no Portal
             </button>
