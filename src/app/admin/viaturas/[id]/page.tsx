@@ -21,10 +21,7 @@ import {
   History,
   CheckCircle2,
   XCircle,
-  MoreHorizontal,
   ChevronRight,
-  Clock,
-  Banknote,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
