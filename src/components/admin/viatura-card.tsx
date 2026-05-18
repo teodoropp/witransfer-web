@@ -43,7 +43,7 @@ export default function ViaturaCard({
   onToggleStatus,
 }: ViaturaCardProps) {
   return (
-    <div className="group bg-white rounded-[20px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full w-full max-w-[320px] mx-auto">
+    <div className="group bg-white rounded-[10px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full w-full">
       {/* Imagem, Status e Tags */}
       <div className="relative h-52 w-full bg-slate-50 overflow-hidden shrink-0">
         {viatura.foto_url ? (
@@ -62,13 +62,13 @@ export default function ViaturaCard({
         {/* Badges de Status no topo */}
         <div className="absolute top-3 left-3 flex gap-1.5 z-10">
           <span
-            className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm text-white ${
+            className={`px-3 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-widest shadow-sm text-white ${
               viatura.ativo ? "bg-emerald-500" : "bg-rose-500"
             }`}
           >
             {viatura.ativo ? "Ativo" : "Inativo"}
           </span>
-          <span className="bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-700 shadow-sm border border-slate-200">
+          <span className="bg-white/95 backdrop-blur px-3 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-widest text-slate-700 shadow-sm border border-slate-200">
             {viatura.categorias?.nome || "Económica"}
           </span>
         </div>
@@ -77,21 +77,21 @@ export default function ViaturaCard({
         <div className="absolute top-3 right-3 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity translate-y-[-5px] group-hover:translate-y-0 duration-300">
           <button
             onClick={() => onToggleStatus(viatura.id, !!viatura.ativo)}
-            className="p-1.5 bg-white hover:bg-slate-50 rounded-lg text-slate-600 hover:text-[#902ad1] shadow-md border border-slate-100 transition-colors"
+            className="p-1.5 bg-white hover:bg-slate-50 rounded-[10px] text-slate-600 hover:text-[#902ad1] shadow-md border border-slate-100 transition-colors"
             title={viatura.ativo ? "Desativar" : "Ativar"}
           >
             {viatura.ativo ? <XCircle size={14} /> : <CheckCircle2 size={14} />}
           </button>
           <Link
             href={`/admin/viaturas/${viatura.id}/editar`}
-            className="p-1.5 bg-white hover:bg-slate-50 rounded-lg text-slate-600 hover:text-[#902ad1] shadow-md border border-slate-100 transition-colors"
+            className="p-1.5 bg-white hover:bg-slate-50 rounded-[10px] text-slate-600 hover:text-[#902ad1] shadow-md border border-slate-100 transition-colors"
             title="Editar Viatura"
           >
             <Edit2 size={14} />
           </Link>
           <button
             onClick={() => onDelete(viatura.id)}
-            className="p-1.5 bg-white hover:bg-slate-50 rounded-lg text-slate-600 hover:text-rose-500 shadow-md border border-slate-100 transition-colors"
+            className="p-1.5 bg-white hover:bg-slate-50 rounded-[10px] text-slate-600 hover:text-rose-500 shadow-md border border-slate-100 transition-colors"
             title="Eliminar Viatura"
           >
             <Trash2 size={14} />
@@ -125,7 +125,7 @@ export default function ViaturaCard({
 
           {/* Matrícula e KM */}
           <div className="flex items-center gap-2">
-            <span className="bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[6px] text-[9px] font-black tracking-wider border border-yellow-200">
+            <span className="bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[10px] text-[9px] font-black tracking-wider border border-yellow-200">
               {viatura.matricula || "S/ MATRÍCULA"}
             </span>
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">

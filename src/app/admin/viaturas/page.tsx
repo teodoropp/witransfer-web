@@ -165,7 +165,7 @@ export default function ViaturasPage() {
         </div>
         <Link
           href="/admin/viaturas/nova"
-          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[12px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0"
+          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0"
         >
           <Plus size={20} strokeWidth={3} />
           <span>Nova Viatura</span>
@@ -197,7 +197,7 @@ export default function ViaturasPage() {
         </div>
       ) : filteredAndSortedViaturas.length > 0 ? (
         viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredAndSortedViaturas.map((viatura) => (
               <ViaturaCard
                 key={viatura.id}
@@ -215,7 +215,7 @@ export default function ViaturasPage() {
           />
         )
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[24px] border-2 border-dashed border-slate-100">
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border-2 border-dashed border-slate-100">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">
             <Car size={32} />
           </div>
@@ -227,7 +227,7 @@ export default function ViaturasPage() {
           </p>
           <Link
             href="/admin/viaturas/nova"
-            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[12px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95"
+            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95"
           >
             <Plus size={20} strokeWidth={3} />
             <span>Adicionar Primeira Viatura</span>

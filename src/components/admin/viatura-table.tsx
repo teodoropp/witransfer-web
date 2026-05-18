@@ -43,7 +43,7 @@ export default function ViaturaTable({
   onToggleStatus,
 }: ViaturaTableProps) {
   return (
-    <div className="bg-white rounded-[20px] border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -80,7 +80,7 @@ export default function ViaturaTable({
                 {/* Viatura (Foto + Nome) */}
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="relative w-14 h-10 bg-slate-50 rounded-lg overflow-hidden border border-slate-200 shrink-0">
+                    <div className="relative w-14 h-10 bg-slate-50 rounded-[10px] overflow-hidden border border-slate-200 shrink-0">
                       {viatura.foto_url ? (
                         <Image
                           src={viatura.foto_url}
@@ -108,7 +108,7 @@ export default function ViaturaTable({
                 {/* Matrícula & Ano */}
                 <td className="py-4 px-6 whitespace-nowrap">
                   <div className="flex flex-col gap-1">
-                    <span className="inline-block bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[6px] text-[9px] font-black tracking-wider border border-yellow-200 w-fit">
+                    <span className="inline-block bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[10px] text-[9px] font-black tracking-wider border border-yellow-200 w-fit">
                       {viatura.matricula || "S/ MATRÍCULA"}
                     </span>
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
@@ -119,7 +119,7 @@ export default function ViaturaTable({
 
                 {/* Categoria */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border border-slate-200">
+                  <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-wider border border-slate-200">
                     {viatura.categorias?.nome || "Económica"}
                   </span>
                 </td>
@@ -158,7 +158,7 @@ export default function ViaturaTable({
                   <button
                     type="button"
                     onClick={() => onToggleStatus(viatura.id, !!viatura.ativo)}
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${
+                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-widest transition-all ${
                       viatura.ativo
                         ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100"
                         : "bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100"
@@ -174,14 +174,14 @@ export default function ViaturaTable({
                   <div className="flex items-center justify-end gap-1.5">
                     <Link
                       href={`/admin/viaturas/${viatura.id}`}
-                      className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-lg transition-all"
+                      className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
                       title="Visualizar Viatura"
                     >
                       <Eye size={16} />
                     </Link>
                     <Link
                       href={`/admin/viaturas/${viatura.id}/editar`}
-                      className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-lg transition-all"
+                      className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
                       title="Editar Viatura"
                     >
                       <Edit2 size={16} />
@@ -189,7 +189,7 @@ export default function ViaturaTable({
                     <button
                       type="button"
                       onClick={() => onDelete(viatura.id)}
-                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-[10px] transition-all"
                       title="Eliminar Viatura"
                     >
                       <Trash2 size={16} />

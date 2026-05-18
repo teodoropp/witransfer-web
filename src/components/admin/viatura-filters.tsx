@@ -37,7 +37,7 @@ export default function ViaturaFilters({
   partners,
 }: ViaturaFiltersProps) {
   return (
-    <div className="bg-white p-6 rounded-[20px] border border-slate-100 shadow-sm space-y-4">
+    <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-4">
       {/* Linha Principal: Pesquisa + Modo de Visualização */}
       <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
         {/* Barra de Pesquisa */}
@@ -46,7 +46,7 @@ export default function ViaturaFilters({
           <input
             type="text"
             placeholder="Pesquisar por modelo, marca ou matrícula..."
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-[12px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none text-slate-800 placeholder:text-slate-400 shadow-inner"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none text-slate-800 placeholder:text-slate-400 shadow-inner"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -55,13 +55,13 @@ export default function ViaturaFilters({
         {/* Status Filter + Grid/Table Toggle */}
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto shrink-0">
           {/* Status Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-slate-50 rounded-[12px] border border-slate-100">
+          <div className="flex items-center gap-1 p-1 bg-slate-50 rounded-[10px] border border-slate-100">
             {(["todos", "ativos", "inativos"] as const).map((f) => (
               <button
                 key={f}
                 type="button"
                 onClick={() => setStatusFilter(f)}
-                className={`px-4 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-wider transition-all ${
+                className={`px-4 py-2 rounded-[10px] text-[10px] font-black uppercase tracking-wider transition-all ${
                   statusFilter === f
                     ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                     : "text-slate-400 hover:text-slate-600"
@@ -73,11 +73,11 @@ export default function ViaturaFilters({
           </div>
 
           {/* Grid/Table Toggle */}
-          <div className="flex items-center gap-1 p-1 bg-slate-50 rounded-[12px] border border-slate-100">
+          <div className="flex items-center gap-1 p-1 bg-slate-50 rounded-[10px] border border-slate-100">
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-[8px] transition-all ${
+              className={`p-2 rounded-[10px] transition-all ${
                 viewMode === "grid"
                   ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                   : "text-slate-400 hover:text-slate-600"
@@ -89,7 +89,7 @@ export default function ViaturaFilters({
             <button
               type="button"
               onClick={() => setViewMode("table")}
-              className={`p-2 rounded-[8px] transition-all ${
+              className={`p-2 rounded-[10px] transition-all ${
                 viewMode === "table"
                   ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                   : "text-slate-400 hover:text-slate-600"
