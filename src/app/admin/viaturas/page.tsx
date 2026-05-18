@@ -39,7 +39,7 @@ export default function ViaturasPage() {
   const [categoryFilter, setCategoryFilter] = useState("todas");
   const [partnerFilter, setPartnerFilter] = useState("todos");
   const [sortBy, setSortBy] = useState("recente");
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("table");
 
   // Dados dinâmicos carregados do Supabase para os filtros
   const [categories, setCategories] = useState<{ id: string; nome: string }[]>(
