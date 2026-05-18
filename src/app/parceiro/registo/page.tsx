@@ -60,9 +60,9 @@ export default function RegistoParceiroPage() {
         {/* Botão de Voltar para o Site */}
         <button
           onClick={() => (window.location.href = "https://www.witransfer.org")}
-          className="absolute top-6 right-6 lg:top-8 lg:right-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all bg-slate-50 hover:bg-slate-100 px-4 h-9 rounded-full border border-slate-200 shadow-sm"
+          className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all"
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={16} />
           <span>Voltar para o site</span>
         </button>
 
