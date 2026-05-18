@@ -1,7 +1,31 @@
 /**
- * WiTransfer Design System - Tokens de Estilo
- * Sistema de design centralizado para manter a hierarquia visual, espaçamentos
- * e uniformidade de estilo em todos os componentes administrativos da plataforma.
+ * WiTransfer Design System - Tokens de Estilo & Guia de Boas Práticas
+ * 
+ * =========================================================================
+ * REGRAS ESTRITAS DE DESIGN E TIPOGRAFIA (PARA EVITAR ERROS VISUAIS):
+ * =========================================================================
+ * 1. ARREDONDAMENTO DE BORDAS:
+ *    - Todas as bordas de cartões, botões e campos de formulário devem ter 
+ *      o arredondamento padrão de exatamente 10px (`rounded-[10px]`).
+ *    - NUNCA utilize `rounded-2xl`, `rounded-lg` ou `rounded-[40px]`.
+ * 
+ * 2. TIPOGRAFIA E PESOS DE TEXTO (EVITAR NEGRITO EM EXCESSO):
+ *    - O utilizador detesta poluição visual por negritos excessivos.
+ *    - NEGRITO FORTE (`font-bold`): Reservado ESTRICTAMENTE para títulos 
+ *      relevantes de páginas principais ou títulos de secção de destaque.
+ *    - NEGRITOS EXTREMOS (`font-black`, `font-extrabold`): Totalmente PROIBIDOS 
+ *      em metadados, valores de tabela, filtros ou descrições.
+ *    - TEXTO MÉDIO/SEMIBOLD (`font-medium` ou `font-semibold`): Utilizar para 
+ *      métricas, valores numéricos, siglas (ex: "Kz", "KM"), marcas, matriculas,
+ *      rótulos de campos e botões.
+ * 
+ * 3. MENU LATERAL (SIDEBAR):
+ *    - Sem dropdowns/acordiões colapsáveis. Exibir todas as sub-opções de forma 
+ *      plana sob os seus respetivos cabeçalhos.
+ *    - SELEÇÃO ATIVA: Deve ser extremamente discreta, usando o fundo desbotado
+ *      (`bg-[#902ad1]/8`) e texto violeta (`text-[#902ad1]`). NUNCA usar fundo 
+ *      sólido roxo ou sombras carregadas.
+ * =========================================================================
  */
 
 export const THEME_TOKENS = {
