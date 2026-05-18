@@ -67,7 +67,7 @@ export default function MotoristasPage() {
         *,
         perfis:perfil_id(id, nome_completo, email, telefone, foto_url, ativo),
         parceiros(id, nome),
-        viaturas(id, modelo, marca, matricula, categorias(nome))
+        viaturas!motoristas_viatura_id_fkey(id, modelo, marca, matricula, categorias(nome))
       `);
 
       if (error) throw error;

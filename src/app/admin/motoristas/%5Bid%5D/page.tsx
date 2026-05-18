@@ -87,7 +87,7 @@ export default function MotoristaDetalhePage({ params }: MotoristaDetalhePagePro
             *,
             perfis:perfil_id(id, nome_completo, email, telefone, foto_url, ativo),
             parceiros(id, nome),
-            viaturas(id, modelo, marca, matricula, foto_url, categorias(nome))
+            viaturas!motoristas_viatura_id_fkey(id, modelo, marca, matricula, foto_url, categorias(nome))
           `)
           .eq("id", motoristaId)
           .single();
