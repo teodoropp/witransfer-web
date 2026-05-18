@@ -84,6 +84,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
         setParceiros(parRes.data || []);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setMotoristas(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (motRes.data || []).map((m: any) => ({
             id: m.id,
             nome: m.perfis?.nome_completo || "Motorista Sem Nome",
