@@ -10,7 +10,7 @@ import {
   Car,
   Users,
   Briefcase,
-  Speedometer,
+  Gauge,
   Calendar,
   MapPin,
   ShieldCheck,
@@ -251,7 +251,7 @@ export default function ViaturaDetalhesPage({
                 { icon: Briefcase, label: "Malas", value: viatura.malas },
                 { icon: Calendar, label: "Ano", value: viatura.ano },
                 {
-                  icon: Speedometer,
+                  icon: Gauge,
                   label: "Quilometragem",
                   value: `${viatura.km?.toLocaleString()} KM`,
                 },
