@@ -266,6 +266,10 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
     );
   }
 
+  const selectedCategoria = categorias.find((c) => c.id === formData.categoria_id)?.nome || "";
+  const selectedParceiro = parceiros.find((p) => p.id === formData.parceiro_id)?.nome || "";
+  const selectedMotorista = motoristas.find((m) => m.id === formData.motorista_id)?.nome || "";
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -351,10 +355,12 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
         </div>
       </div>
 
-      {/* Conteúdo Dinâmico com base no currentStep */}
-      <div className="bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm min-h-[400px] flex flex-col justify-between">
+      {/* Layout de Duas Colunas (Esquerda: Formulário | Direita: Live Preview) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
-        <div className="flex-1">
+        {/* Lado Esquerdo: Formulário (Fase Atual) */}
+        <div className="lg:col-span-7 bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm min-h-[450px] flex flex-col justify-between">
+          <div className="flex-1">
           {/* PASSO 1: IDENTIFICAÇÃO */}
           {currentStep === 1 && (
             <div className="max-w-3xl space-y-8 animate-in fade-in duration-300">
@@ -827,6 +833,103 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
                 <span>{isEditing ? "Guardar Alterações" : "Criar Viatura"}</span>
               </button>
             )}
+          </div>
+        </div>
+      </div>
+
+        {/* Lado Direito: Live Preview Premium & Dinâmico */}
+        <div className="lg:col-span-5 bg-gradient-to-br from-slate-50/50 to-slate-100/30 p-6 md:p-8 rounded-[10px] border border-slate-100 flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
+          <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+            <div className="flex items-center gap-1.5 bg-[#902ad1]/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#902ad1]/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[9px] font-black text-[#902ad1] uppercase tracking-widest">
+                Pré-Visualização
+              </span>
+            </div>
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+              Live Mockup
+            </span>
+          </div>
+
+          {/* Viatura Card Mockup */}
+          <div className="w-full max-w-[320px] bg-white rounded-[10px] shadow-2xl border border-slate-100/80 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[#902ad1]/5">
+            {/* Foto Area */}
+            <div className="relative aspect-[16/10] bg-slate-50 overflow-hidden flex items-center justify-center group/card">
+              {fotoUrl ? (
+                <Image
+                  src={fotoUrl}
+                  alt="Live Preview"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover/card:scale-105"
+                  sizes="320px"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-[#902ad1]/5 to-[#902ad1]/10 flex flex-col items-center justify-center p-6 text-center">
+                  <Car size={36} className="text-[#902ad1]/30 mb-2 animate-bounce" />
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    A aguardar foto...
+                  </span>
+                </div>
+              )}
+
+              {/* Status Pill */}
+              <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm z-10 ${formData.ativo ? "bg-emerald-500 text-white" : "bg-slate-400 text-white"}`}>
+                {formData.ativo ? "Ativa" : "Inativa"}
+              </span>
+
+              {/* Categoria Tag */}
+              {selectedCategoria && (
+                <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider rounded-full">
+                  {selectedCategoria}
+                </span>
+              )}
+            </div>
+
+            {/* Content Area */}
+            <div className="p-5 space-y-4">
+              <div className="space-y-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+                  {formData.marca || "MARCA"}
+                </span>
+                <h4 className="text-base font-extrabold text-slate-800 tracking-tight leading-tight truncate">
+                  {formData.modelo || "Modelo da Viatura"}
+                </h4>
+              </div>
+
+              {/* Badges */}
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-[10px] border border-slate-100/50">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Lugares</span>
+                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.lugares || 0}</span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-center border-x border-slate-100">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Malas</span>
+                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.malas || 0}</span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-center">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">KM</span>
+                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.km || 0}</span>
+                </div>
+              </div>
+
+              {/* Price & Owner */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Diária</span>
+                  <span className="text-base font-black text-[#902ad1] mt-0.5">
+                    {formData.preco_base ? Number(formData.preco_base).toLocaleString("pt-PT") : "0"}
+                    <span className="text-[10px] text-slate-500 font-bold ml-1">AOA</span>
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Parceiro</span>
+                  <span className="text-[11px] font-black text-slate-700 truncate max-w-[120px] mt-0.5">
+                    {selectedParceiro || "WiTransfer"}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
