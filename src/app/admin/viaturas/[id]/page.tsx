@@ -52,7 +52,7 @@ interface ViaturaDetalhes {
     perfis: {
       nome_completo: string;
       foto_url: string | null;
-      telemovel: string | null;
+      telefone: string | null;
     };
   };
 }
@@ -80,7 +80,7 @@ export default function ViaturaDetalhesPage({
           parceiros(nome),
           motorista:motoristas!viaturas_motorista_id_fkey(
             id,
-            perfis(nome_completo, foto_url, telemovel)
+            perfis(nome_completo, foto_url, telefone)
           )
         `,
         )
