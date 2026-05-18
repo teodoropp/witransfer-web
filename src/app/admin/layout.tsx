@@ -148,12 +148,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         if (user) {
           const { data: perfil } = await supabase
             .from("perfis")
-            .select("nome, foto_url")
+            .select("nome_completo, foto_url")
             .eq("id", user.id)
             .single();
 
-          if (perfil?.nome) {
-            setAdminName(perfil.nome);
+          if (perfil?.nome_completo) {
+            setAdminName(perfil.nome_completo);
           }
           if (perfil?.foto_url) {
             setAdminPhoto(perfil.foto_url);
