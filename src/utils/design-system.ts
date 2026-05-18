@@ -39,4 +39,9 @@ export const THEME_TOKENS = {
   // Interactive Elements & Navigation
   buttonText: "font-bold text-xs uppercase tracking-wider",
   inputField: "w-full px-4 py-3 rounded-[10px] border border-slate-200 text-sm font-medium focus:outline-none focus:border-[#902ad1] transition-all",
+
+  // Sidebar Menu Items (Discrete selection with faded lilac and deep text)
+  sidebarActive: "bg-[#902ad1]/8 text-[#682E8B] font-semibold",
+  sidebarInactive: "text-slate-500 hover:bg-[#902ad1]/5 hover:text-[#902ad1]/90",
+  sidebarIndicator: "bg-[#902ad1]",
 };

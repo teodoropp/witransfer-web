@@ -49,8 +49,8 @@ const SidebarItem = ({ item }: { item: MenuItem }) => {
       href={item.href}
       className={`flex items-center gap-3 px-4 py-2.5 rounded-[10px] transition-all group relative ${
         isActive
-          ? "bg-[#902ad1] text-white shadow-md shadow-[#902ad1]/15"
-          : "text-slate-500 hover:bg-primary/5 hover:text-primary"
+          ? THEME_TOKENS.sidebarActive
+          : THEME_TOKENS.sidebarInactive
       }`}
     >
       <Icon
@@ -59,7 +59,7 @@ const SidebarItem = ({ item }: { item: MenuItem }) => {
       />
       <span className="text-[13px] font-medium">{item.name}</span>
       {isActive && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+        <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full animate-pulse ${THEME_TOKENS.sidebarIndicator}`} />
       )}
     </Link>
   );
