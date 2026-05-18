@@ -99,11 +99,7 @@ export default function ViaturaDetalhesPage({
     }
   }, [id]);
 
-  useEffect(() => {
-    // Para corrigir totalmente o erro do ESLint sem reescrever tudo:
-    // Chamamos a função (que já não tem setLoading síncrono).
-    fetchViatura();
-  }, [fetchViatura]);
+  useEffect(() => {}, [fetchViatura]);
 
   const toggleStatus = async () => {
     if (!viatura) return;
