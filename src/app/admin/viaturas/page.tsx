@@ -31,8 +31,10 @@ export default function ViaturasPage() {
   const [viaturas, setViaturas] = useState<Viatura[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"todos" | "ativos" | "inativos">("todos");
-  
+  const [filter, setFilter] = useState<"todos" | "ativos" | "inativos">(
+    "todos",
+  );
+
   // Estados para filtros avançados
   const [categoryFilter, setCategoryFilter] = useState("todas");
   const [partnerFilter, setPartnerFilter] = useState("todos");
@@ -40,7 +42,9 @@ export default function ViaturasPage() {
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Dados dinâmicos carregados do Supabase para os filtros
-  const [categories, setCategories] = useState<{ id: string; nome: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: string; nome: string }[]>(
+    [],
+  );
   const [partners, setPartners] = useState<{ id: string; nome: string }[]>([]);
 
   const fetchViaturas = useCallback(async () => {
@@ -69,8 +73,12 @@ export default function ViaturasPage() {
   useEffect(() => {
     const fetchFiltersData = async () => {
       try {
-        const { data: catData } = await supabase.from("categorias").select("id, nome");
-        const { data: partData } = await supabase.from("parceiros").select("id, nome");
+        const { data: catData } = await supabase
+          .from("categorias")
+          .select("id, nome");
+        const { data: partData } = await supabase
+          .from("parceiros")
+          .select("id, nome");
         if (catData) setCategories(catData);
         if (partData) setPartners(partData);
       } catch (err) {
@@ -101,7 +109,9 @@ export default function ViaturasPage() {
         partnerFilter === "todos" ||
         v.parceiros?.nome.toLowerCase() === partnerFilter.toLowerCase();
 
-      return matchesSearch && matchesStatus && matchesCategory && matchesPartner;
+      return (
+        matchesSearch && matchesStatus && matchesCategory && matchesPartner
+      );
     });
 
     return [...filtered].sort((a, b) => {
@@ -165,8 +175,7 @@ export default function ViaturasPage() {
         </div>
         <Link
           href="/admin/viaturas/nova"
-          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0"
-        >
+          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0">
           <Plus size={20} strokeWidth={3} />
           <span>Nova Viatura</span>
         </Link>
@@ -197,7 +206,7 @@ export default function ViaturasPage() {
         </div>
       ) : filteredAndSortedViaturas.length > 0 ? (
         viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {filteredAndSortedViaturas.map((viatura) => (
               <ViaturaCard
                 key={viatura.id}
@@ -223,12 +232,12 @@ export default function ViaturasPage() {
             Nenhuma viatura encontrada
           </h3>
           <p className="text-slate-400 mt-1 mb-8 text-sm max-w-xs text-center font-medium">
-            Tente ajustar os seus filtros avançados ou adicione uma nova viatura.
+            Tente ajustar os seus filtros avançados ou adicione uma nova
+            viatura.
           </p>
           <Link
             href="/admin/viaturas/nova"
-            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95"
-          >
+            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95">
             <Plus size={20} strokeWidth={3} />
             <span>Adicionar Primeira Viatura</span>
           </Link>

@@ -43,7 +43,7 @@ export default function ViaturaCard({
   onToggleStatus,
 }: ViaturaCardProps) {
   return (
-    <div className="group bg-white rounded-[10px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full w-full max-w-[280px]">
+    <div className="group bg-white rounded-[10px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full w-full">
       {/* Imagem, Status e Tags */}
       <div className="relative h-52 w-full bg-slate-50 overflow-hidden shrink-0">
         {viatura.foto_url ? (
