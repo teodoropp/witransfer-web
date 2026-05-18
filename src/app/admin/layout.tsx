@@ -5,6 +5,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -41,20 +42,39 @@ interface MenuItem {
 }
 
 const SidebarItem = ({ item }: { item: MenuItem }) => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const hasSubItems = item.subItems && item.subItems.length > 0;
   const Icon = item.icon;
+
+  const isActive = item.href ? pathname === item.href : false;
+  const isSubActive = hasSubItems
+    ? item.subItems?.some((sub) => sub.href && pathname === sub.href)
+    : false;
+
+  useEffect(() => {
+    if (isSubActive) {
+      setIsOpen(true);
+    }
+  }, [isSubActive]);
 
   if (!hasSubItems) {
     return (
       <Link
         href={item.href || "#"}
-        className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-primary/5 hover:text-primary transition-all group relative">
+        className={`flex items-center gap-3 px-4 py-2.5 rounded-[10px] transition-all group relative ${
+          isActive
+            ? "bg-[#902ad1] text-white shadow-md shadow-[#902ad1]/15"
+            : "text-slate-500 hover:bg-primary/5 hover:text-primary"
+        }`}>
         <Icon
           size={16}
-          className="group-hover:scale-110 transition-transform"
+          className={`${isActive ? "" : "group-hover:scale-110"} transition-transform`}
         />
-        <span className="text-[13px] font-semibold">{item.name}</span>
+        <span className="text-[13px] font-bold">{item.name}</span>
+        {isActive && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+        )}
       </Link>
     );
   }
@@ -63,33 +83,49 @@ const SidebarItem = ({ item }: { item: MenuItem }) => {
     <div className="space-y-1">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-slate-500 hover:bg-primary/5 hover:text-primary transition-all group">
+        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-[10px] transition-all group ${
+          isSubActive
+            ? "bg-slate-50 text-[#902ad1]"
+            : "text-slate-500 hover:bg-primary/5 hover:text-primary"
+        }`}>
         <div className="flex items-center gap-3">
           <Icon
             size={16}
-            className="group-hover:scale-110 transition-transform"
+            className={`${isSubActive ? "text-[#902ad1]" : "group-hover:scale-110"} transition-transform`}
           />
-          <span className="text-[13px] font-semibold">{item.name}</span>
+          <span className="text-[13px] font-bold">{item.name}</span>
         </div>
-        <div className="text-slate-300 group-hover:text-primary transition-colors">
+        <div
+          className={`transition-colors ${
+            isSubActive ? "text-[#902ad1]" : "text-slate-300 group-hover:text-primary"
+          }`}>
           {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
         </div>
       </button>
 
       {isOpen && (
-        <div className="ml-6 space-y-1 border-l-2 border-slate-50 pl-4 animate-in slide-in-from-top-2 duration-200">
+        <div className="ml-6 space-y-1 border-l-2 border-slate-100 pl-4 animate-in slide-in-from-top-2 duration-200">
           {item.subItems?.map((sub, idx) => {
             const SubIcon = sub.icon;
+            const isSubItemActive = sub.href ? pathname === sub.href : false;
             return (
               <Link
                 key={idx}
                 href={sub.href || "#"}
-                className="flex items-center gap-3 py-2 rounded-md text-slate-400 hover:text-primary transition-all group">
+                className={`flex items-center gap-3 py-2 px-3 rounded-[10px] transition-all group ${
+                  isSubItemActive
+                    ? "bg-[#902ad1]/10 text-[#902ad1] font-bold"
+                    : "text-slate-400 hover:text-primary"
+                }`}>
                 <SubIcon
                   size={14}
-                  className="opacity-70 group-hover:opacity-100"
+                  className={`transition-transform ${
+                    isSubItemActive
+                      ? "text-[#902ad1] scale-105"
+                      : "opacity-70 group-hover:opacity-100"
+                  }`}
                 />
-                <span className="text-[12px] font-medium">{sub.name}</span>
+                <span className="text-[12px] font-bold">{sub.name}</span>
               </Link>
             );
           })}
