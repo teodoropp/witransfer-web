@@ -98,8 +98,11 @@ export default function ViaturaDetalhesPage({
   }, [id]);
 
   useEffect(() => {
-    fetchViatura();
-  }, [id]);
+    const load = async () => {
+      await fetchViatura();
+    };
+    load();
+  }, [fetchViatura, id]);
 
   const toggleStatus = async () => {
     if (!viatura) return;
@@ -112,6 +115,7 @@ export default function ViaturaDetalhesPage({
 
       if (error) throw error;
       setViatura({ ...viatura, ativo: nextStatus });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       alert("Erro ao atualizar status.");
     }
@@ -129,6 +133,7 @@ export default function ViaturaDetalhesPage({
 
       if (error) throw error;
       router.push("/admin/viaturas");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       alert("Erro ao eliminar viatura.");
     }
