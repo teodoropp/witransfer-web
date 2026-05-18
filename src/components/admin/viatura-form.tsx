@@ -357,7 +357,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
       </div>
 
       {/* Layout de Duas Colunas (Esquerda: Formulário | Direita: Live Preview) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mx-0 md:mx-[80px]">
         
         {/* Lado Esquerdo: Formulário (Fase Atual) */}
         <div className="lg:col-span-7 bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm min-h-[450px] flex flex-col justify-between">
