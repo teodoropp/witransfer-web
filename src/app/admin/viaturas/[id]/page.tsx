@@ -99,7 +99,9 @@ export default function ViaturaDetalhesPage({
     }
   }, [id]);
 
-  useEffect(() => {}, [fetchViatura]);
+  useEffect(() => {
+    fetchViatura();
+  }, [fetchViatura]);
 
   const toggleStatus = async () => {
     if (!viatura) return;
