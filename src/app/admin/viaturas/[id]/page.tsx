@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   XCircle,
   ChevronRight,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -98,7 +99,7 @@ export default function ViaturaDetalhesPage({
 
   useEffect(() => {
     fetchViatura();
-  }, [fetchViatura]);
+  }, [id]);
 
   const toggleStatus = async () => {
     if (!viatura) return;
