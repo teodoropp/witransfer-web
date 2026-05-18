@@ -357,7 +357,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
         <div className="flex-1">
           {/* PASSO 1: IDENTIFICAÇÃO */}
           {currentStep === 1 && (
-            <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="max-w-3xl space-y-8 animate-in fade-in duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-[#902ad1]/5 rounded-xl text-[#902ad1]">
                   <Info size={20} />
@@ -442,7 +442,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
 
           {/* PASSO 2: ESPECIFICAÇÕES & PREÇO */}
           {currentStep === 2 && (
-            <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="max-w-3xl space-y-8 animate-in fade-in duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-[#902ad1]/5 rounded-xl text-[#902ad1]">
                   <Car size={20} />
@@ -510,7 +510,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
 
           {/* PASSO 3: MÉDIA & FOTOS */}
           {currentStep === 3 && (
-            <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="max-w-4xl space-y-8 animate-in fade-in duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-[#902ad1]/5 rounded-xl text-[#902ad1]">
                   <Camera size={20} />
@@ -629,7 +629,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
 
           {/* PASSO 4: ADMINISTRAÇÃO & ANEXOS */}
           {currentStep === 4 && (
-            <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="max-w-3xl space-y-8 animate-in fade-in duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-[#902ad1]/5 rounded-xl text-[#902ad1]">
                   <ShieldCheck size={20} />
