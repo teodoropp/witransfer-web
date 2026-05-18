@@ -1,5 +1,3 @@
-/** @format */
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -18,6 +16,9 @@ import {
   ExternalLink,
   ChevronRight,
   Car,
+  Users,
+  Briefcase,
+  Eye,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -304,7 +305,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
       </div>
 
       {/* Indicador de Passos */}
-      <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm">
+      <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm mx-0 md:mx-[80px]">
         <div className="relative flex items-center justify-between">
           <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[3px] bg-slate-100 rounded-full z-0" />
           <div 
@@ -837,100 +838,128 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
         </div>
       </div>
 
-        {/* Lado Direito: Live Preview Premium & Dinâmico */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-slate-50/50 to-slate-100/30 p-6 md:p-8 rounded-[10px] border border-slate-100 flex flex-col items-center justify-center min-h-[450px] relative overflow-hidden">
-          <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-            <div className="flex items-center gap-1.5 bg-[#902ad1]/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#902ad1]/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[9px] font-black text-[#902ad1] uppercase tracking-widest">
-                Pré-Visualização
-              </span>
+      {/* Lado Direito: Live Preview Premium & Dinâmico (Symmetric Twin Card) */}
+        <div className="lg:col-span-5 bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm flex flex-col justify-between min-h-[450px] relative overflow-hidden">
+          
+          {/* Header da Visualização */}
+          <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6 w-full shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#902ad1] animate-pulse" />
+              <h3 className="font-black text-slate-800 uppercase tracking-widest text-[10px]">
+                Pré-Visualização em Tempo Real
+              </h3>
             </div>
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-              Live Mockup
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
+              Live View
             </span>
           </div>
 
-          {/* Viatura Card Mockup */}
-          <div className="w-full max-w-[320px] bg-white rounded-[10px] shadow-2xl border border-slate-100/80 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[#902ad1]/5">
-            {/* Foto Area */}
-            <div className="relative aspect-[16/10] bg-slate-50 overflow-hidden flex items-center justify-center group/card">
-              {fotoUrl ? (
-                <Image
-                  src={fotoUrl}
-                  alt="Live Preview"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover/card:scale-105"
-                  sizes="320px"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-[#902ad1]/5 to-[#902ad1]/10 flex flex-col items-center justify-center p-6 text-center">
-                  <Car size={36} className="text-[#902ad1]/30 mb-2 animate-bounce" />
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    A aguardar foto...
+          {/* Area Central: Centraliza o Mockup Card de forma responsiva */}
+          <div className="flex-1 flex items-center justify-center py-4 w-full">
+            {/* Viatura Card Mockup */}
+            <div className="w-full max-w-[300px] bg-white rounded-[10px] border border-slate-100 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+              
+              {/* Imagem, Status e Tags */}
+              <div className="relative h-44 w-full bg-slate-50 overflow-hidden shrink-0">
+                {fotoUrl ? (
+                  <Image
+                    src={fotoUrl}
+                    alt="Live Preview"
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                    sizes="300px"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-300 bg-gradient-to-br from-slate-50 to-slate-100">
+                    <Car size={40} strokeWidth={1.5} className="animate-pulse" />
+                  </div>
+                )}
+
+                {/* Badges de Status no topo */}
+                <div className="absolute top-3 left-3 flex gap-1.5 z-10">
+                  <span
+                    className={`px-2.5 py-0.5 rounded-[10px] text-[8px] font-black uppercase tracking-widest shadow-sm text-white ${
+                      formData.ativo ? "bg-emerald-500" : "bg-rose-500"
+                    }`}
+                  >
+                    {formData.ativo ? "Ativo" : "Inativo"}
                   </span>
-                </div>
-              )}
-
-              {/* Status Pill */}
-              <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider shadow-sm z-10 ${formData.ativo ? "bg-emerald-500 text-white" : "bg-slate-400 text-white"}`}>
-                {formData.ativo ? "Ativa" : "Inativa"}
-              </span>
-
-              {/* Categoria Tag */}
-              {selectedCategoria && (
-                <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider rounded-full">
-                  {selectedCategoria}
-                </span>
-              )}
-            </div>
-
-            {/* Content Area */}
-            <div className="p-5 space-y-4">
-              <div className="space-y-1">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
-                  {formData.marca || "MARCA"}
-                </span>
-                <h4 className="text-base font-extrabold text-slate-800 tracking-tight leading-tight truncate">
-                  {formData.modelo || "Modelo da Viatura"}
-                </h4>
-              </div>
-
-              {/* Badges */}
-              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-[10px] border border-slate-100/50">
-                <div className="flex flex-col items-center justify-center text-center">
-                  <span className="text-[9px] font-black text-slate-400 uppercase">Lugares</span>
-                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.lugares || 0}</span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center border-x border-slate-100">
-                  <span className="text-[9px] font-black text-slate-400 uppercase">Malas</span>
-                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.malas || 0}</span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center">
-                  <span className="text-[9px] font-black text-slate-400 uppercase">KM</span>
-                  <span className="text-xs font-black text-slate-700 mt-0.5">{formData.km || 0}</span>
-                </div>
-              </div>
-
-              {/* Price & Owner */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Diária</span>
-                  <span className="text-base font-black text-[#902ad1] mt-0.5">
-                    {formData.preco_base ? Number(formData.preco_base).toLocaleString("pt-PT") : "0"}
-                    <span className="text-[10px] text-slate-500 font-bold ml-1">AOA</span>
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-end">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Parceiro</span>
-                  <span className="text-[11px] font-black text-slate-700 truncate max-w-[120px] mt-0.5">
-                    {selectedParceiro || "WiTransfer"}
+                  <span className="bg-white/95 backdrop-blur px-2.5 py-0.5 rounded-[10px] text-[8px] font-black uppercase tracking-widest text-slate-700 shadow-sm border border-slate-200">
+                    {selectedCategoria || "Económica"}
                   </span>
                 </div>
               </div>
+
+              {/* Informações da Viatura */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                {/* Modelo, Marca, Matrícula e Preço */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="truncate">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide block leading-none mb-1">
+                        {formData.marca || "Sem Marca"}
+                      </span>
+                      <h3 className="text-sm font-black text-slate-800 leading-tight truncate">
+                        {formData.modelo || "Nova Viatura"}
+                      </h3>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="block text-[7px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">
+                        Preço Base
+                      </span>
+                      <span className="text-sm font-black text-[#902ad1] leading-none">
+                        {formData.preco_base ? Number(formData.preco_base).toLocaleString("pt-AO") : "0"}{" "}
+                        <small className="text-[8px] font-bold">Kz</small>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Matrícula e KM */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[10px] text-[8px] font-black tracking-wider border border-yellow-200 leading-none">
+                      {formData.matricula || "S/ MATRÍCULA"}
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">
+                      {formData.ano || new Date().getFullYear()} • {formData.km ? Number(formData.km).toLocaleString() : "0"} KM
+                    </span>
+                  </div>
+                </div>
+
+                {/* Detalhes Técnicos e Parceiro */}
+                <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between text-slate-500">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-1" title="Lugares">
+                      <Users size={11} className="text-slate-400" />
+                      <span className="text-[10px] font-bold text-slate-600">{formData.lugares || "4"}</span>
+                    </div>
+                    <div className="flex items-center gap-1" title="Capacidade de Malas">
+                      <Briefcase size={11} className="text-slate-400" />
+                      <span className="text-[10px] font-bold text-slate-600">{formData.malas || "2"}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right max-w-[50%]">
+                    <span className="block text-[7px] font-black text-slate-400 uppercase tracking-tighter leading-none mb-0.5">
+                      Parceiro
+                    </span>
+                    <p className="text-[9px] font-black text-slate-700 truncate">
+                      {selectedParceiro || "WiTransfer Official"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ação de Detalhes no Rodapé (Compacta Mockup) */}
+              <div className="px-4 pb-4 shrink-0">
+                <div className="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-50 text-slate-400 rounded-[10px] font-bold text-[10px] border border-slate-100 cursor-not-allowed">
+                  <Eye size={12} />
+                  <span>Ver Detalhes (Visualização)</span>
+                </div>
+              </div>
+
             </div>
           </div>
+
         </div>
 
       </div>
