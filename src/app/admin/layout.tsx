@@ -137,6 +137,7 @@ const SidebarItem = ({ item }: { item: MenuItem }) => {
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [adminName, setAdminName] = useState("Admin");
+  const [adminPhoto, setAdminPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -147,12 +148,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         if (user) {
           const { data: perfil } = await supabase
             .from("perfis")
-            .select("nome")
+            .select("nome, foto_url")
             .eq("id", user.id)
             .single();
 
           if (perfil?.nome) {
-            setAdminName(perfil.nome.split(" ")[0]);
+            setAdminName(perfil.nome);
+          }
+          if (perfil?.foto_url) {
+            setAdminPhoto(perfil.foto_url);
           }
         }
       } catch (err) {
@@ -320,14 +324,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm z-20">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
-              Visão Administrativa
-            </span>
-            <h1 className="text-xl font-extrabold text-slate-800 tracking-tight leading-none">
-              Olá, {adminName}
-            </h1>
-          </div>
+          <div />
 
           <div className="flex items-center gap-6">
             <div className="flex flex-col items-end">
@@ -335,12 +332,31 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 {adminName}
               </span>
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
-                WiTransfer Global
+                Administrador
               </span>
             </div>
-            <div className="w-12 h-12 rounded-full bg-primary/5 border-2 border-primary/10 flex items-center justify-center text-primary font-black shadow-inner overflow-hidden">
-              <User size={24} />
-            </div>
+            {adminPhoto ? (
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#902ad1]/15 shadow-inner shrink-0">
+                <Image
+                  src={adminPhoto}
+                  alt={adminName}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-[#902ad1]/5 border-2 border-[#902ad1]/10 flex items-center justify-center text-[#902ad1] font-black text-sm shadow-inner shrink-0">
+                {adminName
+                  ? adminName
+                      .split(" ")
+                      .filter(Boolean)
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()
+                  : "AD"}
+              </div>
+            )}
           </div>
         </header>
 
