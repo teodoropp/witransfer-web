@@ -48,28 +48,28 @@ export default function ViaturaTable({
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Viatura
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Matrícula & Ano
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Categoria
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Parceiro
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Especificações
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 Preço Base
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-center">
                 Estado
               </th>
-              <th className="py-4 px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-right">
                 Ações
               </th>
             </tr>
@@ -95,10 +95,10 @@ export default function ViaturaTable({
                       )}
                     </div>
                     <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-wide">
+                      <span className="block text-[9px] font-medium text-slate-400 uppercase tracking-wide">
                         {viatura.marca}
                       </span>
-                      <span className="text-sm font-black text-slate-700 leading-tight">
+                      <span className="text-sm font-semibold text-slate-700 leading-tight">
                         {viatura.modelo}
                       </span>
                     </div>
@@ -108,10 +108,10 @@ export default function ViaturaTable({
                 {/* Matrícula & Ano */}
                 <td className="py-4 px-6 whitespace-nowrap">
                   <div className="flex flex-col gap-1">
-                    <span className="inline-block bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[10px] text-[9px] font-black tracking-wider border border-yellow-200 w-fit">
+                    <span className="inline-block bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-[10px] text-[9px] font-semibold tracking-wider border border-yellow-200 w-fit">
                       {viatura.matricula || "S/ MATRÍCULA"}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tight">
                       Ano {viatura.ano || "2024"} • {viatura.km?.toLocaleString() || "0"} KM
                     </span>
                   </div>
@@ -119,14 +119,14 @@ export default function ViaturaTable({
 
                 {/* Categoria */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-wider border border-slate-200">
+                  <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-[10px] text-[9px] font-semibold uppercase tracking-wider border border-slate-200">
                     {viatura.categorias?.nome || "Económica"}
                   </span>
                 </td>
 
                 {/* Parceiro */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <span className="text-xs font-bold text-slate-600">
+                  <span className="text-xs font-medium text-slate-600">
                     {viatura.parceiros?.nome || "WiTransfer Official"}
                   </span>
                 </td>
@@ -136,20 +136,20 @@ export default function ViaturaTable({
                   <div className="flex items-center gap-3 text-slate-500">
                     <div className="flex items-center gap-1.5" title="Lugares">
                       <Users size={14} className="text-slate-400" />
-                      <span className="text-xs font-bold text-slate-600">{viatura.lugares}</span>
+                      <span className="text-xs font-medium text-slate-600">{viatura.lugares}</span>
                     </div>
                     <div className="flex items-center gap-1.5" title="Capacidade de Malas">
                       <Briefcase size={14} className="text-slate-400" />
-                      <span className="text-xs font-bold text-slate-600">{viatura.malas}</span>
+                      <span className="text-xs font-medium text-slate-600">{viatura.malas}</span>
                     </div>
                   </div>
                 </td>
 
                 {/* Preço Base */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <span className="text-sm font-black text-[#902ad1]">
+                  <span className="text-sm font-semibold text-[#902ad1]">
                     {viatura.preco_base?.toLocaleString("pt-AO")}{" "}
-                    <small className="text-[10px] font-bold">Kz</small>
+                    <small className="text-[10px] font-medium">Kz</small>
                   </span>
                 </td>
 
@@ -158,7 +158,7 @@ export default function ViaturaTable({
                   <button
                     type="button"
                     onClick={() => onToggleStatus(viatura.id, !!viatura.ativo)}
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-widest transition-all ${
+                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-[10px] text-[9px] font-semibold uppercase tracking-widest transition-all ${
                       viatura.ativo
                         ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100"
                         : "bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100"

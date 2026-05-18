@@ -167,20 +167,20 @@ export default function ViaturasPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-0.5">
           {/* Caminho / Breadcrumb */}
-          <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
             <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
               Painel
             </Link>
             <span className="text-slate-300">/</span>
             <span className="text-slate-600">Viaturas</span>
           </div>
-          <h1 className="text-2xl font-black text-slate-800 tracking-tight mt-1">
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">
             Viaturas
           </h1>
         </div>
         <Link
           href="/admin/viaturas/nova"
-          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0">
+          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-6 py-3 rounded-[10px] font-semibold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 shrink-0">
           <Plus size={20} strokeWidth={3} />
           <span>Nova Viatura</span>
         </Link>
@@ -233,7 +233,7 @@ export default function ViaturasPage() {
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">
             <Car size={32} />
           </div>
-          <h3 className="text-lg font-bold text-slate-800">
+          <h3 className="text-lg font-semibold text-slate-800">
             Nenhuma viatura encontrada
           </h3>
           <p className="text-slate-400 mt-1 mb-8 text-sm max-w-xs text-center font-medium">
@@ -242,7 +242,7 @@ export default function ViaturasPage() {
           </p>
           <Link
             href="/admin/viaturas/nova"
-            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[10px] font-bold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95">
+            className="flex items-center gap-2 bg-[#902ad1] text-white px-8 py-3 rounded-[10px] font-semibold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95">
             <Plus size={20} strokeWidth={3} />
             <span>Adicionar Primeira Viatura</span>
           </Link>
