@@ -269,7 +269,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-5xl mx-auto space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      className="w-full space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Header com Breadcrumb */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -352,7 +352,7 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
       </div>
 
       {/* Conteúdo Dinâmico com base no currentStep */}
-      <div className="bg-white p-10 rounded-[10px] border border-slate-100 shadow-sm min-h-[400px] flex flex-col justify-between">
+      <div className="bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm min-h-[400px] flex flex-col justify-between">
         
         <div className="flex-1">
           {/* PASSO 1: IDENTIFICAÇÃO */}

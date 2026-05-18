@@ -319,7 +319,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 shrink-0 shadow-sm z-20">
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm z-20">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
               Visão Administrativa
@@ -344,7 +344,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-auto p-10 bg-slate-50/30 no-scrollbar">
+        <div className="flex-1 overflow-auto p-6 bg-slate-50/30 no-scrollbar">
           {children}
         </div>
       </main>
