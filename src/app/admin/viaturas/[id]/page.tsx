@@ -176,14 +176,28 @@ export default function ViaturaDetalhesPage({
             className="p-3 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 text-slate-600 transition-all shadow-sm">
             <ArrowLeft size={20} />
           </button>
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-              {viatura.marca} {viatura.modelo}
-            </h2>
-            <span
-              className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${viatura.ativo ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
-              {viatura.ativo ? "Operacional" : "Suspenso"}
-            </span>
+          <div className="flex flex-col gap-0.5">
+            {/* Caminho / Breadcrumb */}
+            <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
+                Painel
+              </Link>
+              <span className="text-slate-300">/</span>
+              <Link href="/admin/viaturas" className="hover:text-[#902ad1] transition-all">
+                Viaturas
+              </Link>
+              <span className="text-slate-300">/</span>
+              <span className="text-slate-600">Detalhes</span>
+            </div>
+            <div className="flex items-center gap-3 mt-1">
+              <h1 className="text-2xl font-black text-slate-800 tracking-tight">
+                {viatura.marca} {viatura.modelo}
+              </h1>
+              <span
+                className={`px-3 py-1 rounded-[10px] text-[9px] font-black uppercase tracking-widest shadow-sm ${viatura.ativo ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
+                {viatura.ativo ? "Operacional" : "Suspenso"}
+              </span>
+            </div>
           </div>
         </div>
 

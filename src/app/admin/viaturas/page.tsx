@@ -165,13 +165,18 @@ export default function ViaturasPage() {
     <div className="space-y-6 animate-in fade-in duration-500 pb-10">
       {/* Header com Ações */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">
-            Gestão de Frota
-          </h2>
-          <p className="text-slate-500 font-medium mt-1">
-            Gira as viaturas disponíveis para reservas e parceiros.
-          </p>
+        <div className="flex flex-col gap-0.5">
+          {/* Caminho / Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
+              Painel
+            </Link>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-600">Viaturas</span>
+          </div>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight mt-1">
+            Viaturas
+          </h1>
         </div>
         <Link
           href="/admin/viaturas/nova"

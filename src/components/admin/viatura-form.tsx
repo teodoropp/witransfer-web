@@ -18,6 +18,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
@@ -247,13 +248,22 @@ export default function ViaturaForm({ id }: ViaturaFormProps) {
             className="p-3 bg-white hover:bg-slate-50 rounded-2xl border border-slate-100 text-slate-600 transition-all shadow-sm">
             <ArrowLeft size={20} />
           </button>
-          <div>
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+          <div className="flex flex-col gap-0.5">
+            {/* Caminho / Breadcrumb */}
+            <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
+                Painel
+              </Link>
+              <span className="text-slate-300">/</span>
+              <Link href="/admin/viaturas" className="hover:text-[#902ad1] transition-all">
+                Viaturas
+              </Link>
+              <span className="text-slate-300">/</span>
+              <span className="text-slate-600">{isEditing ? "Editar Viatura" : "Nova Viatura"}</span>
+            </div>
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight mt-1">
               {isEditing ? "Editar Viatura" : "Nova Viatura"}
-            </h2>
-            <p className="text-slate-500 text-sm font-medium">
-              Preencha todos os detalhes técnicos e administrativos.
-            </p>
+            </h1>
           </div>
         </div>
 
