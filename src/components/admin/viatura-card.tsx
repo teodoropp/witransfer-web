@@ -43,9 +43,9 @@ export default function ViaturaCard({
   onToggleStatus,
 }: ViaturaCardProps) {
   return (
-    <div className="group bg-white rounded-[20px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full">
+    <div className="group bg-white rounded-[20px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300 overflow-hidden flex flex-col h-full w-full max-w-[320px] mx-auto">
       {/* Imagem, Status e Tags */}
-      <div className="relative h-40 w-full bg-slate-50 overflow-hidden shrink-0">
+      <div className="relative h-52 w-full bg-slate-50 overflow-hidden shrink-0">
         {viatura.foto_url ? (
           <Image
             src={viatura.foto_url}
@@ -100,7 +100,7 @@ export default function ViaturaCard({
       </div>
 
       {/* Informações da Viatura */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-5 flex-1 flex flex-col justify-between">
         {/* Modelo, Marca, Matrícula e Preço */}
         <div className="space-y-2">
           <div className="flex justify-between items-start gap-2">
@@ -159,7 +159,7 @@ export default function ViaturaCard({
       </div>
 
       {/* Ação de Detalhes no Rodapé (Compacta) */}
-      <div className="px-4 pb-4 shrink-0">
+      <div className="px-5 pb-5 shrink-0">
         <Link
           href={`/admin/viaturas/${viatura.id}`}
           className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] rounded-[10px] font-bold text-[11px] transition-all border border-transparent hover:border-[#902ad1]/10"
