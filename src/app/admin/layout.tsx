@@ -23,12 +23,10 @@ import {
   Megaphone,
   Plane,
   Download,
-  BarChart3,
   Image as ImageIcon,
   User,
   ChevronDown,
   ChevronRight,
-  Package,
   Activity,
   BarChart,
 } from "lucide-react";

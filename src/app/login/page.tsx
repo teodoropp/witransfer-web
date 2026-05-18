@@ -5,7 +5,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Eye, EyeOff, Loader2, AlertCircle, Building2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, AlertCircle, Building2, ArrowLeft, QrCode, X } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
 export default function LoginPage() {
@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +123,15 @@ export default function LoginPage() {
 
       {/* Lado Direito: Formulário de Login */}
       <div className="flex-1 flex items-center justify-center p-8 lg:p-24 bg-white relative text-slate-800">
+        {/* Botão de Voltar para o Site */}
+        <button
+          onClick={() => (window.location.href = "https://www.witransfer.org")}
+          className="absolute top-6 right-6 lg:top-8 lg:right-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all bg-slate-50 hover:bg-slate-100 px-4 h-9 rounded-full border border-slate-200 shadow-sm"
+        >
+          <ArrowLeft size={14} />
+          <span>Voltar para o site</span>
+        </button>
+
         <div className="w-full max-w-sm">
           <div className="lg:hidden mb-12 flex justify-center">
             <Image
@@ -221,15 +231,74 @@ export default function LoginPage() {
             </div>
 
             <button
-              onClick={() => router.push("/parceiro/registo")}
-              className="w-full h-14 bg-slate-50 border-2 border-slate-200 rounded-[5px] flex items-center justify-center gap-3 text-primary font-bold hover:bg-white hover:border-primary transition-all group"
+              type="button"
+              onClick={() => setShowQRModal(true)}
+              className="w-full h-14 bg-slate-50 border-2 border-slate-200 rounded-[5px] flex items-center justify-center gap-3 text-primary font-bold hover:bg-white hover:border-[#902ad1] transition-all group"
             >
-              <Building2 size={20} className="text-primary/60 group-hover:text-primary transition-colors" />
+              <Building2 size={20} className="text-primary/60 group-hover:text-[#902ad1] transition-colors" />
               <span>Seja um parceiro WiTransfer</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal QR Code para Registo via App */}
+      {showQRModal && (
+        <div 
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+          onClick={() => setShowQRModal(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Botão Fechar */}
+            <button
+              onClick={() => setShowQRModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Ícone / Header */}
+            <div className="w-16 h-16 bg-[#902ad1]/10 text-[#902ad1] rounded-full flex items-center justify-center mb-6">
+              <QrCode size={32} />
+            </div>
+
+            <h3 className="text-2xl font-bold text-slate-800 mb-3 tracking-tight">
+              Registo de Parceiros
+            </h3>
+            
+            <p className="text-slate-500 text-sm leading-relaxed mb-6 font-medium">
+              Por motivos de segurança e facilidade na validação de documentos, a criação de contas de parceiros WiTransfer é realizada **exclusivamente através da nossa aplicação móvel**.
+            </p>
+
+            {/* QR Code Container */}
+            <div className="bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 mb-6 flex flex-col items-center justify-center shadow-inner group hover:scale-[1.02] transition-all duration-300">
+              <img
+                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.witransfer.org/witransfer.apk"
+                alt="QR Code de Download"
+                className="w-48 h-48 object-contain rounded-lg"
+              />
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">
+                Aponte a câmara do telemóvel
+              </span>
+            </div>
+
+            {/* Botão de Download Direto (Mobile fallback) */}
+            <a
+              href="https://www.witransfer.org/witransfer.apk"
+              className="text-xs font-bold text-[#902ad1] hover:underline mb-2 block"
+            >
+              Está no telemóvel? Descarregue o APK diretamente aqui
+            </a>
+
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">
+              Disponível para Android
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
