@@ -167,7 +167,7 @@ export default function ViaturaDetalhesPage({
   }
 
   return (
-    <div className="space-y-10 pb-20 animate-in fade-in duration-700">
+    <div className="space-y-10 pb-20 animate-in fade-in duration-700 mx-0 md:mx-[80px]">
       {/* Top Bar / Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
@@ -475,6 +475,35 @@ export default function ViaturaDetalhesPage({
               )}
             </div>
           </div>
+
+          {/* Controlo de Acesso */}
+          <div className={`bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm border-l-4 ${viatura.ativo ? "border-l-rose-500" : "border-l-emerald-500"} space-y-6`}>
+            <div>
+              <h3 className={`font-black uppercase tracking-widest text-[11px] ${viatura.ativo ? "text-rose-500" : "text-emerald-500"} mb-1`}>
+                Controlo de Acesso
+              </h3>
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">
+                {viatura.ativo ? "Suspender Viatura" : "Reativar Viatura"}
+              </p>
+              <p className="text-xs text-slate-500 font-medium">
+                {viatura.ativo
+                  ? "A viatura deixará de estar visível para novos clientes no portal e na aplicação móvel."
+                  : "A viatura voltará a estar totalmente disponível no sistema para novas reservas."}
+              </p>
+            </div>
+            
+            <button
+              onClick={toggleStatus}
+              className={`w-full py-3.5 px-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all active:scale-95 ${
+                viatura.ativo
+                  ? "bg-rose-50 hover:bg-rose-100/70 text-rose-600"
+                  : "bg-emerald-50 hover:bg-emerald-100/70 text-emerald-600"
+              }`}
+            >
+              {viatura.ativo ? "Suspender Operações" : "Ativar Operações"}
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
