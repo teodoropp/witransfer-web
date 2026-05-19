@@ -25,6 +25,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [userType, setUserType] = useState<"admin" | "parceiro">("admin");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +69,19 @@ export default function LoginPage() {
 
         // Apenas admin e parceiro podem aceder ao portal web
         if (tipo === "admin" || tipo === "parceiro") {
+          if (userType === "admin" && tipo !== "admin") {
+            await supabase.auth.signOut();
+            throw new Error(
+              "Esta conta não tem permissão de administrador. Por favor, selecione 'Usuário-parceiro' se for um parceiro.",
+            );
+          }
+          if (userType === "parceiro" && tipo !== "parceiro") {
+            await supabase.auth.signOut();
+            throw new Error(
+              "Esta conta não tem permissão de parceiro. Por favor, selecione 'Usuário-admin' se for um administrador.",
+            );
+          }
+
           if (tipo === "admin") {
             router.replace("/admin/dashboard");
           } else {
@@ -152,11 +166,11 @@ export default function LoginPage() {
             />
           </div>
 
-          <h2 className="text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-            Login
+          <h2 className="text-[28px] font-bold text-slate-800 mb-1 tracking-tight">
+            Fazer login
           </h2>
-          <p className="text-slate-400 mb-10 font-medium">
-            Introduza as suas credenciais para continuar.
+          <p className="text-slate-500 mb-6 text-sm font-medium">
+            Acesse a sua conta WiTransfer por tipo de utilizador.
           </p>
 
           {errorMsg && (
@@ -166,75 +180,146 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
-                Email do Utilizador
-              </label>
-              <div className="relative flex items-center group">
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Seletor AWS-style */}
+            <div className="space-y-2.5 mb-5">
+              <div className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
+                <span>Tipo de usuário</span>
+                <span className="text-xs font-normal text-[#902ad1] hover:underline cursor-help" title="Selecione Administrador para gerir a plataforma ou Parceiro se for proprietário de frota.">
+                  (não tem certeza?)
+                </span>
+              </div>
+
+              {/* Cartão Administrador */}
+              <div
+                onClick={() => setUserType("admin")}
+                className={`flex items-start gap-3.5 p-3.5 border rounded-[4px] cursor-pointer transition-all duration-150 ${
+                  userType === "admin"
+                    ? "border-[#902ad1] bg-[#902ad1]/5 ring-1 ring-[#902ad1]"
+                    : "border-slate-300 bg-white hover:border-slate-400"
+                }`}
+              >
+                <div className="mt-0.5 flex items-center justify-center">
+                  <div className={`w-4.5 h-4.5 rounded-full border flex items-center justify-center transition-all ${
+                    userType === "admin"
+                      ? "border-[#902ad1]"
+                      : "border-slate-400"
+                  }`}>
+                    {userType === "admin" && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#902ad1]" />
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[14px] font-bold text-slate-800 leading-none">
+                    Usuário-admin
+                  </span>
+                  <span className="text-[12px] text-slate-500 mt-1 leading-snug">
+                    Administrador com controlo total das operações e parametrizações da plataforma.
+                  </span>
+                </div>
+              </div>
+
+              {/* Cartão Parceiro */}
+              <div
+                onClick={() => setUserType("parceiro")}
+                className={`flex items-start gap-3.5 p-3.5 border rounded-[4px] cursor-pointer transition-all duration-150 ${
+                  userType === "parceiro"
+                    ? "border-[#902ad1] bg-[#902ad1]/5 ring-1 ring-[#902ad1]"
+                    : "border-slate-300 bg-white hover:border-slate-400"
+                }`}
+              >
+                <div className="mt-0.5 flex items-center justify-center">
+                  <div className={`w-4.5 h-4.5 rounded-full border flex items-center justify-center transition-all ${
+                    userType === "parceiro"
+                      ? "border-[#902ad1]"
+                      : "border-slate-400"
+                  }`}>
+                    {userType === "parceiro" && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#902ad1]" />
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[14px] font-bold text-slate-800 leading-none">
+                    Usuário-parceiro
+                  </span>
+                  <span className="text-[12px] text-slate-500 mt-1 leading-snug">
+                    Parceiro ou proprietário de frota para gestão de motoristas e frotas.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[13px] font-semibold text-slate-800">
+                  Endereço de e-mail
+                </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 pl-4 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
-                  placeholder="admin@witransfer.com"
+                  className="w-full h-10 px-3 bg-white border border-slate-300 rounded-[4px] outline-none transition-all text-slate-800 text-[14px] focus:border-[#902ad1] focus:ring-1 focus:ring-[#902ad1]/30 placeholder:text-slate-300 disabled:opacity-50"
+                  placeholder="nomeusuario@example.com"
                   disabled={loading}
                   required
                 />
               </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-[13px] font-semibold text-slate-800">
+                    Palavra-passe
+                  </label>
+                </div>
+                <div className="relative flex items-center">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-10 pl-3 pr-10 bg-white border border-slate-300 rounded-[4px] outline-none transition-all text-slate-800 text-[14px] focus:border-[#902ad1] focus:ring-1 focus:ring-[#902ad1]/30 placeholder:text-slate-300 disabled:opacity-50"
+                    placeholder="••••••••"
+                    disabled={loading}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 text-slate-400 hover:text-[#902ad1] transition-colors disabled:opacity-50"
+                    disabled={loading}>
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <div className="flex justify-end pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/recuperar-password")}
+                    className="text-xs font-semibold text-[#902ad1] hover:underline transition-all">
+                    Esqueceu a password?
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between px-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Palavra-passe
-                </label>
-              </div>
-              <div className="relative flex items-center group">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 pl-4 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300 disabled:opacity-50"
-                  placeholder="••••••••"
-                  disabled={loading}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 text-slate-300 hover:text-primary transition-colors disabled:opacity-50"
-                  disabled={loading}>
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              <div className="flex justify-end pt-1">
-                <button
-                  onClick={() => router.push("/recuperar-password")}
-                  className="text-xs font-bold text-primary hover:underline transition-all">
-                  Esqueceu a password?
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-4">
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 bg-[#902ad1] text-white rounded-[10px] font-bold uppercase tracking-widest text-sm shadow-xl shadow-[#902ad1]/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+                className="w-full h-10 bg-[#ff9900] hover:bg-[#e08800] border border-[#d88200] text-slate-900 rounded-[4px] font-medium text-sm transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-sm">
                 {loading ? (
-                  <Loader2 className="animate-spin" size={20} />
+                  <Loader2 className="animate-spin text-slate-900" size={18} />
                 ) : (
-                  "Entrar"
+                  "Próximo"
                 )}
               </button>
             </div>
           </form>
 
-          <div className="mt-12 space-y-4">
+          <div className="mt-8 space-y-4">
             <div className="flex items-center gap-4">
               <div className="h-[1px] flex-1 bg-slate-200" />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
                 ou
               </span>
               <div className="h-[1px] flex-1 bg-slate-200" />
@@ -243,12 +328,12 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowQRModal(true)}
-              className="w-full h-14 bg-slate-50 border-2 border-slate-200 rounded-[10px] flex items-center justify-center gap-3 text-primary font-bold hover:bg-white hover:border-[#902ad1] transition-all group">
+              className="w-full h-10 bg-white border border-slate-300 hover:border-slate-400 rounded-[4px] flex items-center justify-center gap-2 text-slate-700 font-medium text-xs shadow-sm transition-all hover:bg-slate-50/50">
               <Building2
-                size={20}
-                className="text-primary/60 group-hover:text-[#902ad1] transition-colors"
+                size={16}
+                className="text-slate-400"
               />
-              <span>Seja um parceiro WiTransfer</span>
+              <span>Utilizando a WiTransfer pela primeira vez? Inscreva-se</span>
             </button>
           </div>
         </div>

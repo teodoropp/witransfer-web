@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { THEME_TOKENS } from "@/utils/design-system";
 
 interface MotoristaFormProps {
   id?: string;
@@ -34,8 +35,12 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
   const [saving, setSaving] = useState(false);
 
   // Tabelas auxiliares
-  const [parceiros, setParceiros] = useState<{ id: string; nome: string }[]>([]);
-  const [viaturas, setViaturas] = useState<{ id: string; modelo: string; matricula: string }[]>([]);
+  const [parceiros, setParceiros] = useState<{ id: string; nome: string }[]>(
+    [],
+  );
+  const [viaturas, setViaturas] = useState<
+    { id: string; modelo: string; matricula: string }[]
+  >([]);
 
   // Estado do Formulário
   const [formData, setFormData] = useState({
@@ -62,21 +67,29 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
         setLoading(true);
 
         // 1. Carregar Parceiros
-        const { data: partData } = await supabase.from("parceiros").select("id, nome").order("nome");
+        const { data: partData } = await supabase
+          .from("parceiros")
+          .select("id, nome")
+          .order("nome");
         setParceiros(partData || []);
 
         // 2. Carregar Viaturas (disponíveis ou já atribuídas ao próprio motorista)
-        const { data: viatData } = await supabase.from("viaturas").select("id, modelo, matricula").order("modelo");
+        const { data: viatData } = await supabase
+          .from("viaturas")
+          .select("id, modelo, matricula")
+          .order("modelo");
         setViaturas(viatData || []);
 
         // 3. Se for Edição, carregar os dados
         if (id) {
           const { data: m, error } = await supabase
             .from("motoristas")
-            .select(`
+            .select(
+              `
               *,
               perfis:perfil_id(id, nome_completo, email, telefone, foto_url, ativo)
-            `)
+            `,
+            )
             .eq("id", id)
             .single();
 
@@ -110,7 +123,9 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
   }, [id]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -118,7 +133,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: "foto" | "carta" | "bi"
+    type: "foto" | "carta" | "bi",
   ) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -206,7 +221,10 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
         documento_bi_url: biUrl,
         experiencia_anos: parseInt(formData.experiencia_anos) || 1,
         disponivel: formData.disponivel,
-        idiomas: formData.idiomas.split(",").map((s) => s.trim()).filter(Boolean),
+        idiomas: formData.idiomas
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
       };
 
       if (isEditing) {
@@ -216,7 +234,9 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
           .eq("id", id);
         if (mError) throw mError;
       } else {
-        const { error: mError } = await supabase.from("motoristas").insert([driverData]);
+        const { error: mError } = await supabase
+          .from("motoristas")
+          .insert([driverData]);
         if (mError) throw mError;
       }
 
@@ -244,25 +264,28 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500"
-    >
+      className="w-full pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header e Ações */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="p-3 bg-white hover:bg-slate-50 rounded-[10px] border border-slate-100 text-slate-600 transition-all shadow-sm"
-          >
-            <ArrowLeft size={20} />
-          </button>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-[30px]">
+        <div className="flex items-center">
           <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-              <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="hover:text-[#902ad1] text-slate-500 transition-colors flex items-center shrink-0 mr-1"
+                title="Voltar">
+                <ArrowLeft size={12} strokeWidth={2.5} />
+              </button>
+              <Link
+                href="/admin/dashboard"
+                className="hover:text-[#902ad1] transition-all">
                 Painel
               </Link>
               <span className="text-slate-300">/</span>
-              <Link href="/admin/motoristas" className="hover:text-[#902ad1] transition-all">
+              <Link
+                href="/admin/motoristas"
+                className="hover:text-[#902ad1] transition-all">
                 Motoristas
               </Link>
               <span className="text-slate-300">/</span>
@@ -270,17 +293,15 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                 {isEditing ? "Editar Motorista" : "Novo Motorista"}
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">
-              {isEditing ? "Editar Ficha de Motorista" : "Adicionar Novo Motorista"}
-            </h1>
           </div>
         </div>
       </div>
 
       {/* Formulário Principal */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mx-0 md:mx-[80px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Coluna da Esquerda: Inputs */}
-        <div className="lg:col-span-8 bg-white p-6 md:p-8 rounded-[10px] border border-slate-100 shadow-sm space-y-8">
+        <div
+          className={`lg:col-span-8 ${THEME_TOKENS.cardStyle} p-6 md:p-8 space-y-8`}>
           {/* Secção 1: Dados Pessoais */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
@@ -303,7 +324,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   value={formData.nome_completo}
                   onChange={handleInputChange}
                   placeholder="Ex: João Manuel dos Santos"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[400px] px-5 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                   required
                 />
               </div>
@@ -318,7 +339,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="exemplo@witransfer.org"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[400px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                   required
                 />
               </div>
@@ -333,7 +354,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   value={formData.telefone}
                   onChange={handleInputChange}
                   placeholder="+244 9XX XXX XXX"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[280px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                   required
                 />
               </div>
@@ -348,7 +369,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   value={formData.idiomas}
                   onChange={handleInputChange}
                   placeholder="Português, Inglês"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[400px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                 />
               </div>
             </div>
@@ -374,9 +395,8 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   name="parceiro_id"
                   value={formData.parceiro_id}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none cursor-pointer"
-                  required
-                >
+                  className="w-full max-w-[320px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none cursor-pointer block"
+                  required>
                   <option value="">Selecionar Parceiro</option>
                   {parceiros.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -394,8 +414,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   name="viatura_id"
                   value={formData.viatura_id}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none cursor-pointer"
-                >
+                  className="w-full max-w-[320px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none cursor-pointer block">
                   <option value="">Nenhuma Viatura (Reserva Livre)</option>
                   {viaturas.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -415,7 +434,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   value={formData.carta_conducao}
                   onChange={handleInputChange}
                   placeholder="Nº da Carta de Condução"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[280px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                 />
               </div>
 
@@ -428,7 +447,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                   name="experiencia_anos"
                   value={formData.experiencia_anos}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-medium focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+                  className="w-full max-w-[120px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-[5px] text-xs focus:bg-white focus:border-[#902ad1] transition-all outline-none block"
                 />
               </div>
             </div>
@@ -440,7 +459,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                 <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
                   Carta de Condução (Anexo)
                 </label>
-                <div className="relative border border-dashed border-slate-200 bg-slate-50/50 rounded-[10px] p-4 flex flex-col items-center justify-center min-h-[120px] transition-all hover:bg-slate-50">
+                <div className="relative border border-dashed border-slate-200 bg-slate-50/50 rounded-[5px] p-4 flex flex-col items-center justify-center min-h-[120px] transition-all hover:bg-slate-50">
                   {cartaUrl ? (
                     <div className="text-center space-y-2">
                       <FileText size={24} className="text-[#902ad1] mx-auto" />
@@ -452,15 +471,13 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                           href={cartaUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] text-slate-500 hover:text-[#902ad1] font-semibold flex items-center gap-1"
-                        >
+                          className="text-[10px] text-slate-500 hover:text-[#902ad1] font-semibold flex items-center gap-1">
                           <ExternalLink size={10} /> Ver
                         </a>
                         <button
                           type="button"
                           onClick={() => setCartaUrl(null)}
-                          className="text-[10px] text-rose-500 hover:underline font-semibold"
-                        >
+                          className="text-[10px] text-rose-500 hover:underline font-semibold">
                           Excluir
                         </button>
                       </div>
@@ -487,7 +504,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                 <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
                   Cópia do BI (Identidade)
                 </label>
-                <div className="relative border border-dashed border-slate-200 bg-slate-50/50 rounded-[10px] p-4 flex flex-col items-center justify-center min-h-[120px] transition-all hover:bg-slate-50">
+                <div className="relative border border-dashed border-slate-200 bg-slate-50/50 rounded-[5px] p-4 flex flex-col items-center justify-center min-h-[120px] transition-all hover:bg-slate-50">
                   {biUrl ? (
                     <div className="text-center space-y-2">
                       <FileText size={24} className="text-[#902ad1] mx-auto" />
@@ -499,15 +516,13 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
                           href={biUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] text-slate-500 hover:text-[#902ad1] font-semibold flex items-center gap-1"
-                        >
+                          className="text-[10px] text-slate-500 hover:text-[#902ad1] font-semibold flex items-center gap-1">
                           <ExternalLink size={10} /> Ver
                         </a>
                         <button
                           type="button"
                           onClick={() => setBiUrl(null)}
-                          className="text-[10px] text-rose-500 hover:underline font-semibold"
-                        >
+                          className="text-[10px] text-rose-500 hover:underline font-semibold">
                           Excluir
                         </button>
                       </div>
@@ -535,18 +550,24 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
         {/* Coluna da Direita: Preview e Toggle de Estado */}
         <div className="lg:col-span-4 space-y-6">
           {/* Card de Foto de Perfil */}
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm text-center space-y-4">
+          <div
+            className={`${THEME_TOKENS.cardStyle} p-6 text-center space-y-4`}>
             <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[11px]">
               Foto do Motorista
             </h4>
             <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-[#902ad1]/15 mx-auto bg-slate-50 flex items-center justify-center">
               {fotoUrl ? (
-                <Image src={fotoUrl} alt="Foto do motorista" fill className="object-cover" />
+                <Image
+                  src={fotoUrl}
+                  alt="Foto do motorista"
+                  fill
+                  className="object-cover"
+                />
               ) : (
                 <User size={48} className="text-slate-300" />
               )}
             </div>
-            <label className="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-600 rounded-[10px] border border-slate-150 cursor-pointer transition-all">
+            <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 rounded-[5px] border border-slate-200 cursor-pointer transition-all">
               <Camera size={14} />
               Enviar Foto
               <input
@@ -559,7 +580,7 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
           </div>
 
           {/* Card de Estados de Disponibilidade & Atividade */}
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6">
+          <div className={`${THEME_TOKENS.cardStyle} p-6 space-y-6`}>
             <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[11px] border-b border-slate-50 pb-3">
               Controlos Administrativos
             </h4>
@@ -567,8 +588,12 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
             {/* Ativo/Bloqueado */}
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-semibold text-slate-700 block">Ativo na Plataforma</span>
-                <span className="text-[10px] text-slate-400">Permitir login e viagens</span>
+                <span className="text-xs font-semibold text-slate-700 block">
+                  Ativo na Plataforma
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  Permitir login e viagens
+                </span>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -589,8 +614,12 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
             {/* Disponível/Ocupado */}
             <div className="flex items-center justify-between pt-4 border-t border-slate-50">
               <div>
-                <span className="text-xs font-semibold text-slate-700 block">Livre / Disponível</span>
-                <span className="text-[10px] text-slate-400">Pronto para receber reservas</span>
+                <span className="text-xs font-semibold text-slate-700 block">
+                  Livre / Disponível
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  Pronto para receber reservas
+                </span>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -613,14 +642,15 @@ export default function MotoristaForm({ id }: MotoristaFormProps) {
           <button
             type="submit"
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white py-4 rounded-[10px] font-semibold transition-all shadow-lg shadow-[#902ad1]/20 active:scale-95 disabled:opacity-50"
-          >
+            className="w-full flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/95 text-white py-3 rounded-[5px] text-xs font-semibold transition-all active:scale-95 disabled:opacity-50">
             {saving ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <Save size={18} />
             )}
-            <span>{isEditing ? "Guardar Alterações" : "Criar Novo Motorista"}</span>
+            <span>
+              {isEditing ? "Guardar Alterações" : "Criar Novo Motorista"}
+            </span>
           </button>
         </div>
       </div>

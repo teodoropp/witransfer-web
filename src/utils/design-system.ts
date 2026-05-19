@@ -28,16 +28,22 @@
  * =========================================================================
  */
 
-export const THEME_TOKENS = {
-  // Bordas e Parâmetros Estruturais dos Cards (Arredondamento estrito de 10px)
-  cardRounded: "rounded-[10px]",
-  cardBorder: "border border-slate-100",
-  cardShadow: "shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300",
-  cardBg: "bg-white",
+// Base values for dynamic interpolation
+const cardRounded = "rounded-[0]";
+const cardBorder = "border-2 border-slate-200";
+const cardShadow = "shadow-none transition-all duration-300";
+const cardBg = "bg-white";
 
-  // Classes Consolidadas de Cartão (Garante bordas arredondadas exatamente de 10px)
-  cardStyle: "bg-white rounded-[10px] border border-slate-100 shadow-sm",
-  cardInteractive: "bg-white rounded-[10px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-[#902ad1]/5 transition-all duration-300",
+export const THEME_TOKENS = {
+  // Bordas e Parâmetros Estruturais dos Cards
+  cardRounded,
+  cardBorder,
+  cardShadow,
+  cardBg,
+
+  // Classes Consolidadas de Cartão (Herda dinamicamente o arredondamento acima)
+  cardStyle: `${cardBg} ${cardRounded} ${cardBorder}`,
+  cardInteractive: `${cardBg} ${cardRounded} ${cardBorder}`,
 
   // Espaçamentos
   cardPadding: "p-5 md:p-6",
@@ -62,7 +68,7 @@ export const THEME_TOKENS = {
   
   // Elementos Interativos e Ações
   buttonText: "font-bold text-xs uppercase tracking-wider",
-  inputField: "w-full px-4 py-3 rounded-[10px] border border-slate-200 text-sm font-medium focus:outline-none focus:border-[#902ad1] transition-all",
+  inputField: `w-full px-4 py-3 \${cardRounded} border border-slate-200 text-sm font-medium focus:outline-none focus:border-[#902ad1] transition-all`,
 
   // Itens de Menu Lateral (Seleção discreta com lilás suave/desbotado e texto de destaque)
   sidebarActive: "bg-[#902ad1]/8 text-[#902ad1] font-semibold",

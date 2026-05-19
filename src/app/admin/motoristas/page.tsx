@@ -3,11 +3,13 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Plus, Users, ShieldAlert } from "lucide-react";
+import { Plus, Users, ShieldAlert, Check, Star, Car } from "lucide-react";
 import Link from "next/link";
+import { THEME_TOKENS } from "@/utils/design-system";
 import { supabase } from "@/lib/supabase";
 import MotoristaTable from "@/components/admin/motorista-table";
 import MotoristaFilters from "@/components/admin/motorista-filters";
+import MotoristaCard from "@/components/admin/motorista-card";
 
 interface Motorista {
   id: string;
@@ -42,6 +44,63 @@ interface Motorista {
       nome: string;
     } | null;
   } | null;
+}
+
+interface AnimatedCounterProps {
+  value: number;
+  duration?: number;
+  decimals?: number;
+}
+
+function AnimatedCounter({ value, duration = 1000, decimals = 0 }: AnimatedCounterProps) {
+  const [count, setCount] = useState(0);
+  const elementRef = React.useRef<HTMLSpanElement>(null);
+  const hasAnimated = React.useRef(false);
+
+  useEffect(() => {
+    setCount(0);
+    hasAnimated.current = false;
+  }, [value]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          let startTimestamp: number | null = null;
+          const step = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            setCount(progress * value);
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentElement = elementRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+      observer.disconnect();
+    };
+  }, [value, duration]);
+
+  return (
+    <span ref={elementRef}>
+      {count.toFixed(decimals)}
+    </span>
+  );
 }
 
 export default function MotoristasPage() {
@@ -226,6 +285,80 @@ export default function MotoristasPage() {
         </Link>
       </div>
 
+      {/* Barra de Estatísticas Coesa e Premium (Stats Bar) */}
+      <div className={`p-5 flex flex-col md:flex-row items-center justify-around gap-6 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-100 ${THEME_TOKENS.cardStyle}`}>
+        {/* Total de Motoristas */}
+        <div className="flex items-center gap-4 w-full md:w-auto px-4 py-2 md:py-0 justify-center md:justify-start">
+          <div className="p-3 bg-purple-50 text-[#902ad1] rounded-[10px] shrink-0">
+            <Users size={20} />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block leading-none">
+              Total de Motoristas
+            </span>
+            <h3 className="text-xl font-bold text-slate-800 tracking-tight mt-1 leading-none">
+              <AnimatedCounter value={motoristas.length} />
+            </h3>
+          </div>
+        </div>
+
+        {/* Motoristas Disponíveis */}
+        <div className="flex items-center gap-4 w-full md:w-auto px-4 py-2 md:py-0 justify-center md:justify-start pt-4 md:pt-0">
+          <div className="p-3 bg-emerald-50 text-emerald-600 rounded-[10px] shrink-0">
+            <Check size={20} />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block leading-none">
+              Motoristas Livres
+            </span>
+            <h3 className="text-xl font-bold text-slate-800 tracking-tight mt-1 leading-none">
+              <AnimatedCounter value={motoristas.filter((m) => m.disponivel).length} />
+            </h3>
+          </div>
+        </div>
+
+        {/* Média de Avaliação */}
+        <div className="flex items-center gap-4 w-full md:w-auto px-4 py-2 md:py-0 justify-center md:justify-start pt-4 md:pt-0">
+          <div className="p-3 bg-amber-50 text-amber-500 rounded-[10px] shrink-0">
+            <Star size={20} className="fill-amber-400 text-amber-450" />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block leading-none">
+              Avaliação Média
+            </span>
+            <h3 className="text-xl font-bold text-slate-800 tracking-tight mt-1 leading-none">
+              <AnimatedCounter
+                value={Number(
+                  (
+                    motoristas.reduce((acc, m) => acc + (m.avaliacao_media || 5.0), 0) /
+                    (motoristas.length || 1)
+                  ).toFixed(1)
+                )}
+                decimals={1}
+              />{" "}
+              <span className="text-xs font-semibold text-slate-400">/ 5.0</span>
+            </h3>
+          </div>
+        </div>
+
+        {/* Total de Viagens */}
+        <div className="flex items-center gap-4 w-full md:w-auto px-4 py-2 md:py-0 justify-center md:justify-start pt-4 md:pt-0">
+          <div className="p-3 bg-blue-50 text-blue-600 rounded-[10px] shrink-0">
+            <Car size={20} />
+          </div>
+          <div>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block leading-none">
+              Total de Viagens
+            </span>
+            <h3 className="text-xl font-bold text-slate-800 tracking-tight mt-1 leading-none">
+              <AnimatedCounter
+                value={motoristas.reduce((acc, m) => acc + (m.total_viagens || 0), 0)}
+              />
+            </h3>
+          </div>
+        </div>
+      </div>
+
       {/* Filtros Avançados */}
       <MotoristaFilters
         search={search}
@@ -250,12 +383,25 @@ export default function MotoristasPage() {
           <div className="w-10 h-10 border-4 border-[#902ad1]/20 border-t-[#902ad1] rounded-full animate-spin" />
         </div>
       ) : filteredAndSortedMotoristas.length > 0 ? (
-        <MotoristaTable
-          motoristas={filteredAndSortedMotoristas}
-          onDelete={handleDelete}
-          onToggleStatus={toggleStatus}
-          onToggleDisponivel={toggleDisponivel}
-        />
+        viewMode === "table" ? (
+          <MotoristaTable
+            motoristas={filteredAndSortedMotoristas}
+            onDelete={handleDelete}
+            onToggleStatus={toggleStatus}
+            onToggleDisponivel={toggleDisponivel}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredAndSortedMotoristas.map((motorista) => (
+              <MotoristaCard
+                key={motorista.id}
+                motorista={motorista}
+                onDelete={handleDelete}
+                onToggleDisponivel={toggleDisponivel}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100 shadow-sm">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">

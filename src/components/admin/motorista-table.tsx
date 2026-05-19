@@ -5,18 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Users,
-  Edit2,
-  Trash2,
-  Eye,
-  Check,
-  X,
-  Star,
-  Car,
-  FileText,
-  HelpCircle,
-} from "lucide-react";
+import { Users, Edit2, Trash2, Eye, Check, X, Star, Car } from "lucide-react";
 
 interface Motorista {
   id: string;
@@ -67,8 +56,8 @@ export default function MotoristaTable({
   onToggleDisponivel,
 }: MotoristaTableProps) {
   return (
-    <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="bg-white rounded-[0px] border border-slate-100 shadow-sm overflow-hidden">
+      <div className="overflow-x-auto no-scrollbar">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
@@ -76,19 +65,19 @@ export default function MotoristaTable({
                 Motorista
               </th>
               <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                Contacto & BI
+                Parceiro
               </th>
               <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                Parceiro & Viatura
+                E-mail
               </th>
               <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                Especificações
+                Contacto
+              </th>
+              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+                Viatura
               </th>
               <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-center">
                 Disponível
-              </th>
-              <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-center">
-                Estado
               </th>
               <th className="py-4 px-6 text-[10px] font-semibold text-slate-400 uppercase tracking-widest text-right">
                 Ações
@@ -97,7 +86,9 @@ export default function MotoristaTable({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {motoristas.map((m) => (
-              <tr key={m.id} className="hover:bg-slate-50/50 transition-colors group">
+              <tr
+                key={m.id}
+                className="hover:bg-slate-50/50 transition-colors group">
                 {/* Motorista (Foto + Nome + Avaliação) */}
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
@@ -120,7 +111,10 @@ export default function MotoristaTable({
                         {m.perfis.nome_completo}
                       </span>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <Star size={12} className="text-amber-400 fill-amber-400" />
+                        <Star
+                          size={12}
+                          className="text-amber-400 fill-amber-400"
+                        />
                         <span className="text-[10px] font-semibold text-slate-500">
                           {m.avaliacao_media?.toFixed(1) || "5.0"}
                         </span>
@@ -132,50 +126,44 @@ export default function MotoristaTable({
                   </div>
                 </td>
 
-                {/* Contacto & BI */}
+                {/* Parceiro */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-medium text-slate-600">
-                      {m.perfis.telefone || "Sem telefone"}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium tracking-tight truncate max-w-[150px]">
-                      {m.perfis.email || "Sem e-mail"}
-                    </span>
-                  </div>
+                  <span
+                    className="text-xs font-semibold text-slate-600 truncate max-w-[140px] block"
+                    title={m.parceiros?.nome || "WiTransfer Official"}>
+                    {m.parceiros?.nome || "WiTransfer Official"}
+                  </span>
                 </td>
 
-                {/* Parceiro & Viatura */}
+                {/* E-mail */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {m.parceiros?.nome || "WiTransfer Official"}
-                    </span>
-                    {m.viaturas ? (
-                      <span className="text-[10px] text-[#902ad1] font-semibold uppercase tracking-tight flex items-center gap-1">
-                        <Car size={10} />
-                        {m.viaturas.modelo} ({m.viaturas.matricula})
-                      </span>
-                    ) : (
-                      <span className="text-[10px] text-slate-400 font-medium italic">
-                        Sem viatura atribuída
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-xs font-medium text-slate-600">
+                    {m.perfis.email || "Sem e-mail"}
+                  </span>
                 </td>
 
-                {/* Especificações (Carta de Condução / Experiência) */}
+                {/* Contacto */}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-medium text-slate-600">
-                      Carta: {m.carta_conducao || "N/A"}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      {m.experiencia_anos ? `${m.experiencia_anos} anos de exp.` : "Iniciante"}
-                    </span>
-                  </div>
+                  <span className="text-xs font-medium text-slate-600">
+                    {m.perfis.telefone || "Sem telefone"}
+                  </span>
                 </td>
 
-                {/* Disponível (Indicador de disponibilidade real-time) */}
+                {/* Carro (Viatura) */}
+                <td className="py-4 px-6 whitespace-nowrap">
+                  {m.viaturas ? (
+                    <span className="text-xs text-[#902ad1] font-semibold uppercase tracking-tight flex items-center gap-1">
+                      <Car size={12} />
+                      {m.viaturas.modelo} ({m.viaturas.matricula})
+                    </span>
+                  ) : (
+                    <span className="text-xs text-slate-400 font-medium italic">
+                      Sem viatura
+                    </span>
+                  )}
+                </td>
+
+                {/* Disponível */}
                 <td className="py-4 px-6 text-center whitespace-nowrap">
                   <button
                     type="button"
@@ -184,26 +172,15 @@ export default function MotoristaTable({
                       m.disponivel
                         ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100"
                         : "bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200"
-                    }`}
-                  >
-                    <span className={`w-1.5 h-1.5 rounded-full ${m.disponivel ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`} />
+                    }`}>
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        m.disponivel
+                          ? "bg-emerald-500 animate-pulse"
+                          : "bg-slate-400"
+                      }`}
+                    />
                     <span>{m.disponivel ? "Livre" : "Ocupado"}</span>
-                  </button>
-                </td>
-
-                {/* Estado (Ativo/Inativo na plataforma) */}
-                <td className="py-4 px-6 text-center whitespace-nowrap">
-                  <button
-                    type="button"
-                    onClick={() => onToggleStatus(m.perfil_id, !!m.perfis.ativo)}
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-[10px] text-[9px] font-semibold uppercase tracking-widest transition-all ${
-                      m.perfis.ativo
-                        ? "bg-purple-50 text-[#902ad1] border border-purple-200 hover:bg-purple-100"
-                        : "bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100"
-                    }`}
-                  >
-                    {m.perfis.ativo ? <Check size={10} strokeWidth={3} /> : <X size={10} strokeWidth={3} />}
-                    <span>{m.perfis.ativo ? "Ativo" : "Bloqueado"}</span>
                   </button>
                 </td>
 
@@ -213,23 +190,20 @@ export default function MotoristaTable({
                     <Link
                       href={`/admin/motoristas/${m.id}`}
                       className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
-                      title="Ficha do Motorista"
-                    >
+                      title="Ficha do Motorista">
                       <Eye size={16} />
                     </Link>
                     <Link
                       href={`/admin/motoristas/${m.id}/editar`}
                       className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
-                      title="Editar Perfil"
-                    >
+                      title="Editar Perfil">
                       <Edit2 size={16} />
                     </Link>
                     <button
                       type="button"
                       onClick={() => onDelete(m.id, m.perfil_id)}
                       className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-[10px] transition-all"
-                      title="Eliminar Motorista"
-                    >
+                      title="Eliminar Motorista">
                       <Trash2 size={16} />
                     </button>
                   </div>

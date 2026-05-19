@@ -39,12 +39,15 @@ export default function MotoristaFilters({
   partners,
 }: MotoristaFiltersProps) {
   return (
-    <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-4">
+    <div className="bg-white p-6 rounded-[0px] border border-slate-200 space-y-4">
       {/* Linha Principal: Pesquisa + Modo de Visualização */}
       <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
         {/* Barra de Pesquisa */}
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            size={18}
+          />
           <input
             type="text"
             placeholder="Pesquisar por nome, e-mail ou telefone do motorista..."
@@ -67,9 +70,12 @@ export default function MotoristaFilters({
                   statusFilter === f
                     ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                     : "text-slate-400 hover:text-slate-600"
-                }`}
-              >
-                {f === "todos" ? "Todos" : f === "ativos" ? "Ativos" : "Inativos"}
+                }`}>
+                {f === "todos"
+                  ? "Todos"
+                  : f === "ativos"
+                    ? "Ativos"
+                    : "Inativos"}
               </button>
             ))}
           </div>
@@ -84,8 +90,7 @@ export default function MotoristaFilters({
                   ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                   : "text-slate-400 hover:text-slate-600"
               }`}
-              title="Visualizar em Grelha"
-            >
+              title="Visualizar em Grelha">
               <Grid size={16} />
             </button>
             <button
@@ -96,8 +101,7 @@ export default function MotoristaFilters({
                   ? "bg-white text-[#902ad1] shadow-sm border border-slate-100"
                   : "text-slate-400 hover:text-slate-600"
               }`}
-              title="Visualizar em Tabela"
-            >
+              title="Visualizar em Tabela">
               <List size={16} />
             </button>
           </div>
@@ -115,8 +119,7 @@ export default function MotoristaFilters({
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
-            >
+              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer">
               <option value="todas">Todas as Categorias</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.nome}>
@@ -140,8 +143,7 @@ export default function MotoristaFilters({
             <select
               value={partnerFilter}
               onChange={(e) => setPartnerFilter(e.target.value)}
-              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
-            >
+              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer">
               <option value="todos">Todos os Parceiros</option>
               {partners.map((part) => (
                 <option key={part.id} value={part.nome}>
@@ -165,13 +167,14 @@ export default function MotoristaFilters({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
-            >
+              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer">
               <option value="recente">Mais Recentes</option>
               <option value="nome-az">Nome: A a Z</option>
               <option value="nome-za">Nome: Z a A</option>
               <option value="viagens-desc">Mais Experientes (Viagens)</option>
-              <option value="avaliacao-desc">Melhor Classificados (Avaliação)</option>
+              <option value="avaliacao-desc">
+                Melhor Classificados (Avaliação)
+              </option>
             </select>
             <ChevronDown
               size={14}

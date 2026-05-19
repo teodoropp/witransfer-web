@@ -48,18 +48,17 @@ const SidebarItem = ({ item }: { item: MenuItem }) => {
     <Link
       href={item.href}
       className={`flex items-center gap-3 px-4 py-2.5 rounded-[10px] transition-all group relative ${
-        isActive
-          ? THEME_TOKENS.sidebarActive
-          : THEME_TOKENS.sidebarInactive
-      }`}
-    >
+        isActive ? THEME_TOKENS.sidebarActive : THEME_TOKENS.sidebarInactive
+      }`}>
       <Icon
         size={16}
         className={`${isActive ? "" : "group-hover:scale-110 opacity-70 group-hover:opacity-100"} transition-transform`}
       />
       <span className="text-[13px] font-medium">{item.name}</span>
       {isActive && (
-        <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full animate-pulse ${THEME_TOKENS.sidebarIndicator}`} />
+        <div
+          className={`absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full animate-pulse ${THEME_TOKENS.sidebarIndicator}`}
+        />
       )}
     </Link>
   );
@@ -111,7 +110,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       title: "Reservas & Viagens",
       items: [
         { name: "Reservas", href: "/admin/reservas", icon: CalendarRange },
-        { name: "Solicitações", href: "/admin/solicitacoes", icon: ShieldCheck },
+        {
+          name: "Solicitações",
+          href: "/admin/solicitacoes",
+          icon: ShieldCheck,
+        },
         { name: "Aeroportos", href: "/admin/aeroportos", icon: Plane },
       ],
     },
@@ -134,9 +137,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     {
       title: "Comunicação",
       items: [
-        { name: "Notificações Push", href: "/admin/enviar-notificacao", icon: Bell },
-        { name: "Campanhas Promo", href: "/admin/enviar-promocao", icon: Megaphone },
-        { name: "Banners Publicidade", href: "/admin/publicidade", icon: ImageIcon },
+        {
+          name: "Notificações Push",
+          href: "/admin/enviar-notificacao",
+          icon: Bell,
+        },
+        {
+          name: "Campanhas Promo",
+          href: "/admin/enviar-promocao",
+          icon: Megaphone,
+        },
+        {
+          name: "Banners Publicidade",
+          href: "/admin/publicidade",
+          icon: ImageIcon,
+        },
       ],
     },
     {
@@ -144,7 +159,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       items: [
         { name: "Pagamentos", href: "/admin/pagamentos", icon: CreditCard },
         { name: "Financeiro Geral", href: "/admin/financeiro", icon: Activity },
-        { name: "Análise Desempenho", href: "/admin/desempenho", icon: BarChart },
+        {
+          name: "Análise Desempenho",
+          href: "/admin/desempenho",
+          icon: BarChart,
+        },
         { name: "Exportação Dados", href: "/admin/exportar", icon: Download },
       ],
     },
@@ -163,7 +182,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-white text-slate-600 flex flex-col hidden md:flex sticky top-0 h-screen overflow-hidden border-r border-slate-200 z-30 shadow-sm">
+      <aside className="w-64 bg-white text-slate-600 flex flex-col hidden md:flex sticky top-0 h-screen overflow-hidden border-r border-slate-100 z-30 shadow-none">
         <div className="p-8 pb-6 flex flex-col items-center">
           <div className="relative w-full aspect-[3/1] mb-2">
             <Image
@@ -195,8 +214,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="p-6 bg-slate-50 border-t border-slate-100">
           <Link
             href="/login"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-50 hover:text-white transition-all group"
-          >
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-50 hover:text-white transition-all group">
             <LogOut size={18} />
             <span className="text-xs font-semibold uppercase tracking-widest">
               Sair do Sistema
@@ -207,7 +225,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 shadow-sm z-20">
+        <header className="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 shadow-none z-20">
           <div />
 
           <div className="flex items-center gap-6">
