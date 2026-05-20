@@ -145,7 +145,7 @@ export default function LoginPage() {
       </div>
 
       {/* Lado Direito: Formulário de Login */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-24 bg-white relative text-slate-800">
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-24 bg-slate-50 relative text-slate-800">
         {/* Botão de Voltar para o Site */}
         <button
           onClick={() => (window.location.href = "https://www.witransfer.org")}
@@ -154,8 +154,8 @@ export default function LoginPage() {
           <span>Voltar para o site</span>
         </button>
 
-        <div className="w-full max-w-sm">
-          <div className="lg:hidden mb-12 flex justify-center">
+        <div className="w-full max-w-[420px]">
+          <div className="lg:hidden mb-6 flex justify-center">
             <Image
               src="/logo.png"
               alt="Logo"
@@ -166,12 +166,20 @@ export default function LoginPage() {
             />
           </div>
 
-          <h2 className="text-[28px] font-bold text-slate-800 mb-1 tracking-tight">
-            Fazer login
-          </h2>
-          <p className="text-slate-500 mb-6 text-sm font-medium">
-            Acesse a sua conta WiTransfer por tipo de utilizador.
-          </p>
+          {/* Card Container */}
+          <div className="bg-white border border-slate-200 rounded-[4px] shadow-sm overflow-hidden">
+            {/* Cabeçalho com Linha de Separação */}
+            <div className="px-8 py-5 border-b border-slate-200 bg-slate-50/20">
+              <h2 className="text-[22px] font-bold text-slate-800 tracking-tight leading-none">
+                Fazer login
+              </h2>
+            </div>
+
+            {/* Conteúdo do Cartão */}
+            <div className="p-8">
+              <p className="text-slate-500 mb-6 text-sm font-medium">
+                Acesse a sua conta WiTransfer por tipo de utilizador.
+              </p>
 
           {errorMsg && (
             <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 flex items-center gap-3 text-red-700 text-sm animate-in fade-in slide-in-from-top-1">
@@ -306,11 +314,11 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-10 bg-[#ff9900] hover:bg-[#e08800] border border-[#d88200] text-slate-900 rounded-[4px] font-medium text-sm transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-sm">
+                className="w-full h-10 bg-[#902ad1] hover:bg-[#7a22b3] text-white rounded-[4px] font-bold uppercase tracking-widest text-[11px] transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-sm shadow-[#902ad1]/10">
                 {loading ? (
-                  <Loader2 className="animate-spin text-slate-900" size={18} />
+                  <Loader2 className="animate-spin text-white" size={16} />
                 ) : (
-                  "Próximo"
+                  "Entrar"
                 )}
               </button>
             </div>
@@ -336,8 +344,10 @@ export default function LoginPage() {
               <span>Utilizando a WiTransfer pela primeira vez? Inscreva-se</span>
             </button>
           </div>
-        </div>
-      </div>
+        </div> {/* Fim do Conteúdo do Cartão */}
+      </div> {/* Fim do Card Container */}
+      </div> {/* Fim do max-w-[420px] */}
+      </div> {/* Fim do Lado Direito */}
 
       {/* Modal QR Code para Registo via App */}
       {showQRModal && (
