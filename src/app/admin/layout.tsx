@@ -225,7 +225,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 shadow-none z-20">
+        <header className="h-20 bg-white/85 backdrop-blur-md border-b border-slate-100/60 flex items-center justify-between px-6 shrink-0 z-20">
           <div />
 
           <div className="flex items-center gap-6">
