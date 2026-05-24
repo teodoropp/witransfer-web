@@ -148,7 +148,7 @@ export default function ConfiguraçõesSistemaPage() {
       localStorage.setItem("wi_suporte_telefone", suporteTelefone);
       localStorage.setItem("wi_modo_manutencao", String(modoManutencao));
       
-      setFormSuccess("Parâmetros do aplicativo guardados localmente com sucesso.");
+      setFormSuccess("Parâmetros da aplicação guardados localmente com sucesso.");
     } catch (err) {
       setFormError("Erro ao gravar parâmetros locais.");
     } finally {
@@ -211,7 +211,7 @@ export default function ConfiguraçõesSistemaPage() {
               : "text-slate-400 hover:text-[#902ad1]/80 bg-transparent"
           }`}
         >
-          Parâmetros do App
+          Parâmetros da App
         </button>
         <button
           onClick={() => {
@@ -258,7 +258,7 @@ export default function ConfiguraçõesSistemaPage() {
                 <div>
                   <h3 className="text-base font-bold text-slate-800 tracking-tight">Comissões e Tarifas</h3>
                   <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block mt-0.5">
-                    Configuração ativa de faturamento financeiro na base de dados
+                    Configuração ativa de faturação financeira na base de dados
                   </span>
                 </div>
 
@@ -307,7 +307,7 @@ export default function ConfiguraçõesSistemaPage() {
                       </div>
                     </div>
                     <span className="text-[10px] text-slate-400 block leading-relaxed font-medium">
-                      Percentagem repassada para o motorista ou parceiro após conclusão do trajeto.
+                      Percentagem transferida para o motorista ou parceiro após conclusão do trajeto.
                     </span>
                   </div>
                 </div>
@@ -375,7 +375,7 @@ export default function ConfiguraçõesSistemaPage() {
             {activeTab === "geral" && (
               <form onSubmit={handleSaveAppParams} className="space-y-6">
                 <div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Canais do Aplicativo</h3>
+                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Canais da Aplicação</h3>
                   <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block mt-0.5">
                     Informações operacionais e contactos de ajuda
                   </span>
@@ -415,7 +415,7 @@ export default function ConfiguraçõesSistemaPage() {
                     <div>
                       <span className="text-xs font-semibold text-slate-800 block">Modo de Manutenção Geral</span>
                       <span className="text-[10px] text-slate-400 block font-medium">
-                        Se ativado, suspende o funcionamento do app e exibe uma tela de manutenção aos clientes.
+                        Se ativado, suspende o funcionamento da app e exibe um ecrã de manutenção aos clientes.
                       </span>
                     </div>
                     <button
@@ -440,7 +440,7 @@ export default function ConfiguraçõesSistemaPage() {
                   className="w-fit px-8 py-3 bg-[#902ad1] hover:bg-[#7a22b3] text-white rounded-[10px] text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-[#902ad1]/15 disabled:opacity-75 cursor-pointer"
                 >
                   {saving ? <Loader2 size={14} className="animate-spin" /> : null}
-                  <span>Salvar Parâmetros</span>
+                  <span>Guardar Parâmetros</span>
                 </button>
               </form>
             )}
@@ -510,7 +510,7 @@ export default function ConfiguraçõesSistemaPage() {
               <div className="flex gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#902ad1] shrink-0 mt-1.5" />
                 <p>
-                  As taxas de comissão são aplicadas em tempo real durante a finalização do transfer. Alterar o percentual modificará a divisão do faturamento nas próximas faturas emitidas.
+                  As taxas de comissão são aplicadas em tempo real durante a finalização do transfer. Alterar o percentual modificará a divisão da faturação nas próximas faturas emitidas.
                 </p>
               </div>
               <div className="flex gap-2">
@@ -522,7 +522,7 @@ export default function ConfiguraçõesSistemaPage() {
               <div className="flex gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#902ad1] shrink-0 mt-1.5" />
                 <p>
-                  O aplicativo móvel atualiza estes parâmetros em tempo de execução via listeners reativos. Não é necessária a republicação do app na App Store/Play Store para vigorar.
+                  A aplicação móvel atualiza estes parâmetros em tempo de execução via listeners reativos. Não é necessária a republicação da app na App Store/Play Store para vigorar.
                 </p>
               </div>
             </div>

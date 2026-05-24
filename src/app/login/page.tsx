@@ -71,13 +71,13 @@ export default function LoginPage() {
           if (userType === "admin" && tipo !== "admin") {
             await supabase.auth.signOut();
             throw new Error(
-              "Esta conta não tem permissão de administrador. Por favor, selecione 'Usuário-parceiro' se for um parceiro.",
+              "Esta conta não tem permissão de administrador. Por favor, selecione 'Utilizador-parceiro' se for um parceiro.",
             );
           }
           if (userType === "parceiro" && tipo !== "parceiro") {
             await supabase.auth.signOut();
             throw new Error(
-              "Esta conta não tem permissão de parceiro. Por favor, selecione 'Usuário-admin' se for um administrador.",
+              "Esta conta não tem permissão de parceiro. Por favor, selecione 'Utilizador-admin' se for um administrador.",
             );
           }
 
@@ -191,7 +191,7 @@ export default function LoginPage() {
             {/* Seletor AWS-style */}
             <div className="space-y-1.5 mb-3">
               <div className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
-                <span>Tipo de usuário</span>
+                <span>Tipo de utilizador</span>
                 <span className="text-[9.5px] font-normal text-[#902ad1] hover:underline cursor-help" title="Selecione Administrador para gerir a plataforma ou Parceiro se for proprietário de frota.">
                   (não tem certeza?)
                 </span>
@@ -219,7 +219,7 @@ export default function LoginPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[11.5px] font-bold text-slate-800 leading-none">
-                    Usuário-admin
+                    Utilizador-admin
                   </span>
                   <span className="text-[9.5px] text-slate-400 mt-0.5 leading-snug">
                     Controlo de operações e parametrizações da plataforma.
@@ -249,7 +249,7 @@ export default function LoginPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[11.5px] font-bold text-slate-800 leading-none">
-                    Usuário-parceiro
+                    Utilizador-parceiro
                   </span>
                   <span className="text-[9.5px] text-slate-400 mt-0.5 leading-snug">
                     Gestão de motoristas, frotas e ganhos acumulados.
@@ -268,7 +268,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-9 px-2.5 bg-white border border-slate-300 rounded-[4px] outline-none transition-all text-slate-800 text-[12.5px] focus:border-[#902ad1] focus:ring-1 focus:ring-[#902ad1]/30 placeholder:text-slate-300 disabled:opacity-50"
-                  placeholder="nomeusuario@example.com"
+                  placeholder="nomeutilizador@example.com"
                   disabled={loading}
                   required
                 />
