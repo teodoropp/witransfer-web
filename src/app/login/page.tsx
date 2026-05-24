@@ -354,7 +354,7 @@ export default function LoginPage() {
           className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
           onClick={() => setShowQRModal(false)}>
           <div
-            className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200"
+            className="bg-white rounded-2xl max-w-[390px] w-full p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}>
             {/* Botão Fechar */}
             <button
@@ -381,7 +381,7 @@ export default function LoginPage() {
             {/* QR Code Container */}
             <div className="bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 mb-6 flex flex-col items-center justify-center shadow-inner group hover:scale-[1.02] transition-all duration-300">
               <img
-                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.witransfer.org/witransfer.apk"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/store/apps/details?id=witransfer.com"
                 alt="QR Code de Download"
                 className="w-48 h-48 object-contain rounded-lg"
               />
@@ -390,15 +390,37 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* Botão de Download Direto (Mobile fallback) */}
-            <a
-              href="https://www.witransfer.org/witransfer.apk"
-              className="text-xs font-bold text-[#902ad1] hover:underline mb-2 block">
-              Está no telemóvel? Descarregue o APK diretamente aqui
-            </a>
+            {/* Play Store e Download Direto */}
+            <div className="mt-2 flex flex-col items-center gap-4 w-full">
+              <a
+                href="https://play.google.com/store/apps/details?id=witransfer.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="play-store-btn-custom"
+              >
+                <svg
+                  viewBox="0 0 512 512"
+                  className="play-store-icon"
+                  width="18"
+                  height="18"
+                  style={{ marginRight: "10px", fill: "currentColor" }}
+                >
+                  <path fill="#ea4335" d="M26.3 0c-4.9.5-8.7 3.5-10.4 7.9L242.4 256 26.3 0z" />
+                  <path fill="#fbbc05" d="M26.3 512l216.1-256L15.9 504.1c1.7 4.4 5.5 7.4 10.4 7.9z" />
+                  <path fill="#4285f4" d="M26.3 0L385.4 207c9 5.2 15.4 14.6 15.4 25.6s-6.4 20.4-15.4 25.6L26.3 512 242.4 256 26.3 0z" />
+                  <path fill="#34a853" d="M385.4 207L26.3 0 242.4 256 385.4 207z" />
+                </svg>
+                <div className="play-store-btn-text">
+                  <span className="play-store-sub">DISPONÍVEL NO</span>
+                  <span className="play-store-main">Google Play</span>
+                </div>
+              </a>
 
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">
-              Disponível para Android
+              <a
+                href="https://www.witransfer.org/witransfer.apk"
+                className="text-[10px] font-bold text-[#902ad1] hover:underline transition-all">
+                Está no telemóvel? Descarregue o APK diretamente aqui
+              </a>
             </div>
           </div>
         </div>

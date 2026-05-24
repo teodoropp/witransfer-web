@@ -148,4 +148,54 @@
     border-color: rgba(144, 42, 209, 0.3);
     box-shadow: 0 10px 30px -10px rgba(144, 42, 209, 0.08), 0 1px 3px -1px rgba(144, 42, 209, 0.1);
   }
+  
+  .play-store-btn-custom {
+    display: inline-flex;
+    align-items: center;
+    background: #000000;
+    color: #ffffff;
+    border: 1.5px solid #222222;
+    border-radius: 8px;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .play-store-btn-custom:hover {
+    background: #080808;
+    border-color: #555555;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+  }
+
+  .play-store-btn-custom:active {
+    transform: translateY(0);
+  }
+
+  .play-store-btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    text-align: left;
+  }
+
+  .play-store-sub {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #a0a0a0;
+    text-transform: uppercase;
+  }
+
+  .play-store-main {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
 }
