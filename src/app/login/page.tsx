@@ -340,7 +340,7 @@ export default function LoginPage() {
                 size={12}
                 className="text-slate-400"
               />
-              <span>Utilizando a WiTransfer pela primeira vez? Inscreva-se</span>
+              <span>A utilizar a WiTransfer pela primeira vez? Registe-se</span>
             </button>
           </div>
         </div> {/* Fim do Conteúdo do Cartão */}
