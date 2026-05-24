@@ -336,7 +336,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => setShowQRModal(true)}
               className="w-full h-8 bg-white border border-slate-300 hover:border-slate-400 rounded-[4px] flex items-center justify-center gap-2 text-slate-700 font-medium text-[10px] shadow-sm transition-all hover:bg-slate-50/50">
-              <Building2
+              <QrCode
                 size={12}
                 className="text-slate-400"
               />
