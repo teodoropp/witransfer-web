@@ -239,10 +239,11 @@ export default function SolicitacaoDetalhesPage() {
             <div className="text-center sm:text-left space-y-1">
               <h2 className="text-lg font-bold text-slate-800 tracking-tight">{parceiro.nome}</h2>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 text-xs text-slate-400 font-semibold">
-                <span className="bg-slate-100 px-2 py-0.5 rounded-md text-[10px] text-slate-500 uppercase">
+                <span className="bg-slate-100 px-2 py-0.5 rounded-[6px] text-[10px] text-slate-500 uppercase">
                   NIF: {parceiro.nif || "N/A"}
                 </span>
-                <span className="bg-amber-50 text-amber-600 border border-amber-100 px-2 py-0.5 rounded-md text-[9px] uppercase tracking-wider">
+                <span className="bg-amber-55/65 text-amber-700 border border-amber-500/15 px-2 py-0.5 rounded-[6px] text-[9px] uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-550 shrink-0" />
                   Aprovação Pendente
                 </span>
               </div>
@@ -357,10 +358,10 @@ export default function SolicitacaoDetalhesPage() {
                 {documentos.map((doc, index) => (
                   <div
                     key={index}
-                    className="p-3 bg-slate-50 rounded-[10px] border border-slate-100 flex flex-col justify-between space-y-3"
+                    className="p-4 bg-slate-50 rounded-[10px] border border-slate-100 flex flex-col justify-between space-y-3 hover:shadow-md hover:bg-white hover:border-[#902ad1]/15 transition-all duration-300 group"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-[10px] bg-slate-100 flex items-center justify-center shrink-0">
                         <FileText size={18} className="text-slate-500" />
                       </div>
                       <div className="min-w-0">
@@ -372,7 +373,7 @@ export default function SolicitacaoDetalhesPage() {
                     </div>
 
                     {isImage(doc) ? (
-                      <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-slate-150 group">
+                      <div className="relative w-full aspect-video rounded-[10px] overflow-hidden border border-slate-150 group">
                         <img src={doc} alt={`Documento ${index + 1}`} className="object-cover w-full h-full" />
                         <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all gap-2">
                           <a
@@ -387,7 +388,7 @@ export default function SolicitacaoDetalhesPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 bg-slate-100 rounded-lg text-center text-xs font-medium text-slate-400 flex items-center justify-center">
+                      <div className="p-3 bg-slate-100 rounded-[10px] text-center text-xs font-medium text-slate-400 flex items-center justify-center">
                         Ficheiro não imprimível (PDF ou outro)
                       </div>
                     )}
@@ -414,7 +415,7 @@ export default function SolicitacaoDetalhesPage() {
 
         {/* Right Column - Actions Panel */}
         <div className="space-y-6">
-          <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm p-6 space-y-5 sticky top-24">
+          <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm p-6 space-y-5 sticky top-24 hover:shadow-md hover:border-[#902ad1]/10 transition-all duration-300">
             <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-50">
               Decisão de Auditoria
             </h3>
@@ -426,7 +427,7 @@ export default function SolicitacaoDetalhesPage() {
               <button
                 onClick={handleApprove}
                 disabled={processing}
-                className="w-full flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#7a22b3] text-white py-3.5 rounded-[10px] text-xs font-bold uppercase tracking-widest transition-all shadow-md shadow-[#902ad1]/15 active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#7a22b3] text-white py-3.5 rounded-[10px] text-xs font-bold uppercase tracking-widest transition-all shadow-md shadow-[#902ad1]/15 active:scale-97 hover:scale-[1.01] duration-200 disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {processing ? (
                   <Loader2 size={15} className="animate-spin" />

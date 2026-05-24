@@ -605,7 +605,7 @@ export default function EnviarNotificacaoPage() {
 
                   <button
                     onClick={() => handleDeleteNotification(n.id)}
-                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg self-end md:self-start transition-all"
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[10px] self-end md:self-start transition-all"
                     title="Eliminar Notificação"
                   >
                     <Trash2 size={14} />

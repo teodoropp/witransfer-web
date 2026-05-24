@@ -41,7 +41,7 @@ export default function RegistoParceiroPage() {
               style={{ height: "auto" }}
             />
           </div>
-          <h2 className="text-4xl font-bold mb-6 tracking-tight leading-tight">
+          <h2 className="text-4xl font-semibold mb-6 tracking-tight leading-tight">
             Torne-se nosso parceiro
           </h2>
           <p className="text-lg text-primary-foreground/70 font-medium leading-relaxed mb-8">
@@ -60,7 +60,7 @@ export default function RegistoParceiroPage() {
         {/* Botão de Voltar para o Site */}
         <button
           onClick={() => (window.location.href = "https://www.witransfer.org")}
-          className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#902ad1] transition-all"
+          className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-[#902ad1] transition-all"
         >
           <ArrowLeft size={16} />
           <span>Voltar para o site</span>
@@ -83,7 +83,7 @@ export default function RegistoParceiroPage() {
             <Building2 size={30} />
           </div>
 
-          <h2 className="text-3xl font-bold text-slate-800 mb-4 tracking-tight">
+          <h2 className="text-3xl font-semibold text-slate-800 mb-4 tracking-tight">
             Registo de Parceiros
           </h2>
 
@@ -98,7 +98,7 @@ export default function RegistoParceiroPage() {
               alt="QR Code de Download"
               className="w-44 h-44 object-contain rounded-lg"
             />
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4 flex items-center gap-2">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-4 flex items-center gap-2">
               <QrCode size={14} />
               Aponte a câmara do telemóvel
             </span>
@@ -107,7 +107,7 @@ export default function RegistoParceiroPage() {
           {/* Botão de Download Direto (Mobile fallback) */}
           <a
             href="https://www.witransfer.org/witransfer.apk"
-            className="text-xs font-bold text-[#902ad1] hover:underline mb-8 block"
+            className="text-xs font-semibold text-[#902ad1] hover:underline mb-8 block"
           >
             Está no telemóvel? Descarregue o APK diretamente aqui
           </a>
@@ -116,11 +116,11 @@ export default function RegistoParceiroPage() {
           <div className="w-full space-y-4 pt-4 border-t border-slate-100">
             <button
               onClick={() => router.push("/login")}
-              className="w-full h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[10px] font-bold uppercase tracking-widest text-[10px] transition-all"
+              className="w-full h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[10px] font-semibold uppercase tracking-widest text-[10px] transition-all"
             >
               Fazer Login no Portal
             </button>
-            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">
               Disponível para Android
             </div>
           </div>

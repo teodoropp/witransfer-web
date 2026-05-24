@@ -29,9 +29,9 @@
  */
 
 // Base values for dynamic interpolation
-const cardRounded = "rounded-[10px]";
+const cardRounded = "rounded-2xl";
 const cardBorder = "border border-slate-100/90";
-const cardShadow = "shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_8px_30px_rgba(144,42,209,0.035)] hover:-translate-y-[1px] transition-all duration-300";
+const cardShadow = "shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 transition-all duration-300 ease-out";
 const cardBg = "bg-white";
 
 export const THEME_TOKENS = {
@@ -42,8 +42,8 @@ export const THEME_TOKENS = {
   cardBg,
 
   // Classes Consolidadas de Cartão (Herda dinamicamente o arredondamento acima)
-  cardStyle: `${cardBg} ${cardRounded} ${cardBorder} ${cardShadow}`,
-  cardInteractive: `${cardBg} ${cardRounded} ${cardBorder} ${cardShadow} cursor-pointer hover:border-[#902ad1]/20`,
+  cardStyle: `${cardBg} ${cardRounded} ${cardBorder}`,
+  cardInteractive: `${cardBg} ${cardRounded} ${cardBorder}`,
 
   // Espaçamentos
   cardPadding: "p-5 md:p-6",

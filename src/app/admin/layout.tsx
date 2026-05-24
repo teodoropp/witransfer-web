@@ -180,11 +180,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans overflow-hidden">
+    <div className="min-h-screen bg-slate-50/40 flex font-sans overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-white text-slate-600 flex flex-col hidden md:flex sticky top-0 h-screen overflow-hidden border-r border-slate-100 z-30 shadow-none">
+      <aside className="w-64 bg-white text-slate-600 flex flex-col hidden md:flex sticky top-0 h-screen overflow-hidden border-r border-slate-100/80 z-30">
         <div className="p-8 pb-6 flex flex-col items-center">
-          <div className="relative w-full aspect-[3/1] mb-2">
+          <div className="relative w-full aspect-[3/1] mb-2 hover:scale-[1.02] transition-transform duration-350">
             <Image
               src="/logo.png"
               alt="WiTransfer"
@@ -193,13 +193,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               priority
             />
           </div>
-          <div className="h-[1px] w-full bg-slate-100 mt-4" />
+          <div className="h-[1px] w-full bg-slate-100/60 mt-4" />
         </div>
 
         <nav className="flex-1 overflow-y-auto px-4 py-2 no-scrollbar pb-10">
           {menuStructure.map((group, idx) => (
             <div key={idx} className="mb-6">
-              <h3 className="px-4 text-[9px] font-semibold text-slate-400 uppercase tracking-[0.25em] mb-3">
+              <h3 className="px-4 text-[9px] font-bold text-slate-400/80 uppercase tracking-[0.25em] mb-3">
                 {group.title}
               </h3>
               <div className="space-y-1">
@@ -211,34 +211,32 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           ))}
         </nav>
 
-        <div className="p-6 bg-slate-50 border-t border-slate-100">
+        <div className="p-6 bg-slate-50/40 border-t border-slate-100/80">
           <Link
             href="/login"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-50 hover:text-white transition-all group">
-            <LogOut size={18} />
-            <span className="text-xs font-semibold uppercase tracking-widest">
-              Sair do Sistema
-            </span>
+            className="flex items-center gap-3 px-4 py-3 rounded-[10px] text-slate-450 hover:bg-rose-50/60 hover:text-rose-600 border border-transparent hover:border-rose-100/50 transition-all group font-semibold text-xs uppercase tracking-wider">
+            <LogOut size={16} className="text-slate-400 group-hover:text-rose-500 transition-colors" />
+            <span>Sair do Sistema</span>
           </Link>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-20 bg-white/85 backdrop-blur-md border-b border-slate-100/60 flex items-center justify-between px-6 shrink-0 z-20">
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100/80 flex items-center justify-between px-8 shrink-0 z-20 sticky top-0 shadow-sm shadow-slate-100/10">
           <div />
 
           <div className="flex items-center gap-6">
             <div className="flex flex-col items-end">
-              <span className="text-xs font-semibold text-slate-900">
+              <span className="text-xs font-bold text-slate-800 tracking-tight">
                 {adminName}
               </span>
-              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tighter">
+              <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest block mt-0.5">
                 Administrador
               </span>
             </div>
             {adminPhoto ? (
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#902ad1]/15 shadow-inner shrink-0">
+              <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-[#902ad1]/20 shadow-md shadow-[#902ad1]/5 shrink-0 hover:scale-[1.05] transition-transform">
                 <Image
                   src={adminPhoto}
                   alt={adminName}
@@ -247,7 +245,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 />
               </div>
             ) : (
-              <div className="w-12 h-12 rounded-full bg-[#902ad1]/5 border-2 border-[#902ad1]/10 flex items-center justify-center text-[#902ad1] font-semibold text-sm shadow-inner shrink-0">
+              <div className="w-11 h-11 rounded-full bg-[#902ad1]/5 border-2 border-[#902ad1]/15 flex items-center justify-center text-[#902ad1] font-bold text-xs shadow-inner shrink-0 hover:scale-[1.05] transition-transform">
                 {adminName
                   ? adminName
                       .split(" ")
@@ -262,7 +260,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-auto p-6 bg-slate-50/30 no-scrollbar">
+        <div className="flex-1 overflow-auto p-8 bg-slate-50/30 no-scrollbar">
           {children}
         </div>
       </main>

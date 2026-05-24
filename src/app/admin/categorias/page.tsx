@@ -318,10 +318,10 @@ export default function CategoriasPage() {
         </div>
       ) : filteredCategorias.length > 0 ? (
         <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto no-scrollbar">
             <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
+              <thead className="sticky top-0 bg-slate-50 z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)]">
+                <tr className="border-b border-slate-100 bg-slate-50">
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Ordem</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Categoria</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Capacidade (Pax / Malas)</th>
@@ -373,14 +373,14 @@ export default function CategoriasPage() {
                       <div className="flex items-center justify-end gap-2.5">
                         <button
                           onClick={() => handleOpenEdit(c)}
-                          className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-lg transition-all"
+                          className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-[10px] transition-all"
                           title="Editar Categoria"
                         >
                           <Edit2 size={15} />
                         </button>
                         <button
                           onClick={() => handleDelete(c.id, c.nome)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[10px] transition-all"
                           title="Eliminar Categoria"
                         >
                           <Trash2 size={15} />

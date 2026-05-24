@@ -254,7 +254,7 @@ export default function ViaturaDetalhesPage({
                   <span className={`bg-yellow-400 text-black px-3 py-1 text-xs font-semibold tracking-widest uppercase ${THEME_TOKENS.cardRounded}`}>
                     {viatura.matricula || "SEM PLACA"}
                   </span>
-                  <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-lg text-xs font-medium">
+                  <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-[10px] text-xs font-medium">
                     {viatura.categorias?.nome || "Padrão"}
                   </span>
                 </div>
@@ -283,7 +283,7 @@ export default function ViaturaDetalhesPage({
                   key={i}
                   className="p-8 flex flex-col items-center justify-center gap-2 group hover:bg-slate-50/50 transition-colors"
                 >
-                  <div className="p-3 bg-primary/5 rounded-2xl text-primary group-hover:scale-110 transition-transform">
+                  <div className="p-3 bg-[#902ad1]/5 rounded-[10px] text-[#902ad1] group-hover:scale-110 transition-transform">
                     <spec.icon size={24} />
                   </div>
                   <span className={THEME_TOKENS.labelMicro}>
@@ -301,7 +301,7 @@ export default function ViaturaDetalhesPage({
           {viatura.imagens_galeria && viatura.imagens_galeria.length > 0 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 ml-2">
-                <div className="p-2 bg-primary/5 rounded-xl text-primary">
+                <div className="p-2 bg-[#902ad1]/5 rounded-[10px] text-[#902ad1]">
                   <Eye size={20} />
                 </div>
                 <h3 className="font-semibold text-slate-700 uppercase tracking-widest text-sm">
@@ -416,18 +416,18 @@ export default function ViaturaDetalhesPage({
                     <h4 className={`text-slate-800 leading-tight ${THEME_TOKENS.textSemibold}`}>
                       {viatura.motorista.perfis.nome_completo}
                     </h4>
-                    <p className="text-[11px] font-semibold text-primary uppercase tracking-tighter mt-1">
+                    <p className="text-[11px] font-semibold text-[#902ad1] uppercase tracking-tighter mt-1">
                       Motorista Especialista
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <button className="flex items-center justify-center gap-2 py-3 bg-slate-50 hover:bg-primary/5 text-slate-500 hover:text-primary rounded-[10px] font-semibold text-xs transition-all">
+                  <button className="flex items-center justify-center gap-2 py-3 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] rounded-[10px] font-semibold text-xs transition-all">
                     <Clock size={14} />
                     Horários
                   </button>
-                  <button className="flex items-center justify-center gap-2 py-3 bg-slate-50 hover:bg-primary/5 text-slate-500 hover:text-primary rounded-[10px] font-semibold text-xs transition-all">
+                  <button className="flex items-center justify-center gap-2 py-3 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] rounded-[10px] font-semibold text-xs transition-all">
                     <History size={14} />
                     Histórico
                   </button>
@@ -438,7 +438,7 @@ export default function ViaturaDetalhesPage({
                 <p className="text-xs font-semibold text-slate-400">
                   Nenhum motorista vinculado a esta viatura.
                 </p>
-                <button className="mt-4 text-[10px] font-semibold text-primary uppercase tracking-widest hover:underline">
+                <button className="mt-4 text-[10px] font-semibold text-[#902ad1] uppercase tracking-widest hover:underline">
                   Vincular Agora
                 </button>
               </div>
@@ -458,10 +458,10 @@ export default function ViaturaDetalhesPage({
                     href={doc}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-between p-4 bg-slate-50 hover:bg-primary/5 rounded-[10px] border border-slate-100 group transition-all"
+                    className="flex items-center justify-between p-4 bg-slate-50 hover:bg-[#902ad1]/5 rounded-[10px] border border-slate-100 group transition-all"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-[10px] flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
+                      <div className="w-10 h-10 bg-white rounded-[10px] flex items-center justify-center text-[#902ad1] shadow-sm group-hover:scale-110 transition-transform">
                         <FileText size={18} />
                       </div>
                       <div>
@@ -475,7 +475,7 @@ export default function ViaturaDetalhesPage({
                     </div>
                     <ExternalLink
                       size={16}
-                      className="text-slate-300 group-hover:text-primary transition-colors"
+                      className="text-slate-300 group-hover:text-[#902ad1] transition-colors"
                     />
                   </a>
                 ))

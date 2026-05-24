@@ -354,14 +354,14 @@ export default function BannersPublicidadePage() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenEdit(b)}
-                      className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-lg transition-all"
+                      className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-[10px] transition-all"
                       title="Editar Banner"
                     >
                       <Edit2 size={14} />
                     </button>
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-[10px] transition-all"
                       title="Eliminar Banner"
                     >
                       <Trash2 size={14} />

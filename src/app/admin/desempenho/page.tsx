@@ -161,7 +161,7 @@ export default function AnaliseDesempenhoPage() {
           id,
           foto_url:perfis(foto_url),
           nome:perfis(nome_completo, email),
-          viatura:viaturas(marca, modelo, matricula)
+          viatura:viaturas!motoristas_viatura_id_fkey(marca, modelo, matricula)
         `)
         .limit(4);
 
@@ -343,9 +343,9 @@ export default function AnaliseDesempenhoPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* Left Box: Booking distribution status */}
-            <div className="lg:col-span-6 bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6 flex flex-col justify-between h-full">
               <div>
                 <h3 className="text-base font-bold text-slate-800 tracking-tight">Distribuição de Status</h3>
                 <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block mt-0.5">
@@ -391,7 +391,7 @@ export default function AnaliseDesempenhoPage() {
             </div>
 
             {/* Right Box: Popular categories */}
-            <div className="lg:col-span-6 bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6 flex flex-col justify-between h-full">
               <div>
                 <h3 className="text-base font-bold text-slate-800 tracking-tight">Frota Popular</h3>
                 <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block mt-0.5">

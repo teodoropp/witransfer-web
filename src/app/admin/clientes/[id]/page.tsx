@@ -181,246 +181,317 @@ export default function ClienteDetalhePage({ params }: ClienteDetalhePageProps) 
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-12">
-      {/* Header */}
+    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+      {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-3 bg-white hover:bg-slate-50 rounded-[10px] border border-slate-100 text-slate-600 transition-all shadow-sm"
+            className="p-3 text-slate-400 hover:text-slate-700 bg-white/80 hover:bg-white rounded-2xl border border-slate-100/80 shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300"
+            title="Voltar"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
           </button>
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
                 Painel
               </Link>
-              <span className="text-slate-300">/</span>
+              <span className="text-slate-355 font-medium">/</span>
               <Link href="/admin/clientes" className="hover:text-[#902ad1] transition-all">
                 Clientes
               </Link>
-              <span className="text-slate-300">/</span>
-              <span className="text-slate-600">Ficha do Cliente</span>
+              <span className="text-slate-355 font-medium">/</span>
+              <span className="text-slate-600 font-bold">Ficha de Cliente</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">
-              Ficha de Cliente
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight mt-1">
+              Ficha do Cliente
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end md:self-auto">
+        <div className="flex items-center gap-3">
           <Link
             href={`/admin/clientes/${cliente.id}/editar`}
-            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-[10px] font-semibold hover:bg-slate-50 transition-all shadow-sm active:scale-95 text-xs"
+            className="flex items-center gap-2 bg-white/85 hover:bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl font-bold transition-all shadow-sm hover:shadow-md hover:border-slate-300 active:scale-[0.98] text-[11px] uppercase tracking-wider"
           >
-            <Edit2 size={14} />
+            <Edit2 size={13} />
             <span>Editar Informações</span>
           </Link>
         </div>
       </div>
 
-      {/* Conteúdo Principal */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mx-0 md:mx-[80px]">
-        {/* Lado Esquerdo: Ficha e Info */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Card Principal */}
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm text-center relative overflow-hidden">
-            <div className="absolute top-4 right-4">
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest border ${
-                  cliente.ativo
-                    ? "bg-emerald-50 text-emerald-600 border-emerald-150"
-                    : "bg-rose-50 text-rose-600 border-rose-150"
-                }`}
-              >
-                {cliente.ativo ? "Ativo" : "Suspenso"}
-              </span>
-            </div>
+      {/* Bento Grid Assimétrico (12 Colunas) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+        
+        {/* ── Card 1: Perfil VIP e Status (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden text-center">
+          {/* Badge de Status Superior */}
+          <div className="absolute top-6 right-6">
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                cliente.ativo
+                  ? "bg-emerald-50 text-emerald-600 border-emerald-200/60"
+                  : "bg-rose-50 text-rose-600 border-rose-200/60"
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${cliente.ativo ? "bg-emerald-500 animate-pulse" : "bg-rose-500"}`} />
+              {cliente.ativo ? "Ativo" : "Suspenso"}
+            </span>
+          </div>
 
-            <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-[#902ad1]/10 mx-auto bg-slate-50 flex items-center justify-center mb-4">
+          <div className="pt-4">
+            {/* Foto de Perfil / Iniciais */}
+            <div className="relative w-28 h-28 rounded-3xl overflow-hidden border-4 border-[#902ad1]/10 mx-auto bg-gradient-to-br from-[#902ad1]/15 to-[#902ad1]/5 flex items-center justify-center mb-5 shadow-inner">
               {cliente.foto_url ? (
-                <Image src={cliente.foto_url} alt={cliente.nome_completo} fill className="object-cover" />
+                <Image src={cliente.foto_url} alt={cliente.nome_completo} fill className="object-cover animate-in fade-in duration-300" />
               ) : (
-                <User size={44} className="text-slate-300" />
+                <User size={48} className="text-[#902ad1] opacity-80" />
               )}
             </div>
 
-            <h2 className="text-lg font-bold text-slate-800 leading-tight">
+            <h2 className="text-xl font-black text-slate-800 leading-tight tracking-tight px-2 truncate" title={cliente.nome_completo}>
               {cliente.nome_completo}
             </h2>
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-1 block">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold text-[#902ad1] uppercase tracking-wider mt-2 bg-purple-50 border border-purple-200/40">
               Utilizador Oficial
             </span>
-
-            <div className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-slate-50">
-              <span className="text-xs text-slate-450 font-medium">
-                Registado em: {formatDate(cliente.criado_em)}
-              </span>
-            </div>
           </div>
 
-          {/* Contacto e Detalhes */}
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-4">
-            <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] border-b border-slate-50 pb-3">
-              Informações de Contacto
-            </h4>
-            <div className="space-y-3">
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Telefone Principal
-                </span>
-                <span className="text-xs font-semibold text-slate-700">
-                  {cliente.telefone || "Nenhum telefone registado"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Endereço de E-mail
-                </span>
-                <span className="text-xs font-semibold text-slate-700 break-all">
-                  {cliente.email || "Nenhum e-mail registado"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Morada de Residência
-                </span>
-                <span className="text-xs font-semibold text-slate-700">
-                  {cliente.morada || "Sem residência registada"}
-                </span>
-              </div>
-            </div>
-          </div>
+          {/* Separador */}
+          <div className="h-px bg-slate-100 my-6" />
 
-          {/* Dados Legais */}
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-4">
-            <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] border-b border-slate-50 pb-3">
-              Documentação e NIF
-            </h4>
-            <div className="space-y-3">
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Número de Identificação Fiscal (NIF)
-                </span>
-                <span className="text-xs font-semibold text-slate-700">
-                  {cliente.nif || "---"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Nº Documento (BI / Passaporte)
-                </span>
-                <span className="text-xs font-semibold text-slate-700">
-                  {cliente.documento_numero || "---"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block">
-                  Nacionalidade
-                </span>
-                <span className="text-xs font-semibold text-slate-700">
-                  {cliente.nacionalidade || "---"}
-                </span>
-              </div>
-            </div>
+          <div className="flex items-center justify-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+            <span>Membro desde:</span>
+            <span className="text-slate-600 font-extrabold">{formatDate(cliente.criado_em)}</span>
           </div>
         </div>
 
-        {/* Lado Direito: Métricas, Reservas e Danger Zone */}
-        <div className="lg:col-span-8 space-y-6 flex flex-col justify-between">
-          <div className="space-y-6">
-            {/* Estatísticas Rápidas */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-                <div className="p-2.5 bg-[#902ad1]/5 text-[#902ad1] rounded-xl">
-                  <Clock size={18} />
+        {/* ── Card 2: Informações de Contacto (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#902ad1] border border-purple-200/60 shadow-sm">
+              <Mail size={10} />
+              CRM Integrado
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Canais de Comunicação</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Contacto & Residência</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Meios corporativos para contato e geolocalização</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Sub-grid de Contacto */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 my-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <Phone size={14} className="text-[#902ad1]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
-                    Reservas
-                  </span>
-                  <span className="text-sm font-bold text-slate-700">
-                    {reservas.length}
-                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Telefone Principal</span>
+                  <p className="text-[13px] font-extrabold text-slate-700">
+                    {cliente.telefone || "Nenhum telefone registado"}
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-                <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
-                  <Compass size={18} />
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <Mail size={14} className="text-[#902ad1]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Endereço de E-mail</span>
+                  <p className="text-[13px] font-extrabold text-slate-700 break-all truncate" title={cliente.email || ""}>
+                    {cliente.email || "Nenhum e-mail registado"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5 sm:col-span-2">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <MapPin size={14} className="text-[#902ad1]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Morada de Residência</span>
+                  <p className="text-[13px] font-extrabold text-slate-700 truncate" title={cliente.morada || ""}>
+                    {cliente.morada || "Sem residência registada no sistema"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-5 border-t border-slate-100 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+            <span>Última atualização de dados sincronizada via Cloud</span>
+          </div>
+        </div>
+
+        {/* ── Card 3: Indicadores e Métricas Rápidas (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm">
+              <Compass size={10} />
+              Métricas Operacionais
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Desempenho Comercial</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">KPIs & Finanças</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Resumo consolidado do volume de gastos e serviços</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Grid de Estatísticas */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 my-5">
+              <div className="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-4 hover:bg-slate-50 transition-colors duration-250">
+                <div className="p-3 bg-[#902ad1]/5 text-[#902ad1] rounded-xl shrink-0">
+                  <Clock size={16} />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
-                    Total Gasto
-                  </span>
-                  <span className="text-sm font-bold text-slate-700 truncate max-w-[120px]">
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Reservas</span>
+                  <span className="text-base font-extrabold text-slate-700">{reservas.length}</span>
+                </div>
+              </div>
+
+              <div className="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-4 hover:bg-slate-50 transition-colors duration-250 sm:col-span-2">
+                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
+                  <Compass size={16} />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Faturamento Consolidado</span>
+                  <span className="text-base font-extrabold text-[#902ad1] truncate block" title={formatCurrency(reservas.reduce((acc, curr) => acc + curr.valor_total, 0))}>
                     {formatCurrency(reservas.reduce((acc, curr) => acc + curr.valor_total, 0))}
                   </span>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-                  <Calendar size={18} />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
-                    Status Conta
-                  </span>
-                  <span className="text-sm font-bold text-slate-700">
-                    {cliente.ativo ? "Ativa" : "Suspensa"}
-                  </span>
-                </div>
-              </div>
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Categoria de Conta</span>
+            <span className="text-slate-700 font-extrabold">{cliente.ativo ? "Ativa & Verificada" : "Bloqueada"}</span>
+          </div>
+        </div>
+
+        {/* ── Card 4: Documentação Legal & NIF (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#902ad1] border border-purple-200/60 shadow-sm">
+              <FileText size={10} />
+              Identificação
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Legal e Tributário</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Documentos</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Informações de registo legal do cliente</p>
             </div>
 
-            {/* Histórico de Reservas */}
-            <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-4">
-              <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] border-b border-slate-50 pb-3">
-                Histórico de Reservas & Viagens
-              </h4>
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
 
+            {/* Detalhes de ID */}
+            <div className="space-y-4 my-5">
+              <div className="flex items-center justify-between py-1.5 border-b border-dashed border-slate-100">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">NIF</span>
+                <span className="text-[12.5px] font-extrabold text-slate-700">{cliente.nif || "---"}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-dashed border-slate-100">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Documento (BI/Passaporte)</span>
+                <span className="text-[12.5px] font-extrabold text-slate-700">{cliente.documento_numero || "---"}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-dashed border-slate-100">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Nacionalidade</span>
+                <span className="text-[12.5px] font-extrabold text-slate-700">{cliente.nacionalidade || "---"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-center text-[10px] font-bold text-[#902ad1] uppercase tracking-wider">
+            <span>Registo Centralizado</span>
+          </div>
+        </div>
+
+        {/* ── Card 5: Histórico de Reservas & Viagens (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#902ad1] border border-purple-200/60 shadow-sm">
+              <Calendar size={10} />
+              Histórico
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Rastreabilidade Operacional</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Reservas & Viagens</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Histórico completo de transações e trajetos realizados</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Tabela de Viagens */}
+            <div className="my-5">
               {reservas.length > 0 ? (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-xl border border-slate-100">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        <th className="py-3 px-2">Código</th>
-                        <th className="py-3 px-2">Data/Hora</th>
-                        <th className="py-3 px-2">Rota</th>
-                        <th className="py-3 px-2">Valor</th>
-                        <th className="py-3 px-2 text-right">Estado</th>
+                      <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-450 uppercase tracking-widest">
+                        <th className="py-3 px-4">Código</th>
+                        <th className="py-3 px-4">Data & Hora</th>
+                        <th className="py-3 px-4">Trajeto Principal</th>
+                        <th className="py-3 px-4">Valor Total</th>
+                        <th className="py-3 px-4 text-right">Estado</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                       {reservas.map((r) => (
-                        <tr key={r.id} className="text-xs font-semibold text-slate-700">
-                          <td className="py-3 px-2 text-[#902ad1]">
+                        <tr key={r.id} className="text-[12px] font-bold text-slate-700 hover:bg-slate-50/50 hover:shadow-[inset_4px_0_0_0_#902ad1] transition-all duration-200">
+                          <td className="py-3.5 px-4 text-[#902ad1] font-extrabold">
                             {r.codigo}
                           </td>
-                          <td className="py-3 px-2">
+                          <td className="py-3.5 px-4 whitespace-nowrap">
                             <span className="block">{formatDate(r.data_recolha)}</span>
-                            <span className="text-[9px] text-slate-400 font-medium">{r.hora_recolha}</span>
+                            <span className="text-[9.5px] text-slate-400 font-medium">{r.hora_recolha}</span>
                           </td>
-                          <td className="py-3 px-2 truncate max-w-[200px]" title={`${r.local_partida} → ${r.local_destino}`}>
+                          <td className="py-3.5 px-4 truncate max-w-[200px]" title={`${r.local_partida} → ${r.local_destino}`}>
                             {r.local_partida} → {r.local_destino}
                           </td>
-                          <td className="py-3 px-2">
+                          <td className="py-3.5 px-4 font-extrabold text-slate-800">
                             {formatCurrency(r.valor_total)}
                           </td>
-                          <td className="py-3 px-2 text-right">
+                          <td className="py-3.5 px-4 text-right">
                             <span
-                              className={`inline-block px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider ${
+                              className={`inline-block px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider ${
                                 r.status === "concluido" || r.status === "concluida"
-                                  ? "bg-emerald-50 text-emerald-600"
+                                  ? "bg-emerald-50 text-emerald-600 border border-emerald-100/50"
                                   : r.status === "cancelada"
-                                  ? "bg-rose-50 text-rose-600"
-                                  : "bg-amber-50 text-amber-600"
+                                  ? "bg-rose-50 text-rose-600 border-rose-100/50"
+                                  : "bg-amber-50 text-amber-600 border-amber-100/50"
                               }`}
                             >
-                              {r.status}
+                              {r.status === "concluido" || r.status === "concluida" ? "Concluída" : r.status === "cancelada" ? "Cancelada" : r.status}
                             </span>
                           </td>
                         </tr>
@@ -429,8 +500,8 @@ export default function ClienteDetalhePage({ params }: ClienteDetalhePageProps) 
                   </table>
                 </div>
               ) : (
-                <div className="p-6 bg-slate-50 rounded-[10px] border border-slate-100 text-center">
-                  <p className="text-xs text-slate-400 font-medium italic">
+                <div className="py-12 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                  <p className="text-xs text-slate-400 font-bold italic">
                     Este cliente ainda não efetuou qualquer reserva na plataforma.
                   </p>
                 </div>
@@ -438,54 +509,71 @@ export default function ClienteDetalhePage({ params }: ClienteDetalhePageProps) 
             </div>
           </div>
 
-          {/* Danger Zone */}
-          <div className="bg-red-50/20 p-6 rounded-[10px] border border-red-100 shadow-sm mt-8 space-y-4">
-            <div className="flex items-center gap-3 text-red-600">
-              <ShieldAlert size={20} />
-              <h4 className="font-semibold uppercase tracking-widest text-[10px]">
-                Zona de Perigo (Danger Zone)
-              </h4>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-[10px] border border-red-50">
-              <div>
-                <span className="text-xs font-semibold text-slate-800 block">Suspender ou Reativar Cliente</span>
-                <span className="text-[10px] text-slate-400">
-                  Bloquear temporariamente o acesso do cliente ao painel e aplicações de reserva.
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleToggleStatus}
-                disabled={toggling}
-                className={`px-6 py-2.5 rounded-[10px] text-xs font-semibold uppercase tracking-wider transition-all border ${
-                  cliente.ativo
-                    ? "bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100"
-                    : "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100"
-                }`}
-              >
-                {cliente.ativo ? "Suspender Acesso" : "Reativar Acesso"}
-              </button>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-[10px] border border-red-50">
-              <div>
-                <span className="text-xs font-semibold text-slate-800 block">Eliminar Registos Permanente</span>
-                <span className="text-[10px] text-slate-400">
-                  Apaga todos os dados pessoais do cliente da nossa base de dados.
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={toggling}
-                className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-[10px] text-xs font-semibold uppercase tracking-wider transition-all shadow-md active:scale-95"
-              >
-                Eliminar Cliente
-              </button>
-            </div>
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Volume Total</span>
+            <span className="text-slate-450 font-extrabold">{reservas.length} serviços registados</span>
           </div>
         </div>
+
+        {/* ── Card 6: Administração & Segurança (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-rose-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-rose-300 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200/60 shadow-sm">
+              <ShieldAlert size={10} />
+              Controle Crítico
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Zona Administrativa</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Segurança</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Painel destrutivo e controle de bloqueio</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Alerta de Segurança */}
+            <div className="p-4 bg-rose-50/50 rounded-2xl border border-rose-100 flex flex-col gap-2.5 my-5">
+              <div className="flex items-center gap-2 text-rose-700">
+                <AlertTriangle size={15} />
+                <span className="text-[10.5px] font-bold uppercase tracking-wider">Atenção Crítica</span>
+              </div>
+              <p className="text-[10.5px] text-slate-500 font-semibold leading-relaxed">
+                Alterações nesta secção afetam o acesso direto do utilizador à sua conta. A eliminação é irreversível e apagará o histórico da base de dados.
+              </p>
+            </div>
+          </div>
+
+          {/* Ações */}
+          <div className="space-y-3 mt-6">
+            <button
+              type="button"
+              onClick={handleToggleStatus}
+              disabled={toggling}
+              className={`w-full py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all border flex items-center justify-center gap-2 active:scale-[0.98] ${
+                cliente.ativo
+                  ? "bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border-rose-200"
+                  : "bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border-emerald-200"
+              }`}
+            >
+              {cliente.ativo ? "Suspender Acesso" : "Reativar Acesso"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={toggling}
+              className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+            >
+              Eliminar Cliente
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

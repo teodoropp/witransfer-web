@@ -211,7 +211,7 @@ export default function ViaturasPage() {
         </div>
       ) : filteredAndSortedViaturas.length > 0 ? (
         viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch">
             {filteredAndSortedViaturas.map((viatura) => (
               <ViaturaCard
                 key={viatura.id}

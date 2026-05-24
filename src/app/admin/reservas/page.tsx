@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { THEME_TOKENS } from "@/utils/design-system";
 
 interface Perfil {
   id: string;
@@ -390,43 +391,49 @@ export default function ReservasAdminPage() {
     switch (status) {
       case "aguarda_pagamento":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-150">
-            Pendente Pagamento
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-amber-500/8 text-amber-700 border border-amber-500/10">
+            <Clock size={10} strokeWidth={2.5} className="shrink-0 animate-pulse" />
+            Pendente
           </span>
         );
       case "confirmada":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-150">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-blue-500/8 text-blue-700 border border-blue-500/10">
+            <Check size={10} strokeWidth={2.5} className="shrink-0" />
             Confirmada
           </span>
         );
       case "pago":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-150">
-            Pago / Pronto
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-emerald-500/8 text-emerald-700 border border-emerald-500/10">
+            <CheckCircle2 size={10} strokeWidth={2.5} className="shrink-0" />
+            Pago
           </span>
         );
       case "em_andamento":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-purple-50 text-purple-600 border border-purple-150 animate-pulse">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-purple-500/8 text-purple-700 border border-purple-500/15 animate-pulse">
+            <Compass size={10} strokeWidth={2.5} className="shrink-0" />
             Em Viagem
           </span>
         );
       case "concluida":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-slate-50 text-slate-600 border border-slate-200">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-slate-500/8 text-slate-700 border border-slate-500/15">
+            <Check size={10} strokeWidth={2.5} className="shrink-0" />
             Concluída
           </span>
         );
       case "cancelada":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-150">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-rose-500/8 text-rose-700 border border-rose-500/10">
+            <X size={10} strokeWidth={2.5} className="shrink-0" />
             Cancelada
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[10px] text-[8px] font-bold uppercase tracking-widest bg-slate-50 text-slate-500 border border-slate-200">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-slate-500/5 text-slate-500 border border-slate-200">
             {status}
           </span>
         );
@@ -472,100 +479,105 @@ export default function ReservasAdminPage() {
 
       {/* Estatísticas e Resultados Gerais */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-            <CalendarRange size={18} />
+        {/* Total Reservas */}
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-[#902ad1]/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#902ad1]/8 text-[#902ad1] rounded-[10px] flex items-center justify-center border border-[#902ad1]/10">
+            <CalendarRange size={18} strokeWidth={2} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
               Total Reservas
             </span>
-            <span className="text-base font-bold text-slate-800">{stats.total}</span>
+            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.total}</span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-purple-50 text-[#902ad1] rounded-xl">
-            <TrendingUp size={18} />
+        {/* Ativas */}
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-blue-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-500/8 text-blue-600 rounded-[10px] flex items-center justify-center border border-blue-500/10">
+            <TrendingUp size={18} strokeWidth={2} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
               Ativas
             </span>
-            <span className="text-base font-bold text-slate-800">{stats.ativas}</span>
+            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.ativas}</span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
-            <DollarSign size={18} />
+        {/* Faturado (Pago) */}
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-emerald-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-emerald-500/8 text-emerald-650 rounded-[10px] flex items-center justify-center border border-emerald-500/10">
+            <DollarSign size={18} strokeWidth={2} />
           </div>
-          <div>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+          <div className="min-w-0 flex-1">
+            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
               Faturado (Pago)
             </span>
-            <span className="text-xs font-bold text-slate-800 truncate max-w-[110px]" title={formatCurrency(stats.faturamento)}>
+            <span className="text-sm font-mono font-semibold text-slate-800 tracking-tight mt-0.5 block truncate" title={formatCurrency(stats.faturamento)}>
               {formatCurrency(stats.faturamento)}
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-slate-50 text-slate-500 rounded-xl">
-            <CheckCircle2 size={18} />
+        {/* Concluídas */}
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-slate-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-slate-500/8 text-slate-600 rounded-[10px] flex items-center justify-center border border-slate-500/10">
+            <CheckCircle2 size={18} strokeWidth={2} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
               Concluídas
             </span>
-            <span className="text-base font-bold text-slate-800">{stats.concluidas}</span>
+            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.concluidas}</span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3 col-span-2 md:col-span-1">
-          <div className="p-2.5 bg-rose-50 text-rose-500 rounded-xl">
-            <X size={18} />
+        {/* Canceladas */}
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-rose-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3 col-span-2 md:col-span-1">
+          <div className="w-10 h-10 bg-rose-500/8 text-rose-600 rounded-[10px] flex items-center justify-center border border-rose-500/10">
+            <X size={18} strokeWidth={2} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
               Canceladas
             </span>
-            <span className="text-base font-bold text-slate-800">{stats.canceladas}</span>
+            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.canceladas}</span>
           </div>
         </div>
       </div>
 
       {/* Filtros de Pesquisa */}
       <div className="space-y-4">
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-[10px] border border-slate-100/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-1">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Pesquisar código, cliente, aeroporto, número de voo..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-semibold focus:bg-white focus:border-[#902ad1] transition-all outline-none"
+              className="w-full pl-11 pr-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all outline-none"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`px-4 py-2.5 rounded-[10px] text-xs font-bold transition-all flex items-center gap-1.5 border ${
+              className={`px-4 py-2.5 rounded-[10px] text-xs font-semibold transition-all flex items-center gap-1.5 border active:scale-98 cursor-pointer ${
                 showAdvancedFilters
-                  ? "bg-[#902ad1]/5 text-[#902ad1] border-[#902ad1]/20"
-                  : "bg-white text-slate-600 border-slate-100 hover:bg-slate-50"
+                  ? "bg-[#902ad1]/8 text-[#902ad1] border-[#902ad1]/20 font-semibold"
+                  : "bg-white text-slate-650 border-slate-100 hover:bg-slate-50 hover:border-slate-200"
               }`}
             >
-              <Filter size={14} />
+              <Filter size={13} strokeWidth={2} />
               Filtros Avançados
             </button>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-semibold focus:bg-white focus:border-[#902ad1] outline-none cursor-pointer"
+              className="px-3 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
             >
               <option value="todos">Todos os Estados</option>
               <option value="aguarda_pagamento">Aguardando Pagamento</option>
@@ -579,7 +591,7 @@ export default function ReservasAdminPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-semibold focus:bg-white focus:border-[#902ad1] outline-none cursor-pointer"
+              className="px-3 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
             >
               <option value="recente">Mais Recentes</option>
               <option value="antiga">Mais Antigas</option>
@@ -591,7 +603,7 @@ export default function ReservasAdminPage() {
 
         {/* Painel de Filtros Avançados */}
         {showAdvancedFilters && (
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 animate-in slide-in-from-top duration-300">
+          <div className="bg-white p-6 rounded-[10px] border border-slate-100/90 shadow-sm grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 animate-in slide-in-from-top-3 duration-300 ease-out">
             {/* Tipo de Rota */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
@@ -600,7 +612,7 @@ export default function ReservasAdminPage() {
               <select
                 value={routeTypeFilter}
                 onChange={(e) => setRouteTypeFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
+                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
               >
                 <option value="todas">Todas as Rotas</option>
                 <option value="aeroporto_cidade">Aeroporto → Cidade</option>
@@ -618,7 +630,7 @@ export default function ReservasAdminPage() {
               <select
                 value={driverFilter}
                 onChange={(e) => setDriverFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
+                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
               >
                 <option value="todos">Todos os Motoristas</option>
                 <option value="sem_motorista">Sem Motorista Atribuído</option>
@@ -638,7 +650,7 @@ export default function ReservasAdminPage() {
               <select
                 value={vehicleFilter}
                 onChange={(e) => setVehicleFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1] transition-all cursor-pointer"
+                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
               >
                 <option value="todas">Todas as Viaturas</option>
                 <option value="sem_viatura">Sem Viatura Atribuída</option>
@@ -655,7 +667,7 @@ export default function ReservasAdminPage() {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-150 rounded-[10px] text-xs font-bold text-slate-650 transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-150 rounded-[10px] text-xs font-semibold text-slate-600 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
               >
                 Limpar Filtros
               </button>
@@ -671,14 +683,14 @@ export default function ReservasAdminPage() {
                   type="date"
                   value={startDateFilter}
                   onChange={(e) => setStartDateFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1] transition-all"
+                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
                   placeholder="De"
                 />
                 <input
                   type="date"
                   value={endDateFilter}
                   onChange={(e) => setEndDateFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1] transition-all"
+                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
                   placeholder="Até"
                 />
               </div>
@@ -694,14 +706,14 @@ export default function ReservasAdminPage() {
                   type="number"
                   value={minPriceFilter}
                   onChange={(e) => setMinPriceFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1] transition-all"
+                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
                   placeholder="Mínimo"
                 />
                 <input
                   type="number"
                   value={maxPriceFilter}
                   onChange={(e) => setMaxPriceFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1] transition-all"
+                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
                   placeholder="Máximo"
                 />
               </div>
@@ -709,48 +721,47 @@ export default function ReservasAdminPage() {
           </div>
         )}
       </div>
-
       {/* Tabela de Reservas */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="w-10 h-10 border-4 border-[#902ad1]/20 border-t-[#902ad1] rounded-full animate-spin" />
         </div>
       ) : filteredAndSortedReservas.length > 0 ? (
-        <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/75 border-b border-slate-100">
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm overflow-hidden transition-all duration-300">
+          <div className="overflow-auto max-h-[600px] relative no-scrollbar">
+            <table className="w-full text-left border-collapse relative">
+              <thead className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)] outline outline-1 outline-slate-100">
+                <tr className="border-b border-slate-100">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-450 uppercase tracking-widest">
                     ID / Código
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
                     Cliente
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
                     Recolha & Viagem
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
                     Motorista & Frota
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
                     Valor Total
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest text-center">
                     Estado
                   </th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">
+                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest text-right">
                     Ações Administrativas
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-55">
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {filteredAndSortedReservas.map((r) => (
-                  <tr key={r.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={r.id} className="hover:bg-slate-50/30 hover:shadow-[inset_2.5px_0_0_0_#902ad1] transition-all duration-200">
                     {/* Código Reserva */}
                     <td className="px-6 py-4">
                       <div className="space-y-0.5">
-                        <span className="text-xs font-bold text-[#902ad1] block">
+                        <span className="text-xs font-semibold text-[#902ad1] block font-mono">
                           {r.codigo}
                         </span>
                         <span className="text-[9px] text-slate-400 font-medium block">
@@ -762,14 +773,14 @@ export default function ReservasAdminPage() {
                     {/* Cliente */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-[#902ad1]/5 flex items-center justify-center text-[#902ad1] text-xs font-bold">
+                        <div className="w-8 h-8 rounded-full bg-[#902ad1]/8 text-[#902ad1] flex items-center justify-center text-[10px] font-semibold border border-[#902ad1]/10">
                           {r.perfis?.nome_completo.slice(0, 2).toUpperCase() || "CL"}
                         </div>
                         <div>
-                          <span className="text-xs font-bold text-slate-700 block">
+                          <span className="text-xs font-semibold text-slate-750 block">
                             {r.perfis?.nome_completo || "Utilizador WiTransfer"}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-medium block">
+                          <span className="text-[9px] text-slate-400 font-medium block">
                             {r.perfis?.telefone || "Sem telefone"}
                           </span>
                         </div>
@@ -778,24 +789,26 @@ export default function ReservasAdminPage() {
 
                     {/* Recolha & Viagem */}
                     <td className="px-6 py-4">
-                      <div className="space-y-1.5 max-w-[200px]">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-650 font-bold">
-                          <Clock size={12} className="text-slate-400" />
+                      <div className="space-y-1.5 max-w-[210px]">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-700 font-semibold">
+                          <Clock size={11} className="text-slate-400 shrink-0" strokeWidth={2.5} />
                           <span>{formatDate(r.data_recolha)} às {r.hora_recolha}</span>
                         </div>
-                        <div className="text-[10px] font-medium text-slate-500 flex items-center gap-1 truncate" title={`${r.local_partida} → ${r.local_destino}`}>
-                          <MapPin size={10} className="text-[#902ad1] shrink-0" />
-                          <span className="truncate">{r.local_partida.slice(0, 15)}... → {r.local_destino.slice(0, 15)}...</span>
+                        <div className="text-[9px] font-medium text-slate-450 flex items-center gap-1 min-w-0" title={`${r.local_partida} → ${r.local_destino}`}>
+                          <MapPin size={10} className="text-[#902ad1] shrink-0" strokeWidth={2} />
+                          <span className="truncate">{r.local_partida}</span>
+                          <ArrowRight size={8} className="text-slate-350 shrink-0" />
+                          <span className="truncate">{r.local_destino}</span>
                         </div>
                       </div>
                     </td>
 
                     {/* Recursos Atribuídos (Motorista e Viatura) */}
                     <td className="px-6 py-4">
-                      <div className="space-y-1">
+                      <div className="flex flex-col gap-1.5 items-start">
                         {r.motoristas ? (
-                          <span className="text-[10px] font-semibold text-slate-700 flex items-center gap-1">
-                            <UserCheck size={12} className="text-blue-500" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-500/8 text-blue-700 border border-blue-500/10 rounded-full text-[9px] font-medium">
+                            <UserCheck size={9} strokeWidth={2.5} />
                             {r.motoristas.perfis?.nome_completo}
                           </span>
                         ) : (
@@ -807,15 +820,15 @@ export default function ReservasAdminPage() {
                                 viaturaId: r.viatura_id || "",
                               })
                             }
-                            className="text-[9px] font-bold text-blue-600 hover:underline flex items-center gap-0.5"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 hover:bg-[#902ad1]/8 text-slate-500 hover:text-[#902ad1] border border-slate-100 hover:border-[#902ad1]/15 rounded-[10px] text-[9px] font-semibold transition-all cursor-pointer active:scale-95"
                           >
-                            + Atribuir Motorista
+                            + Motorista
                           </button>
                         )}
 
                         {r.viaturas ? (
-                          <span className="text-[10px] font-semibold text-[#902ad1] flex items-center gap-1">
-                            <Car size={12} className="text-[#902ad1]" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-500/8 text-[#902ad1] border border-[#902ad1]/10 rounded-full text-[9px] font-medium">
+                            <Car size={9} strokeWidth={2.5} />
                             {r.viaturas.modelo} ({r.viaturas.matricula || "S/M"})
                           </span>
                         ) : (
@@ -827,16 +840,16 @@ export default function ReservasAdminPage() {
                                 viaturaId: r.viatura_id || "",
                               })
                             }
-                            className="text-[9px] font-bold text-[#902ad1] hover:underline flex items-center gap-0.5 block"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 hover:bg-[#902ad1]/8 text-slate-500 hover:text-[#902ad1] border border-slate-100 hover:border-[#902ad1]/15 rounded-[10px] text-[9px] font-semibold transition-all cursor-pointer active:scale-95"
                           >
-                            + Atribuir Viatura
+                            + Viatura
                           </button>
                         )}
                       </div>
                     </td>
 
                     {/* Preço Reserva */}
-                    <td className="px-6 py-4 font-bold text-slate-700 text-xs">
+                    <td className="px-6 py-4 font-semibold text-slate-700 text-xs font-mono tracking-tight">
                       {formatCurrency(r.valor_total)}
                     </td>
 
@@ -847,14 +860,14 @@ export default function ReservasAdminPage() {
 
                     {/* Ações Rápidas */}
                     <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
+                      <div className="flex items-center justify-end gap-1">
                         {/* Ver Ficha Reserva */}
                         <Link
                           href={`/admin/reservas/${r.id}`}
-                          className="p-2 text-slate-500 hover:text-[#902ad1] bg-slate-50 hover:bg-[#902ad1]/5 rounded-lg border border-slate-100 transition-all"
+                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-[#902ad1] bg-slate-50/70 hover:bg-[#902ad1]/8 border border-slate-100 hover:border-[#902ad1]/10 rounded-[10px] transition-all active:scale-95"
                           title="Ficha Detalhada"
                         >
-                          <Eye size={14} />
+                          <Eye size={13} strokeWidth={2.5} />
                         </Link>
 
                         {/* Ações de Estado Rápidas */}
@@ -862,10 +875,14 @@ export default function ReservasAdminPage() {
                           <button
                             onClick={() => handleUpdateStatus(r.id, "pago")}
                             disabled={actionLoading === r.id}
-                            className="p-2 text-emerald-600 hover:text-white bg-slate-50 hover:bg-emerald-500 rounded-lg border border-slate-100 hover:border-emerald-500 transition-all"
-                            title="Confirmar Pagamento / Confirmar Reserva"
+                            className="w-7 h-7 flex items-center justify-center text-emerald-600 hover:text-white bg-emerald-50/40 hover:bg-emerald-500 border border-emerald-100 hover:border-emerald-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
+                            title="Confirmar Pagamento"
                           >
-                            <Check size={14} />
+                            {actionLoading === r.id ? (
+                              <div className="w-3 h-3 border-2 border-slate-200 border-t-emerald-650 rounded-full animate-spin" />
+                            ) : (
+                              <Check size={13} strokeWidth={2.5} />
+                            )}
                           </button>
                         )}
 
@@ -873,10 +890,14 @@ export default function ReservasAdminPage() {
                           <button
                             onClick={() => handleUpdateStatus(r.id, "em_andamento")}
                             disabled={actionLoading === r.id}
-                            className="p-2 text-purple-600 hover:text-white bg-slate-50 hover:bg-purple-500 rounded-lg border border-slate-100 hover:border-purple-500 transition-all"
+                            className="w-7 h-7 flex items-center justify-center text-purple-600 hover:text-white bg-purple-50/40 hover:bg-purple-500 border border-purple-100 hover:border-purple-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
                             title="Iniciar Viagem"
                           >
-                            <Play size={14} />
+                            {actionLoading === r.id ? (
+                              <div className="w-3 h-3 border-2 border-slate-200 border-t-purple-600 rounded-full animate-spin" />
+                            ) : (
+                              <Play size={13} strokeWidth={2.5} />
+                            )}
                           </button>
                         )}
 
@@ -884,10 +905,14 @@ export default function ReservasAdminPage() {
                           <button
                             onClick={() => handleUpdateStatus(r.id, "concluida")}
                             disabled={actionLoading === r.id}
-                            className="p-2 text-blue-600 hover:text-white bg-slate-50 hover:bg-blue-500 rounded-lg border border-slate-100 hover:border-blue-500 transition-all"
+                            className="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-white bg-blue-50/40 hover:bg-blue-500 border border-blue-100 hover:border-blue-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
                             title="Concluir Viagem"
                           >
-                            <CheckCircle2 size={14} />
+                            {actionLoading === r.id ? (
+                              <div className="w-3 h-3 border-2 border-slate-200 border-t-blue-600 rounded-full animate-spin" />
+                            ) : (
+                              <CheckCircle2 size={13} strokeWidth={2.5} />
+                            )}
                           </button>
                         )}
 
@@ -896,10 +921,10 @@ export default function ReservasAdminPage() {
                           <button
                             onClick={() => handleUpdateStatus(r.id, "cancelada")}
                             disabled={actionLoading === r.id}
-                            className="p-2 text-rose-600 hover:text-white bg-slate-50 hover:bg-rose-500 rounded-lg border border-slate-100 hover:border-rose-500 transition-all"
+                            className="w-7 h-7 flex items-center justify-center text-rose-500 hover:text-white bg-rose-50/40 hover:bg-rose-500 border border-rose-100 hover:border-rose-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
                             title="Cancelar Reserva"
                           >
-                            <X size={14} />
+                            <X size={13} strokeWidth={2.5} />
                           </button>
                         )}
 
@@ -907,10 +932,10 @@ export default function ReservasAdminPage() {
                         <button
                           onClick={() => handleDelete(r.id)}
                           disabled={actionLoading === r.id}
-                          className="p-2 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-lg border border-slate-100 transition-all"
+                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-600 bg-slate-50/70 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
                           title="Eliminar Reserva"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={13} strokeWidth={2.5} />
                         </button>
                       </div>
                     </td>
@@ -921,7 +946,7 @@ export default function ReservasAdminPage() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100 shadow-sm">
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100/90 shadow-sm">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">
             <CalendarRange size={32} />
           </div>
@@ -936,8 +961,8 @@ export default function ReservasAdminPage() {
 
       {/* Modal de Atribuição Rápida de Recursos */}
       {atribuicaoModal && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-300">
-          <div className="bg-white rounded-xl border border-slate-100 shadow-2xl p-6 w-full max-w-md space-y-6 mx-4">
+        <div className="fixed inset-0 bg-slate-950/45 backdrop-blur-md z-50 flex items-center justify-center animate-in fade-in duration-300">
+          <div className="bg-white/95 rounded-[10px] border border-slate-100/90 shadow-2xl p-6 w-full max-w-md space-y-6 mx-4 animate-in zoom-in-95 duration-200">
             <div>
               <h3 className="text-base font-bold text-slate-800">
                 Atribuir Motorista & Frota
@@ -950,7 +975,8 @@ export default function ReservasAdminPage() {
             <div className="space-y-4">
               {/* Motorista select */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                  <UserCheck size={11} className="text-[#902ad1]" />
                   Motorista Associado
                 </label>
                 <select
@@ -960,7 +986,7 @@ export default function ReservasAdminPage() {
                       prev ? { ...prev, motoristaId: e.target.value } : null
                     )
                   }
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-150 rounded-[10px] text-xs font-semibold focus:bg-white focus:border-[#902ad1] outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
                 >
                   <option value="">Nenhum Motorista Selecionado</option>
                   {motoristasDisponiveis.map((m) => (
@@ -973,7 +999,8 @@ export default function ReservasAdminPage() {
 
               {/* Viatura select */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                  <Car size={11} className="text-[#902ad1]" />
                   Viatura / Veículo da Frota
                 </label>
                 <select
@@ -983,7 +1010,7 @@ export default function ReservasAdminPage() {
                       prev ? { ...prev, viaturaId: e.target.value } : null
                     )
                   }
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-150 rounded-[10px] text-xs font-semibold focus:bg-white focus:border-[#902ad1] outline-none cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
                 >
                   <option value="">Nenhuma Viatura Selecionada</option>
                   {viaturasDisponiveis.map((v) => (
@@ -998,14 +1025,14 @@ export default function ReservasAdminPage() {
             <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
               <button
                 onClick={() => setAtribuicaoModal(null)}
-                className="flex-1 py-3 text-xs font-bold text-slate-550 bg-slate-50 hover:bg-slate-100 rounded-[10px] border border-slate-150 transition-all active:scale-95"
+                className="flex-1 py-3 text-xs font-bold text-slate-550 bg-slate-50 hover:bg-slate-100 rounded-[10px] border border-slate-150 transition-all active:scale-97 cursor-pointer"
               >
                 Voltar / Cancelar
               </button>
               <button
                 onClick={handleSaveAtribuicao}
                 disabled={actionLoading != null}
-                className="flex-1 py-3 text-xs font-bold text-white bg-[#902ad1] hover:bg-[#902ad1]/90 rounded-[10px] transition-all active:scale-95 shadow-md shadow-[#902ad1]/10 flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 text-xs font-bold text-white bg-[#902ad1] hover:bg-[#902ad1]/90 rounded-[10px] transition-all active:scale-97 shadow-md shadow-[#902ad1]/10 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
                 {actionLoading != null ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

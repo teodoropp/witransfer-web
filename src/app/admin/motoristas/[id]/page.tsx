@@ -18,6 +18,7 @@ import {
   Activity,
   CheckCircle,
   AlertTriangle,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -201,410 +202,488 @@ export default function MotoristaDetalhePage({
   }
 
   return (
-    <div className="animate-in fade-in duration-500 pb-12">
-      {/* Header com Ações e Breadcrumb */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-[30px]">
-        <div className="flex items-center">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+      {/* Cabeçalho */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="p-3 text-slate-400 hover:text-slate-700 bg-white/80 hover:bg-white rounded-2xl border border-slate-100/80 shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300"
+            title="Voltar"
+          >
+            <ArrowLeft size={18} />
+          </button>
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="hover:text-[#902ad1] text-slate-500 transition-colors flex items-center shrink-0 mr-1"
-                title="Voltar">
-                <ArrowLeft size={12} strokeWidth={2.5} />
-              </button>
-              <Link
-                href="/admin/dashboard"
-                className="hover:text-[#902ad1] transition-all">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
                 Painel
               </Link>
-              <span className="text-slate-300">/</span>
-              <Link
-                href="/admin/motoristas"
-                className="hover:text-[#902ad1] transition-all">
+              <span className="text-slate-300 font-medium">/</span>
+              <Link href="/admin/motoristas" className="hover:text-[#902ad1] transition-all">
                 Motoristas
               </Link>
-              <span className="text-slate-300">/</span>
-              <span className="text-slate-600">Detalhes do Motorista</span>
+              <span className="text-slate-300 font-medium">/</span>
+              <span className="text-slate-600 font-bold">Ficha de Motorista</span>
             </div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight mt-1">
+              Ficha do Motorista
+            </h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end md:self-auto">
+        <div className="flex items-center gap-3">
           <Link
             href={`/admin/motoristas/${motorista.id}/editar`}
-            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-[5px] hover:bg-slate-50 transition-all active:scale-95 text-xs">
-            <Edit2 size={14} />
+            className="flex items-center gap-2 bg-white/85 hover:bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl font-bold transition-all shadow-sm hover:shadow-md hover:border-slate-300 active:scale-[0.98] text-[11px] uppercase tracking-wider"
+          >
+            <Edit2 size={13} />
             <span>Editar Informações</span>
           </Link>
         </div>
       </div>
 
-      {/* Grid de Conteúdo Principal */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        {/* Lado Esquerdo: Ficha Básica, Contacto e Detalhes */}
-        <div className="lg:col-span-4 flex flex-col">
-          <div
-            className={`${THEME_TOKENS.cardStyle} divide-y divide-slate-100 flex-1 flex flex-col justify-between h-full`}>
-            {/* Card Principal do Perfil */}
-            <div className="p-6 text-center relative overflow-hidden shrink-0">
-              {/* Indicador Flutuante de Atividade */}
-              <div className="absolute top-4 right-4">
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 border ${THEME_TOKENS.cardRounded} ${THEME_TOKENS.badgeText} font-semibold uppercase tracking-widest ${
-                    motorista.perfis.ativo
-                      ? "bg-emerald-50 text-emerald-600 border-emerald-150"
-                      : "bg-rose-50 text-rose-600 border-rose-150"
-                  }`}>
-                  {motorista.perfis.ativo ? "Ativo" : "Suspenso"}
-                </span>
+      {/* Bento Grid Assimétrico (12 Colunas) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+        
+        {/* ── Card 1: Ficha do Condutor & Rating (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden text-center">
+          {/* Badge de Status Superior */}
+          <div className="absolute top-6 right-6">
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                motorista.perfis.ativo
+                  ? "bg-emerald-50 text-emerald-600 border-emerald-200/60"
+                  : "bg-rose-50 text-rose-600 border-rose-200/60"
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${motorista.perfis.ativo ? "bg-emerald-500 animate-pulse" : "bg-rose-500"}`} />
+              {motorista.perfis.ativo ? "Ativo" : "Suspenso"}
+            </span>
+          </div>
+
+          <div className="pt-4">
+            {/* Foto de Perfil */}
+            <div className="relative w-28 h-28 rounded-3xl overflow-hidden border-4 border-[#902ad1]/10 mx-auto bg-gradient-to-br from-[#902ad1]/15 to-[#902ad1]/5 flex items-center justify-center mb-5 shadow-inner">
+              {motorista.perfis.foto_url ? (
+                <Image src={motorista.perfis.foto_url} alt={motorista.perfis.nome_completo} fill className="object-cover animate-in fade-in duration-300" />
+              ) : (
+                <User size={48} className="text-[#902ad1] opacity-80" />
+              )}
+            </div>
+
+            <h2 className="text-xl font-black text-slate-800 leading-tight tracking-tight px-2 truncate" title={motorista.perfis.nome_completo}>
+              {motorista.perfis.nome_completo}
+            </h2>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold text-[#902ad1] uppercase tracking-wider mt-2 bg-purple-50 border border-purple-200/40">
+              {motorista.parceiros?.nome || "WiTransfer Official"}
+            </span>
+
+            {/* Classificação Média */}
+            <div className="flex items-center justify-center gap-1.5 mt-5 bg-slate-50/60 py-2.5 px-4 rounded-xl border border-slate-100 w-fit mx-auto shadow-sm">
+              <Star size={14} className="text-amber-400 fill-amber-400" />
+              <span className="text-xs font-black text-slate-700">
+                {motorista.avaliacao_media?.toFixed(1) || "5.0"}
+              </span>
+              <span className="text-[10px] text-slate-400 font-bold">
+                ({motorista.total_viagens || 0} Viagens)
+              </span>
+            </div>
+          </div>
+
+          {/* Separador */}
+          <div className="h-px bg-slate-100 my-6" />
+
+          <div className="flex items-center justify-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+            <span>Categoria de Cadastro:</span>
+            <span className="text-slate-600 font-extrabold">Motorista Parceiro</span>
+          </div>
+        </div>
+
+        {/* ── Card 2: Contactos & Estado de Cadastro (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span
+              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
+                motorista.status_aprovacao === "aprovado" || motorista.status_aprovacao === "Aprovado"
+                  ? "bg-blue-50 text-blue-600 border-blue-200/60"
+                  : "bg-amber-50 text-amber-600 border-amber-200/60"
+              }`}
+            >
+              {motorista.status_aprovacao || "Aprovado"}
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Canais de Comunicação</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Contacto & Registo</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Meios corporativos para contacto e validação legal</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Sub-grid de Contacto */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 my-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <User size={14} className="text-[#902ad1] shrink-0" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Telefone Principal</span>
+                  <p className="text-[13px] font-extrabold text-slate-700">
+                    {motorista.perfis.telefone || "Nenhum telefone registado"}
+                  </p>
+                </div>
               </div>
 
-              {/* Foto de Perfil */}
-              <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-[#902ad1]/10 mx-auto bg-slate-50 flex items-center justify-center mb-4">
-                {motorista.perfis.foto_url ? (
-                  <Image
-                    src={motorista.perfis.foto_url}
-                    alt={motorista.perfis.nome_completo}
-                    fill
-                    className="object-cover"
-                  />
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <Mail size={14} className="text-[#902ad1] shrink-0" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Endereço de E-mail</span>
+                  <p className="text-[13px] font-extrabold text-slate-700 break-all truncate" title={motorista.perfis.email || ""}>
+                    {motorista.perfis.email || "Nenhum e-mail registado"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <FileText size={14} className="text-[#902ad1] shrink-0" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Nº Carta de Condução</span>
+                  <p className="text-[13px] font-extrabold text-slate-700 truncate">
+                    {motorista.carta_conducao || "Não especificado"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-2xl bg-purple-50 flex items-center justify-center shrink-0 border border-purple-200/20">
+                  <FileText size={14} className="text-[#902ad1] shrink-0" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">ID de Utilizador</span>
+                  <p className="text-[13px] font-extrabold text-slate-700 truncate break-all" title={motorista.id}>
+                    {motorista.id.substring(0, 18)}...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-5 border-t border-slate-100 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+            <span>Última atualização de dados sincronizada via Cloud</span>
+          </div>
+        </div>
+
+        {/* ── Card 3: Métricas Operacionais (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm">
+              <Activity size={10} />
+              Operação Ativa
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Indicadores e Performance</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Métricas Operacionais</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Resumo consolidado do desempenho e disponibilidade</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Grid de Estatísticas Rápidas */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-5">
+              <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition-colors duration-250">
+                <div className="p-2.5 bg-[#902ad1]/5 text-[#902ad1] rounded-xl shrink-0">
+                  <Activity size={16} />
+                </div>
+                <div>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Viagens</span>
+                  <span className="text-sm font-extrabold text-slate-700">{motorista.total_viagens || 0}</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition-colors duration-250">
+                <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
+                  <CheckCircle size={16} />
+                </div>
+                <div>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Disponível</span>
+                  <span className="text-sm font-extrabold text-slate-700">{motorista.disponivel ? "Sim" : "Não"}</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition-colors duration-250">
+                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
+                  <Briefcase size={16} />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Experiência</span>
+                  <span className="text-sm font-extrabold text-slate-700 truncate block">
+                    {motorista.experiencia_anos ? `${motorista.experiencia_anos} anos` : "N/A"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3 hover:bg-slate-50 transition-colors duration-250">
+                <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl shrink-0">
+                  <Globe size={16} />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Idiomas</span>
+                  <span className="text-xs font-extrabold text-slate-700 truncate block" title={motorista.idiomas?.join(", ") || "Português"}>
+                    {motorista.idiomas?.join(", ") || "Português"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Disponibilidade na Plataforma</span>
+            <span className="text-slate-700 font-extrabold">{motorista.disponivel ? "Livre para Serviço" : "Ocupado / Offline"}</span>
+          </div>
+        </div>
+
+        {/* ── Card 4: Viatura Atribuída (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#902ad1] border border-purple-200/60 shadow-sm">
+              <Car size={10} />
+              Frota
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Viatura Ativa</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Veículo</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Informações do automóvel ativo no sistema</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Conteúdo do Veículo */}
+            <div className="my-5">
+              {motorista.viaturas ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3.5 p-3 bg-slate-50/50 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors duration-200">
+                    <div className="relative w-16 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200/60 shrink-0">
+                      {motorista.viaturas.foto_url ? (
+                        <Image src={motorista.viaturas.foto_url} alt={motorista.viaturas.modelo} fill className="object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-slate-350 bg-slate-100">
+                          <Car size={20} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-sm font-extrabold text-slate-700 block truncate">
+                        {motorista.viaturas.marca} {motorista.viaturas.modelo}
+                      </span>
+                      <span className="inline-block mt-1 bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-lg text-[8px] font-bold border border-yellow-200 uppercase tracking-wider">
+                        {motorista.viaturas.matricula || "SEM MATRÍCULA"}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    href={`/admin/viaturas/${motorista.viaturas.id}`}
+                    className="flex items-center gap-1 text-[11px] font-bold text-[#902ad1] hover:text-[#7b22b8] hover:underline uppercase tracking-wider transition-all w-fit mt-1"
+                  >
+                    <span>Ver Detalhes do Veículo</span>
+                    <ExternalLink size={12} />
+                  </Link>
+                </div>
+              ) : (
+                <div className="py-8 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200/80 text-center flex flex-col items-center justify-center">
+                  <Car className="text-slate-300 mb-2 animate-pulse" size={28} />
+                  <p className="text-xs text-slate-450 font-bold italic px-2">
+                    Nenhum veículo atribuído a este motorista.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-center text-[10px] font-bold text-[#902ad1] uppercase tracking-wider">
+            <span>Vinculação Ativa</span>
+          </div>
+        </div>
+
+        {/* ── Card 5: Documentos Regulamentares (8 cols) ── */}
+        <div className="md:col-span-8 bg-white/80 backdrop-blur-sm rounded-[24px] border border-slate-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-[#902ad1]/20 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#902ad1] border border-purple-200/60 shadow-sm">
+              <FileText size={10} />
+              Regulamentar
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Conformidade Legal</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Documentos Regulamentares</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Ficheiros de identificação e habilitação profissional</p>
+            </div>
+
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
+
+            {/* Anexos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 my-5">
+              {/* Carta de condução */}
+              <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 gap-3 hover:bg-slate-50 hover:border-slate-200 transition-all duration-200">
+                <div className="flex items-center gap-3 truncate">
+                  <div className="p-2.5 bg-purple-50 text-[#902ad1] rounded-xl shrink-0">
+                    <FileText size={16} />
+                  </div>
+                  <div className="truncate">
+                    <span className="text-xs font-bold text-slate-700 block leading-tight">
+                      Carta de Condução
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">
+                      Ficheiro Profissional
+                    </span>
+                  </div>
+                </div>
+                {motorista.carta_conducao_url ? (
+                  <a
+                    href={motorista.carta_conducao_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2 bg-white hover:bg-slate-100 text-[#902ad1] rounded-xl shadow-sm border border-slate-200 transition-colors shrink-0 flex items-center justify-center"
+                    title="Abrir Documento"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
                 ) : (
-                  <User size={44} className="text-slate-300" />
+                  <span className="text-[9px] text-slate-450 font-bold italic shrink-0">
+                    Sem anexo
+                  </span>
                 )}
               </div>
 
-              <h2 className="text-lg font-bold text-slate-800 leading-tight">
-                {motorista.perfis.nome_completo}
-              </h2>
-              <span className="text-[10px] font-semibold text-[#902ad1] uppercase tracking-widest mt-1 block">
-                {motorista.parceiros?.nome || "WiTransfer Official"}
-              </span>
-
-              {/* Classificação Média */}
-              <div className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-slate-50">
-                <Star size={16} className="text-amber-400 fill-amber-400" />
-                <span className="text-sm font-semibold text-slate-700">
-                  {motorista.avaliacao_media?.toFixed(1) || "5.0"}
-                </span>
-                <span className="text-xs text-slate-400">
-                  ({motorista.total_viagens || 0} Viagens)
-                </span>
+              {/* BI */}
+              <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 gap-3 hover:bg-slate-50 hover:border-slate-200 transition-all duration-200">
+                <div className="flex items-center gap-3 truncate">
+                  <div className="p-2.5 bg-purple-50 text-[#902ad1] rounded-xl shrink-0">
+                    <FileText size={16} />
+                  </div>
+                  <div className="truncate">
+                    <span className="text-xs font-bold text-slate-700 block leading-tight">
+                      Bilhete de Identidade
+                    </span>
+                    <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">
+                      Identificação Pessoal
+                    </span>
+                  </div>
+                </div>
+                {motorista.documento_bi_url ? (
+                  <a
+                    href={motorista.documento_bi_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2 bg-white hover:bg-slate-100 text-[#902ad1] rounded-xl shadow-sm border border-slate-200 transition-colors shrink-0 flex items-center justify-center"
+                    title="Abrir Documento"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                ) : (
+                  <span className="text-[9px] text-slate-450 font-bold italic shrink-0">
+                    Sem anexo
+                  </span>
+                )}
               </div>
             </div>
+          </div>
 
-            {/* Informações de Contacto */}
-            <div className="p-6 space-y-4 flex-1">
-              <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] pb-1">
-                Informações de Contacto
-              </h4>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block leading-none">
-                    Telefone Principal
-                  </span>
-                  <span className="text-xs font-semibold text-slate-700 mt-1 block">
-                    {motorista.perfis.telefone || "Nenhum telefone registado"}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block leading-none">
-                    Endereço de E-mail
-                  </span>
-                  <span className="text-xs font-semibold text-slate-700 break-all mt-1 block">
-                    {motorista.perfis.email || "Nenhum e-mail registado"}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block leading-none">
-                    Nº Carta de Condução
-                  </span>
-                  <span className="text-xs font-semibold text-slate-700 mt-1 block">
-                    {motorista.carta_conducao || "Não especificado"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Estado Administrativo (Disponibilidade e Validação de Cadastro) */}
-            <div className="p-5 bg-slate-50/50 space-y-0 shrink-0 mt-auto">
-              <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] leading-none">
-                Estado Administrativo
-              </h4>
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <span className="text-xs text-slate-500 font-semibold leading-none">
-                    Aprovação do Registo
-                  </span>
-                  <span
-                    className={`px-3 py-1 flex items-center gap-1  border ${THEME_TOKENS.cardRounded} ${THEME_TOKENS.badgeText} uppercase tracking-wider font-semibold ${
-                      motorista.status_aprovacao === "aprovado" ||
-                      motorista.status_aprovacao === "Aprovado"
-                        ? "bg-blue-50 text-blue-600 border-blue-200"
-                        : "bg-amber-50 text-amber-600 border-amber-200"
-                    }`}>
-                    {motorista.status_aprovacao || "Aprovado"}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div className="mt-4 pt-5 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Sincronização e Validação</span>
+            <span className="text-emerald-600 font-extrabold flex items-center gap-1">
+              <CheckCircle size={10} />
+              Verificados
+            </span>
           </div>
         </div>
 
-        {/* Lado Direito: Estatísticas, Viatura, Documentos e Zona de Perigo */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* Grid de Estatísticas Rápidas */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div
-              className={`p-4 flex items-center gap-3 ${THEME_TOKENS.cardStyle}`}>
-              <div className="p-2.5 bg-[#902ad1]/5 text-[#902ad1] rounded-xl shrink-0">
-                <Activity size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  Viagens
-                </span>
-                <span className="text-sm text-slate-700">
-                  {motorista.total_viagens || 0}
-                </span>
-              </div>
+        {/* ── Card 6: Administração & Segurança (4 cols) ── */}
+        <div className="md:col-span-4 bg-white/80 backdrop-blur-sm rounded-[24px] border border-rose-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-rose-300 transition-all duration-300 p-8 flex flex-col justify-between h-full relative overflow-hidden">
+          {/* Badge Superior */}
+          <div className="absolute top-6 right-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200/60 shadow-sm">
+              <ShieldAlert size={10} />
+              Controle Crítico
+            </span>
+          </div>
+
+          <div>
+            {/* Header */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Zona Administrativa</span>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Segurança</h3>
+              <p className="text-[11px] font-medium text-slate-400 mt-1.5">Painel destrutivo e controle de bloqueio</p>
             </div>
 
-            <div
-              className={`p-4 flex items-center gap-3 ${THEME_TOKENS.cardStyle}`}>
-              <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
-                <CheckCircle size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  Disponível
-                </span>
-                <span className="text-sm text-slate-700">
-                  {motorista.disponivel ? "Sim" : "Não"}
-                </span>
-              </div>
-            </div>
+            {/* Separador */}
+            <div className="h-px bg-slate-100 my-4" />
 
-            <div
-              className={`p-4 flex items-center gap-3 ${THEME_TOKENS.cardStyle}`}>
-              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
-                <Briefcase size={18} />
+            {/* Alerta de Segurança */}
+            <div className="p-4 bg-rose-50/50 rounded-2xl border border-rose-100 flex flex-col gap-2.5 my-5">
+              <div className="flex items-center gap-2 text-rose-700">
+                <AlertTriangle size={15} />
+                <span className="text-[10.5px] font-bold uppercase tracking-wider">Atenção Crítica</span>
               </div>
-              <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  Experiência
-                </span>
-                <span className="text-sm  text-slate-700">
-                  {motorista.experiencia_anos
-                    ? `${motorista.experiencia_anos} anos`
-                    : "N/A"}
-                </span>
-              </div>
-            </div>
-
-            <div
-              className={`p-4 flex items-center gap-3 ${THEME_TOKENS.cardStyle}`}>
-              <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl shrink-0">
-                <Globe size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                  Idiomas
-                </span>
-                <span
-                  className="text-xs text-slate-700 truncate max-w-[80px]"
-                  title={motorista.idiomas?.join(", ") || "Português"}>
-                  {motorista.idiomas?.join(", ") || "Português"}
-                </span>
-              </div>
+              <p className="text-[10.5px] text-slate-500 font-semibold leading-relaxed">
+                Alterações nesta secção afetam o acesso do motorista ao aplicativo móvel. A eliminação é irreversível e apagará o histórico da base de dados.
+              </p>
             </div>
           </div>
 
-          {/* Grid de Informação Detalhada: Viatura & Documentos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-            {/* Card da Viatura Atribuída */}
-            <div
-              className={`p-6 flex flex-col justify-between ${THEME_TOKENS.cardStyle}`}>
-              <div>
-                <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] border-b border-slate-50 pb-3">
-                  Viatura Atribuída
-                </h4>
-                <div className="mt-4">
-                  {motorista.viaturas ? (
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-3.5">
-                        <div className="relative w-16 h-12 rounded-lg bg-slate-50 overflow-hidden border border-slate-100 shrink-0">
-                          {motorista.viaturas.foto_url ? (
-                            <Image
-                              src={motorista.viaturas.foto_url}
-                              alt={motorista.viaturas.modelo}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-300">
-                              <Car size={20} />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <span className="text-sm font-bold text-slate-700 block">
-                            {motorista.viaturas.marca}{" "}
-                            {motorista.viaturas.modelo}
-                          </span>
-                          <span className="text-[10px] font-semibold text-[#902ad1] uppercase tracking-wider block mt-0.5">
-                            Matrícula: {motorista.viaturas.matricula}
-                          </span>
-                        </div>
-                      </div>
-                      <Link
-                        href={`/admin/viaturas/${motorista.viaturas.id}`}
-                        className="text-xs text-[#902ad1] hover:underline font-semibold flex items-center gap-1 whitespace-nowrap self-start mt-1">
-                        Ver Detalhes do Veículo
-                        <ExternalLink size={12} />
-                      </Link>
-                    </div>
-                  ) : (
-                    <div className="py-6 text-center bg-slate-50/50 rounded-[10px] border border-dashed border-slate-200">
-                      <Car
-                        className="text-slate-300 mx-auto mb-2 animate-pulse"
-                        size={24}
-                      />
-                      <p className="text-xs text-slate-400 font-medium italic">
-                        Nenhum veículo atribuído a este motorista.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+          {/* Ações */}
+          <div className="space-y-3 mt-6">
+            <button
+              type="button"
+              onClick={handleToggleStatus}
+              disabled={toggling}
+              className={`w-full py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all border flex items-center justify-center gap-2 active:scale-[0.98] ${
+                motorista.perfis.ativo
+                  ? "bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white border-rose-200"
+                  : "bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border-emerald-200"
+              }`}
+            >
+              {motorista.perfis.ativo ? "Bloquear Acesso" : "Reativar Acesso"}
+            </button>
 
-            {/* Documentação e Anexos */}
-            <div
-              className={`p-6 flex flex-col justify-between ${THEME_TOKENS.cardStyle}`}>
-              <div>
-                <h4 className="font-semibold text-slate-700 uppercase tracking-widest text-[10px] border-b border-slate-50 pb-3">
-                  Documentos Regulamentares
-                </h4>
-                <div className="space-y-3 mt-4">
-                  {/* Carta de condução */}
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-[10px] border border-slate-100 gap-2">
-                    <div className="flex items-center gap-2.5 truncate">
-                      <FileText className="text-[#902ad1] shrink-0" size={16} />
-                      <div className="truncate">
-                        <span className="text-xs font-semibold text-slate-700 block leading-tight">
-                          Carta de Condução
-                        </span>
-                        <span className="text-[9px] text-slate-400">
-                          Anexo regulamentar
-                        </span>
-                      </div>
-                    </div>
-                    {motorista.carta_conducao_url ? (
-                      <a
-                        href={motorista.carta_conducao_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-1.5 bg-white hover:bg-slate-100 text-[#902ad1] rounded-lg shadow-sm border border-slate-150 transition-colors shrink-0"
-                        title="Abrir Documento">
-                        <ExternalLink size={12} />
-                      </a>
-                    ) : (
-                      <span className="text-[9px] text-slate-400 italic shrink-0">
-                        Sem anexo
-                      </span>
-                    )}
-                  </div>
-
-                  {/* BI */}
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-[10px] border border-slate-100 gap-2">
-                    <div className="flex items-center gap-2.5 truncate">
-                      <FileText className="text-[#902ad1] shrink-0" size={16} />
-                      <div className="truncate">
-                        <span className="text-xs font-semibold text-slate-700 block leading-tight">
-                          Bilhete de Identidade
-                        </span>
-                        <span className="text-[9px] text-slate-400">
-                          Anexo regulamentar
-                        </span>
-                      </div>
-                    </div>
-                    {motorista.documento_bi_url ? (
-                      <a
-                        href={motorista.documento_bi_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-1.5 bg-white hover:bg-slate-100 text-[#902ad1] rounded-lg shadow-sm border border-slate-150 transition-colors shrink-0"
-                        title="Abrir Documento">
-                        <ExternalLink size={12} />
-                      </a>
-                    ) : (
-                      <span className="text-[9px] text-slate-400 italic shrink-0">
-                        Sem anexo
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Zona de Perigo (Danger Zone) */}
-          <div className="bg-red-50/20 p-6 rounded-[0px] border border-red-100 space-y-4">
-            <div className="flex items-center gap-3 text-red-600">
-              <ShieldAlert size={20} />
-              <h4 className="font-semibold uppercase tracking-widest text-[10px]">
-                Zona de Perigo (Danger Zone)
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-[0px] border border-red-50 flex flex-col justify-between gap-3">
-                <div>
-                  <span className="text-xs font-semibold text-slate-800 block">
-                    Bloquear ou Reativar Acesso
-                  </span>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">
-                    Alternar o acesso do motorista ao aplicativo móvel
-                    WiTransfer.
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleToggleStatus}
-                  disabled={toggling}
-                  className={`w-fit px-3 py-2 rounded-[5px] text-[10px] uppercase tracking-wider transition-all border ${
-                    motorista.perfis.ativo
-                      ? "bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100"
-                      : "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100"
-                  }`}>
-                  {motorista.perfis.ativo
-                    ? "Bloquear Acesso"
-                    : "Reativar Acesso"}
-                </button>
-              </div>
-
-              <div className="bg-white p-4 rounded-[0px] border border-red-50 flex flex-col justify-between gap-3">
-                <div>
-                  <span className="text-xs font-semibold text-slate-800 block">
-                    Eliminar Conta Definitivamente
-                  </span>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">
-                    Remove os dados e histórico permanentemente da plataforma.
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={toggling}
-                  className="w-fit px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-[5px] text-[10px] uppercase tracking-wider transition-all shadow-md shadow-rose-600/10 active:scale-95">
-                  Eliminar Motorista
-                </button>
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={toggling}
+              className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+            >
+              Eliminar Motorista
+            </button>
           </div>
         </div>
+
       </div>
     </div>
   );

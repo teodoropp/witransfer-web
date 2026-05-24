@@ -26,7 +26,6 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [userType, setUserType] = useState<"admin" | "parceiro">("admin");
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {

@@ -370,10 +370,10 @@ export default function HistóricoPagamentosPage() {
         </div>
       ) : filteredPayments.length > 0 ? (
         <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto no-scrollbar">
             <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
+              <thead className="sticky top-0 bg-slate-50 z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)]">
+                <tr className="border-b border-slate-100 bg-slate-50">
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Reserva</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Cliente</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Rota / Trajeto</th>
@@ -385,9 +385,9 @@ export default function HistóricoPagamentosPage() {
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {filteredPayments.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/30 transition-colors">
+                  <tr key={p.id} className="hover:bg-slate-50/40 hover:shadow-[inset_3.5px_0_0_0_#902ad1] transition-all duration-300">
                     <td className="px-6 py-4">
-                      <span className="text-xs font-mono font-bold bg-[#902ad1]/8 text-[#902ad1] px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono font-bold bg-[#902ad1]/8 text-[#902ad1] px-2 py-0.5 rounded-[6px]">
                         {p.reserva?.codigo || "N/A"}
                       </span>
                     </td>
@@ -452,7 +452,7 @@ export default function HistóricoPagamentosPage() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleOpenAudit(p)}
-                        className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-lg transition-all"
+                        className="p-1.5 text-slate-400 hover:text-[#902ad1] hover:bg-[#902ad1]/5 rounded-[10px] transition-all"
                         title="Ver Comprovativo e Auditar"
                       >
                         <FileText size={15} />

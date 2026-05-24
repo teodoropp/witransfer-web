@@ -507,7 +507,7 @@ export default function FinanceiroGeralPage() {
               ontem.setDate(ontem.getDate() - 1);
               setDataSelecionada(ontem.toISOString().split("T")[0]);
             }}
-            className="px-3.5 py-2 bg-white border border-slate-100 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-600 shadow-sm"
+            className="px-3.5 py-2 bg-white border border-slate-100 hover:bg-slate-50 rounded-[10px] text-xs font-bold text-slate-600 shadow-sm"
           >
             Ontem
           </button>
@@ -517,12 +517,12 @@ export default function FinanceiroGeralPage() {
               const hoje = new Date();
               setDataSelecionada(hoje.toISOString().split("T")[0]);
             }}
-            className="px-3.5 py-2 bg-white border border-slate-100 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-600 shadow-sm"
+            className="px-3.5 py-2 bg-white border border-slate-100 hover:bg-slate-50 rounded-[10px] text-xs font-bold text-slate-600 shadow-sm"
           >
             Hoje
           </button>
 
-          <div className="flex items-center bg-white border border-slate-100 rounded-xl px-3 py-1.5 gap-1.5 shadow-sm text-xs font-bold">
+          <div className="flex items-center bg-white border border-slate-100 rounded-[10px] px-3 py-1.5 gap-1.5 shadow-sm text-xs font-bold">
             <Calendar size={14} className="text-slate-400" />
             <input
               type="date"
@@ -535,7 +535,7 @@ export default function FinanceiroGeralPage() {
           {dataSelecionada && (
             <button
               onClick={() => setDataSelecionada("")}
-              className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200/50 text-rose-600 rounded-xl transition-all"
+              className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200/50 text-rose-600 rounded-[10px] transition-all"
               title="Limpar Data"
             >
               <XCircle size={16} />
@@ -546,7 +546,7 @@ export default function FinanceiroGeralPage() {
 
       {/* Seção Filtro por Parceiro Ativo */}
       {parceiroFiltroId && (
-        <div className="bg-[#902ad1]/5 border border-[#902ad1]/20 rounded-xl p-3.5 flex items-center justify-between animate-in slide-in-from-top duration-300">
+        <div className="bg-[#902ad1]/5 border border-[#902ad1]/20 rounded-[10px] p-3.5 flex items-center justify-between animate-in slide-in-from-top duration-300">
           <div className="flex items-center gap-2 text-xs font-bold text-[#902ad1]">
             <Building size={16} />
             <span>Filtrado pelo parceiro: {parceiros.find((p) => p.id === parceiroFiltroId)?.nome || "Parceiro Corporativo"}</span>
@@ -561,11 +561,11 @@ export default function FinanceiroGeralPage() {
       )}
 
       {/* Top 3 Stat Cards - Compact, Shorter and Rectangular */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
         {/* Saldo Disponível */}
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center justify-between gap-4 h-full">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
+            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-[10px]">
               <Wallet size={16} />
             </div>
             <div>
@@ -588,8 +588,8 @@ export default function FinanceiroGeralPage() {
         </div>
 
         {/* Receita do Mês */}
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-purple-50 text-[#902ad1] rounded-xl">
+        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3 h-full">
+          <div className="p-2.5 bg-purple-50 text-[#902ad1] rounded-[10px]">
             <TrendingUp size={16} />
           </div>
           <div>
@@ -603,8 +603,8 @@ export default function FinanceiroGeralPage() {
         </div>
 
         {/* Média por Reserva */}
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+        <div className="bg-white p-4 rounded-[10px] border border-slate-100 shadow-sm flex items-center gap-3 h-full">
+          <div className="p-2.5 bg-blue-50 text-blue-600 rounded-[10px]">
             <Percent size={16} />
           </div>
           <div>
@@ -619,12 +619,12 @@ export default function FinanceiroGeralPage() {
       </div>
 
       {/* Tabs Navigation styled like modern iOS Segment Control */}
-      <div className="bg-slate-100/75 p-1 rounded-xl flex gap-1 self-start max-w-max border border-slate-200/50">
+      <div className="bg-slate-100/75 p-1 rounded-[10px] flex gap-1 self-start max-w-max border border-slate-200/50">
         {(["geral", "transacoes", "parceiros", "regras"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setAbaAtiva(tab)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`px-4 py-2 rounded-[10px] text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
               abaAtiva === tab
                 ? "bg-white text-[#902ad1] shadow-sm"
                 : "text-slate-500 hover:text-slate-800"
@@ -643,9 +643,9 @@ export default function FinanceiroGeralPage() {
       ) : (
         <>
           {abaAtiva === "geral" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
               {/* Distribuição Financeira - Premium Circular SVG Donut Chart */}
-              <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-6">
+              <div className="lg:col-span-2 bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6 flex flex-col justify-between h-full">
                 <div>
                   <h3 className="text-xs font-black text-slate-855 uppercase tracking-widest">Distribuição Financeira</h3>
                   <p className="text-[10px] text-slate-400 font-bold">Detalhamento de ganhos reais entre frotas parceiras e intermediação da plataforma.</p>
@@ -712,7 +712,7 @@ export default function FinanceiroGeralPage() {
 
                   {/* Legenda Lateral com layout premium */}
                   <div className="space-y-3 flex-1 max-w-xs">
-                    <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between gap-3">
+                    <div className="p-3 bg-slate-50 border border-slate-100 rounded-[10px] flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-[#10b981]" />
                         <div>
@@ -725,7 +725,7 @@ export default function FinanceiroGeralPage() {
                       </span>
                     </div>
 
-                    <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between gap-3">
+                    <div className="p-3 bg-slate-50 border border-slate-100 rounded-[10px] flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-[#902ad1]" />
                         <div>
@@ -742,29 +742,29 @@ export default function FinanceiroGeralPage() {
               </div>
 
               {/* Indicadores Adicionais (Vertical Column) */}
-              <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+              <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm flex flex-col justify-between h-full">
                 <div>
                   <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest">Indicadores de Atividade</h3>
                   <p className="text-[10px] text-slate-400 font-bold">Resumo reativo de movimentações diárias.</p>
                 </div>
 
                 <div className="space-y-3.5 pt-4 lg:pt-0">
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="bg-slate-50 border border-slate-100 rounded-[10px] p-3 flex items-center justify-between">
                     <span className="text-[10px] text-slate-450 font-bold uppercase">Receita Hoje</span>
                     <span className="text-xs font-black text-slate-700">{formatCurrency(dados.receitaHoje)}</span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="bg-slate-50 border border-slate-100 rounded-[10px] p-3 flex items-center justify-between">
                     <span className="text-[10px] text-slate-450 font-bold uppercase">Receita Semana</span>
                     <span className="text-xs font-black text-slate-700">{formatCurrency(dados.receitaSemana)}</span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="bg-slate-50 border border-slate-100 rounded-[10px] p-3 flex items-center justify-between">
                     <span className="text-[10px] text-slate-450 font-bold uppercase">Reservas Pagas</span>
                     <span className="text-xs font-black text-slate-700">{dados.totalReservas}</span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="bg-slate-50 border border-slate-100 rounded-[10px] p-3 flex items-center justify-between">
                     <span className="text-[10px] text-slate-450 font-bold uppercase">Crescimento</span>
                     <span className="text-xs font-black text-emerald-600">0%</span>
                   </div>
@@ -774,7 +774,7 @@ export default function FinanceiroGeralPage() {
           )}
 
           {abaAtiva === "transacoes" && (
-            <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 rounded-[10px] border border-slate-100 shadow-sm space-y-6">
               <div>
                 <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest">Últimas Transações</h3>
                 <p className="text-[10px] text-slate-400 font-bold">Auditoria geral de pagamentos e recebimentos.</p>
@@ -796,7 +796,7 @@ export default function FinanceiroGeralPage() {
                     {pagamentos
                       .filter((p) => !parceiroFiltroId || p.parceiro_id === parceiroFiltroId)
                       .map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
+                        <tr key={p.id} className="hover:bg-slate-50/40 hover:shadow-[inset_3.5px_0_0_0_#902ad1] transition-all duration-300">
                           <td className="px-4 py-3">
                             <span className="text-xs font-bold text-[#902ad1] block">#{p.reserva_codigo}</span>
                             <span className="text-[8px] text-slate-400 font-semibold block">{formatDate(p.criado_em)}</span>
@@ -821,7 +821,7 @@ export default function FinanceiroGeralPage() {
                                 setPagamentoSelecionado(p);
                                 setModalDetalhesVisivel(true);
                               }}
-                              className="p-1.5 text-slate-455 hover:text-[#902ad1] rounded-lg hover:bg-[#902ad1]/5 transition-all"
+                              className="p-1.5 text-slate-455 hover:text-[#902ad1] rounded-[10px] hover:bg-[#902ad1]/5 transition-all"
                             >
                               <Eye size={16} />
                             </button>
@@ -849,7 +849,7 @@ export default function FinanceiroGeralPage() {
                       setParceiroFiltroId(p.id === parceiroFiltroId ? null : p.id);
                       setAbaAtiva("geral");
                     }}
-                    className={`bg-white p-5 rounded-xl border transition-all cursor-pointer hover:shadow-md relative ${
+                    className={`bg-white p-5 rounded-[10px] border transition-all cursor-pointer hover:shadow-md relative ${
                       parceiroFiltroId === p.id
                         ? "border-[#902ad1] shadow-md shadow-[#902ad1]/5"
                         : "border-slate-100"
@@ -857,7 +857,7 @@ export default function FinanceiroGeralPage() {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-[#902ad1]/5 text-[#902ad1] rounded-xl">
+                        <div className="p-2.5 bg-[#902ad1]/5 text-[#902ad1] rounded-[10px]">
                           <Building size={18} />
                         </div>
                         <div>
@@ -896,7 +896,7 @@ export default function FinanceiroGeralPage() {
                 
                 <button
                   onClick={() => setModalRegraVisivel(true)}
-                  className="px-3.5 py-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white text-xs font-bold rounded-xl flex items-center gap-1 shadow-md shadow-[#902ad1]/5"
+                  className="px-3.5 py-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white text-xs font-bold rounded-[10px] flex items-center gap-1 shadow-md shadow-[#902ad1]/5"
                 >
                   <Plus size={14} />
                   Adicionar Regra
@@ -905,7 +905,7 @@ export default function FinanceiroGeralPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {regras.map((r) => (
-                  <div key={r.id} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm relative space-y-4">
+                  <div key={r.id} className="bg-white p-5 rounded-[10px] border border-slate-100 shadow-sm relative space-y-4">
                     <div className="flex justify-between items-start">
                       <span
                         className={`text-[8px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-[10px] border ${
@@ -935,7 +935,7 @@ export default function FinanceiroGeralPage() {
                     </div>
 
                     {r.entidade_id && (
-                      <div className="text-[9px] font-bold text-slate-455 bg-slate-50 p-2 rounded-lg truncate">
+                      <div className="text-[9px] font-bold text-slate-455 bg-slate-50 p-2 rounded-[10px] truncate">
                         ID Entidade: {r.entidade_id}
                       </div>
                     )}
@@ -950,7 +950,7 @@ export default function FinanceiroGeralPage() {
       {/* Modal Detalhes do Pagamento */}
       {modalDetalhesVisivel && pagamentoSelecionado && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl border border-slate-100 shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white w-full max-w-md rounded-[10px] border border-slate-100 shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-xs font-black text-slate-855 uppercase tracking-widest">
@@ -1023,7 +1023,7 @@ export default function FinanceiroGeralPage() {
               {(pagamentoSelecionado.status !== "aprovado" && pagamentoSelecionado.status !== "pago") && (
                 <button
                   onClick={() => handleAprovarPagamento(pagamentoSelecionado)}
-                  className="w-full py-3 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white font-bold text-xs rounded-xl shadow-lg shadow-[#902ad1]/10 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-3 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white font-bold text-xs rounded-[10px] shadow-lg shadow-[#902ad1]/10 transition-all flex items-center justify-center gap-1.5"
                 >
                   <CheckCircle2 size={16} />
                   Confirmar Recebimento (Aprovar)
@@ -1037,7 +1037,7 @@ export default function FinanceiroGeralPage() {
       {/* Modal Criar Regra de Comissão */}
       {modalRegraVisivel && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-2xl border border-slate-100 shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+          <div className="bg-white w-full max-w-lg rounded-[10px] border border-slate-100 shadow-xl overflow-hidden animate-in slide-in-from-bottom duration-300">
             {/* Header */}
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-xs font-black text-slate-855 uppercase tracking-widest">
@@ -1062,7 +1062,7 @@ export default function FinanceiroGeralPage() {
                       key={t}
                       type="button"
                       onClick={() => setNovaRegra({ ...novaRegra, entidade_tipo: t, entidade_id: "" })}
-                      className={`py-2 text-[10px] font-extrabold rounded-lg border text-center transition-all ${
+                      className={`py-2 text-[10px] font-extrabold rounded-[10px] border text-center transition-all ${
                         novaRegra.entidade_tipo === t
                           ? "bg-[#902ad1] text-white border-[#902ad1]"
                           : "bg-slate-50 text-slate-600 border-slate-100 hover:bg-slate-100"
@@ -1081,7 +1081,7 @@ export default function FinanceiroGeralPage() {
                   <select
                     value={novaRegra.entidade_id}
                     onChange={(e) => setNovaRegra({ ...novaRegra, entidade_id: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]"
                   >
                     <option value="">Selecione um parceiro corporativo...</option>
                     {listaParceiros.map((p) => (
@@ -1100,7 +1100,7 @@ export default function FinanceiroGeralPage() {
                   <select
                     value={novaRegra.entidade_id}
                     onChange={(e) => setNovaRegra({ ...novaRegra, entidade_id: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]"
                   >
                     <option value="">Selecione uma categoria de viaturas...</option>
                     {categorias.map((c) => (
@@ -1119,7 +1119,7 @@ export default function FinanceiroGeralPage() {
                   type="number"
                   value={novaRegra.percentual_comissao}
                   onChange={(e) => setNovaRegra({ ...novaRegra, percentual_comissao: e.target.value })}
-                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
+                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
                   placeholder="Ex: 20"
                 />
               </div>
@@ -1131,7 +1131,7 @@ export default function FinanceiroGeralPage() {
                   type="number"
                   value={novaRegra.taxa_servico_plataforma}
                   onChange={(e) => setNovaRegra({ ...novaRegra, taxa_servico_plataforma: e.target.value })}
-                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
+                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
                   placeholder="Ex: 5"
                 />
               </div>
@@ -1143,7 +1143,7 @@ export default function FinanceiroGeralPage() {
                   type="number"
                   value={novaRegra.prioridade}
                   onChange={(e) => setNovaRegra({ ...novaRegra, prioridade: e.target.value })}
-                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
+                  className="px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-[10px] text-xs font-medium outline-none focus:bg-white focus:border-[#902ad1]"
                   placeholder="Ex: 1"
                 />
               </div>
@@ -1171,7 +1171,7 @@ export default function FinanceiroGeralPage() {
                 <button
                   type="button"
                   onClick={() => setModalRegraVisivel(false)}
-                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-150 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-150 text-slate-700 text-xs font-bold rounded-[10px] transition-all"
                 >
                   Cancelar
                 </button>
@@ -1179,7 +1179,7 @@ export default function FinanceiroGeralPage() {
                   type="button"
                   onClick={handleSalvarRegra}
                   disabled={salvandoRegra}
-                  className="flex-1 py-3 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white text-xs font-bold rounded-xl shadow-lg shadow-[#902ad1]/5 transition-all"
+                  className="flex-1 py-3 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white text-xs font-bold rounded-[10px] shadow-lg shadow-[#902ad1]/5 transition-all"
                 >
                   {salvandoRegra ? "A guardar..." : "Guardar Regra"}
                 </button>

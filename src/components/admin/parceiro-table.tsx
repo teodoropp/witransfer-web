@@ -208,10 +208,10 @@ export default function ParceiroTable({
   // Vista em Tabela
   return (
     <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[500px] overflow-y-auto no-scrollbar">
         <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-50/75 border-b border-slate-100">
+          <thead className="sticky top-0 bg-slate-50 z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)]">
+            <tr className="bg-slate-50/90 border-b border-slate-100">
               <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Parceiro Oficial
               </th>
