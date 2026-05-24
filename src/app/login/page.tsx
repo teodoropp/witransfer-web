@@ -354,7 +354,7 @@ export default function LoginPage() {
           className="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
           onClick={() => setShowQRModal(false)}>
           <div
-            className="bg-white rounded-2xl max-w-[390px] w-full p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200"
+            className="bg-white rounded-2xl max-w-[390px] w-full p-6 max-h-[92vh] overflow-y-auto shadow-2xl relative border border-slate-100 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200 no-scrollbar"
             onClick={(e) => e.stopPropagation()}>
             {/* Botão Fechar */}
             <button
@@ -364,39 +364,39 @@ export default function LoginPage() {
             </button>
 
             {/* Ícone / Header */}
-            <div className="w-16 h-16 bg-[#902ad1]/10 text-[#902ad1] rounded-full flex items-center justify-center mb-6">
-              <QrCode size={32} />
+            <div className="w-12 h-12 bg-[#902ad1]/10 text-[#902ad1] rounded-full flex items-center justify-center mb-3">
+              <QrCode size={24} />
             </div>
 
-            <h3 className="text-2xl font-bold text-slate-800 mb-3 tracking-tight">
+            <h3 className="text-xl font-bold text-slate-800 mb-1.5 tracking-tight">
               Registo de Parceiros
             </h3>
 
-            <p className="text-slate-500 text-sm leading-relaxed mb-6 font-medium">
+            <p className="text-slate-500 text-xs leading-relaxed mb-4 font-medium max-w-[300px]">
               Por motivos de segurança e facilidade na validação de documentos,
               a criação de contas de parceiros WiTransfer é realizada
               **exclusivamente através da nossa aplicação móvel**.
             </p>
 
             {/* QR Code Container */}
-            <div className="bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 mb-6 flex flex-col items-center justify-center shadow-inner group hover:scale-[1.02] transition-all duration-300">
+            <div className="bg-slate-50 p-4 rounded-2xl border-2 border-slate-100 mb-4 flex flex-col items-center justify-center shadow-inner group hover:scale-[1.01] transition-all duration-300">
               <img
                 src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/store/apps/details?id=witransfer.com"
                 alt="QR Code de Download"
-                className="w-48 h-48 object-contain rounded-lg"
+                className="w-36 h-36 object-contain rounded-lg"
               />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-3">
                 Aponte a câmara do telemóvel
               </span>
             </div>
 
             {/* Play Store e Download Direto */}
-            <div className="mt-2 flex flex-col items-center gap-4 w-full">
+            <div className="mt-1 flex flex-col items-center gap-3 w-full">
               <a
                 href="https://play.google.com/store/apps/details?id=witransfer.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="play-store-btn-custom"
+                className="play-store-btn-custom scale-95"
               >
                 <svg
                   viewBox="0 0 512 512"
