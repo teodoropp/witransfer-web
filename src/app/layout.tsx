@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "WiTransfer | Dashboard",
   description: "Painel Administrativo e Portal do Parceiro WiTransfer",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", type: "image/svg+xml" }
+    ]
+  }
 };
 
 export default function RootLayout({
