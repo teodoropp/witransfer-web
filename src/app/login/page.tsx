@@ -390,7 +390,7 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* Play Store e Download Direto */}
+            {/* Play Store Link */}
             <div className="mt-1 flex flex-col items-center gap-3 w-full">
               <a
                 href="https://play.google.com/store/apps/details?id=witransfer.com"
@@ -414,12 +414,6 @@ export default function LoginPage() {
                   <span className="play-store-sub">DISPONÍVEL NO</span>
                   <span className="play-store-main">Google Play</span>
                 </div>
-              </a>
-
-              <a
-                href="https://www.witransfer.org/witransfer.apk"
-                className="text-[10px] font-bold text-[#902ad1] hover:underline transition-all">
-                Está no telemóvel? Descarregue o APK diretamente aqui
               </a>
             </div>
           </div>
