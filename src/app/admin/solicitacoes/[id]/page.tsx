@@ -388,8 +388,12 @@ export default function SolicitacaoDetalhesPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 bg-slate-100 rounded-[10px] text-center text-xs font-medium text-slate-400 flex items-center justify-center">
-                        Ficheiro não imprimível (PDF ou outro)
+                      <div className="relative w-full aspect-video rounded-[10px] overflow-hidden border border-slate-150 bg-slate-50 flex items-center justify-center p-1">
+                        <iframe
+                          src={`${doc}#toolbar=0&navpanes=0`}
+                          className="w-full h-full border-none rounded"
+                          title={`Documento ${index + 1}`}
+                        />
                       </div>
                     )}
 

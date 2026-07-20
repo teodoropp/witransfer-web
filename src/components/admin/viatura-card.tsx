@@ -36,12 +36,14 @@ interface ViaturaCardProps {
   viatura: Viatura;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, status: boolean) => void;
+  onViewDetails?: (viatura: Viatura) => void;
 }
 
 export default function ViaturaCard({
   viatura,
   onDelete,
   onToggleStatus,
+  onViewDetails,
 }: ViaturaCardProps) {
   return (
     <div className={`group overflow-hidden flex flex-col h-full w-full ${THEME_TOKENS.cardInteractive}`}>
@@ -161,13 +163,23 @@ export default function ViaturaCard({
 
       {/* Ação de Detalhes no Rodapé (Compacta) */}
       <div className="px-5 pb-5 shrink-0">
-        <Link
-          href={`/admin/viaturas/${viatura.id}`}
-          className={`w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] ${THEME_TOKENS.cardRounded} font-semibold text-[11px] transition-all border border-transparent hover:border-[#902ad1]/10`}
-        >
-          <Eye size={14} />
-          <span>Ver Detalhes</span>
-        </Link>
+        {onViewDetails ? (
+          <button
+            onClick={() => onViewDetails(viatura)}
+            className={`w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] ${THEME_TOKENS.cardRounded} font-semibold text-[11px] transition-all border border-transparent hover:border-[#902ad1]/10 cursor-pointer`}
+          >
+            <Eye size={14} />
+            <span>Ver Detalhes</span>
+          </button>
+        ) : (
+          <Link
+            href={`/admin/viaturas/${viatura.id}`}
+            className={`w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-50 hover:bg-[#902ad1]/5 text-slate-500 hover:text-[#902ad1] ${THEME_TOKENS.cardRounded} font-semibold text-[11px] transition-all border border-transparent hover:border-[#902ad1]/10`}
+          >
+            <Eye size={14} />
+            <span>Ver Detalhes</span>
+          </Link>
+        )}
       </div>
     </div>
   );

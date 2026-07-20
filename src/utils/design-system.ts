@@ -29,8 +29,8 @@
  */
 
 // Base values for dynamic interpolation
-const cardRounded = "rounded-2xl";
-const cardBorder = "border border-slate-100/90";
+const cardRounded = "rounded-[5px]";
+const cardBorder = "border border-black/[0.22]";
 const cardShadow = "shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 transition-all duration-300 ease-out";
 const cardBg = "bg-white";
 

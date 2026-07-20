@@ -5,13 +5,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { 
-  Eye, 
-  EyeOff, 
-  Loader2, 
+import {
+  Eye,
+  EyeOff,
+  Loader2,
   AlertCircle,
   CheckCircle2,
-  Lock
+  Lock,
+  ArrowLeft,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
@@ -26,10 +27,14 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         // Se não houver sessão (link expirado), mostrar erro amigável
-        setErrorMsg("Este link de recuperação expirou ou é inválido. Por favor, solicite um novo.");
+        setErrorMsg(
+          "Este link de recuperação expirou ou é inválido. Por favor, solicite um novo.",
+        );
         setTimeout(() => {
           router.push("/recuperar-password");
         }, 5000);
@@ -40,13 +45,13 @@ export default function ResetPasswordPage() {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password.length < 6) {
-      setErrorMsg("A password deve ter pelo menos 6 caracteres.");
+      setErrorMsg("A palavra-passe deve ter pelo menos 6 caracteres.");
       return;
     }
     if (password !== confirmPassword) {
-      setErrorMsg("As passwords não coincidem.");
+      setErrorMsg("As palavras-passe não coincidem.");
       return;
     }
 
@@ -59,155 +64,174 @@ export default function ResetPasswordPage() {
       setSuccess(true);
     } catch (err: unknown) {
       const error = err as Error;
-      setErrorMsg(error.message || "Não foi possível atualizar a password.");
+      setErrorMsg(
+        error.message || "Não foi possível atualizar a palavra-passe.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  if (success) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-white rounded-[10px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-green-100">
-            <CheckCircle2 size={40} />
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-4 tracking-tight">Password Atualizada!</h2>
-          <p className="text-slate-500 mb-10 leading-relaxed font-medium">
-            A sua password foi alterada com sucesso. Já pode aceder à sua conta com as novas credenciais.
-          </p>
-          <button
-            onClick={() => router.push("/login")}
-            className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20"
-          >
-            Entrar Agora
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row font-sans bg-white overflow-hidden text-slate-800">
-      
-      {/* Painel Esquerdo (Desktop) */}
-      <div className="hidden lg:flex flex-1 bg-primary relative items-center justify-center p-16 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] border-[2px] border-white rounded-full blur-3xl" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] border-[1px] border-white/40 rounded-full blur-2xl" />
-        </div>
-
-        <div className="relative z-10 text-white max-w-md w-full text-center lg:text-left">
-          <div className="mb-12 flex justify-center lg:justify-start">
-            <Image
-              src="/logo.png"
-              alt="WiTransfer"
-              width={220}
-              height={70}
-              className="brightness-0 invert object-contain"
-              style={{ height: "auto" }}
-            />
-          </div>
-          <h2 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
-            Defina uma nova password segura
-          </h2>
-          <p className="text-lg text-primary-foreground/70 font-medium leading-relaxed">
-            A segurança da sua conta é a nossa prioridade. Escolha uma password forte que não tenha usado anteriormente.
-          </p>
-        </div>
+    <div className="min-h-screen w-full bg-[#F1E9F7] text-slate-800 font-sans flex flex-col justify-between p-4 lg:p-6 overflow-y-auto select-none">
+      {/* Cabeçalho com Link de Voltar */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-8 flex items-center justify-between z-10 mb-2">
+        <button
+          onClick={() => router.push("/login")}
+          className="flex items-center gap-2 text-sm font-semibold text-slate-555 hover:text-[#902AD1] transition-all cursor-pointer bg-transparent border-none">
+          <ArrowLeft size={16} />
+          <span>Voltar para o Login</span>
+        </button>
       </div>
 
-      {/* Painel Direito (Formulário) */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-24 bg-white relative">
-        <div className="w-full max-w-sm">
+      {/* Área de Conteúdo Principal Centralizada */}
+      <div className="flex-1 flex justify-center items-center py-8 z-10 w-full">
+        <div
+          className="w-full max-w-[440px] rounded-[30px] border border-purple-200/40 p-8 lg:p-10 relative overflow-hidden transition-all duration-300 shrink-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255, 255, 255, 0.45) 10%, rgba(255, 255, 255, 0.15) 80%), rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            boxShadow:
+              "0 20px 40px -12px rgba(144, 42, 209, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.4)",
+          }}>
           
-          <div className="lg:hidden mb-12 flex justify-center">
-            <Image
-              src="/logo.png"
-              alt="WiTransfer"
-              width={160}
-              height={50}
-              className="object-contain"
-              style={{ height: "auto" }}
-            />
+          {/* Logo do WiTransfer */}
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 rounded-full bg-[#902AD1] flex items-center justify-center shadow-lg shadow-[#902AD1]/20 select-none relative overflow-hidden">
+              <Image
+                src="/imagem/icone_white.png"
+                alt="WiTransfer Logo"
+                width={34}
+                height={34}
+                className="object-contain"
+              />
+            </div>
           </div>
 
-          <div className="mb-10">
-            <h2 className="text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-              Nova Password
-            </h2>
-            <p className="text-slate-400 font-medium">
-              Escolha uma nova password para aceder ao seu portal.
-            </p>
-          </div>
+          {!success ? (
+            <>
+              {/* Título com Sublinhado */}
+              <h2 className="text-center text-xl font-bold text-slate-800 mb-4 tracking-tight">
+                <span className="relative pb-1">
+                  Nova
+                  <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#902AD1] rounded-full" />
+                </span>{" "}
+                Palavra-passe
+              </h2>
 
-          {errorMsg && (
-            <div className={`mb-8 p-4 flex items-center gap-3 text-sm animate-in fade-in slide-in-from-top-1 rounded-[10px] ${errorMsg.includes('expirou') ? 'bg-orange-50 border-l-4 border-orange-500 text-orange-700' : 'bg-red-50 border-l-4 border-red-500 text-red-700'}`}>
-              <AlertCircle size={18} className="shrink-0" />
-              <p className="font-medium">{errorMsg}</p>
-            </div>
-          )}
+              {/* Descrição */}
+              <p className="text-slate-500 font-medium text-xs text-center leading-relaxed max-w-[260px] mx-auto mb-6">
+                Escolha uma nova palavra-passe para aceder ao seu portal
+              </p>
 
-          <form onSubmit={handleUpdatePassword} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nova Password</label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors border-r border-slate-200 pr-3">
-                  <Lock size={18} />
+              {/* Mensagem de Erro */}
+              {errorMsg && (
+                <div
+                  className={`mb-4 p-3 border rounded-2xl flex items-start gap-2.5 text-xs animate-in fade-in slide-in-from-top-1 ${
+                    errorMsg.includes("expirou")
+                      ? "bg-orange-500/10 border-orange-500/20 text-orange-850"
+                      : "bg-red-500/10 border-red-500/20 text-red-750"
+                  }`}>
+                  <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                  <p className="font-semibold leading-normal">{errorMsg}</p>
                 </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
+              )}
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Confirmar Nova Password</label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors border-r border-slate-200 pr-3">
-                  <Lock size={18} />
+              {/* Formulário */}
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                {/* Nova Palavra-passe */}
+                <div className="space-y-1">
+                  <label className="text-[12px] font-semibold text-slate-650 pl-1">
+                    Nova Palavra-passe
+                  </label>
+                  <div className="relative flex items-center">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full h-10 pl-4 pr-11 bg-white/50 border border-slate-300/80 rounded-[5px] outline-none transition-all text-slate-800 text-[13.5px] focus:border-[#902AD1] focus:bg-white focus:ring-1 focus:ring-[#902AD1]/30 placeholder:text-slate-400 disabled:opacity-50"
+                      placeholder="Introduza a nova palavra-passe"
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-slate-400 hover:text-[#902AD1] transition-colors disabled:opacity-50 cursor-pointer"
+                      disabled={loading}>
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
                 </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full h-14 pl-14 pr-12 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                />
-              </div>
-            </div>
 
-            <div className="pt-4">
+                {/* Confirmar Nova Palavra-passe */}
+                <div className="space-y-1">
+                  <label className="text-[12px] font-semibold text-slate-650 pl-1">
+                    Confirmar Nova Palavra-passe
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full h-10 px-4 bg-white/50 border border-slate-300/80 rounded-[5px] outline-none transition-all text-slate-800 text-[13.5px] focus:border-[#902AD1] focus:bg-white focus:ring-1 focus:ring-[#902AD1]/30 placeholder:text-slate-400 disabled:opacity-50"
+                    placeholder="Confirme a nova palavra-passe"
+                    disabled={loading}
+                    required
+                  />
+                </div>
+
+                {/* Botão Submeter */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-10 bg-[#902AD1] hover:bg-[#7a22b3] active:scale-[0.98] text-white rounded-[5px] font-bold text-sm transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-md shadow-[#902AD1]/10 cursor-pointer">
+                    {loading ? (
+                      <Loader2 className="animate-spin text-white" size={16} />
+                    ) : (
+                      "Definir Palavra-passe"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className="text-center py-2 animate-in fade-in duration-300">
+              {/* Ícone de Sucesso */}
+              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                <CheckCircle2 size={24} />
+              </div>
+
+              {/* Título de Sucesso */}
+              <h2 className="text-lg font-bold text-slate-800 mb-2 tracking-tight">
+                Palavra-passe Alterada!
+              </h2>
+
+              {/* Descrição de Sucesso */}
+              <p className="text-slate-500 text-xs leading-relaxed max-w-[280px] mx-auto mb-6 font-medium">
+                A sua palavra-passe foi redefinida com sucesso. Já pode iniciar sessão no seu portal.
+              </p>
+
+              {/* Botão Entrar Agora */}
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70"
-              >
-                {loading ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  "Guardar Nova Password"
-                )}
+                onClick={() => router.push("/login")}
+                className="w-full h-10 bg-[#902AD1] hover:bg-[#7a22b3] text-white rounded-[5px] font-bold text-sm transition-all flex items-center justify-center cursor-pointer shadow-md shadow-[#902AD1]/10">
+                Entrar Agora
               </button>
             </div>
-          </form>
+          )}
         </div>
+      </div>
+
+      {/* Direitos Reservados */}
+      <div className="w-full text-center py-2 z-10">
+        <p className="text-[10px] font-medium text-slate-450">
+          © 2026 witransfer. Todos os direitos reservados.
+        </p>
       </div>
     </div>
   );
 }
+

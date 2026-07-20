@@ -96,7 +96,7 @@ export default function NotificacoesPage() {
       const { data: notifs } = await supabase
         .from('notificacoes')
         .select('id, titulo, mensagem, lida, criado_em, tipo')
-        .eq('user_id', user.id)
+        .eq('usuario_id', user.id)
         .order('criado_em', { ascending: false });
 
       setNotificacoes(notifs || []);
@@ -132,7 +132,7 @@ export default function NotificacoesPage() {
       await supabase
         .from('notificacoes')
         .update({ lida: true })
-        .eq('user_id', userId)
+        .eq('usuario_id', userId)
         .eq('lida', false);
     } catch (err) {
       console.error('Erro ao marcar todas como lidas:', err);

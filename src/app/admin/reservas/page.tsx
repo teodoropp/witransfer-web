@@ -6,8 +6,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   CalendarRange,
   Search,
-  Plus,
-  Filter,
   Eye,
   Check,
   X,
@@ -16,7 +14,6 @@ import {
   Play,
   CheckCircle2,
   DollarSign,
-  User,
   Car,
   Compass,
   ArrowRight,
@@ -24,12 +21,13 @@ import {
   TrendingUp,
   MapPin,
   Clock,
-  ArrowLeft,
   ChevronDown,
+  Plane,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
-import { THEME_TOKENS } from "@/utils/design-system";
 
 interface Perfil {
   id: string;
@@ -79,114 +77,130 @@ interface Reserva {
   motoristas: Motorista | null;
 }
 
+function AnimatedNumber({ value, isCurrency = false }: { value: number; isCurrency?: boolean }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const start = current;
+    const end = value;
+    if (start === end) return;
+
+    const duration = 800; // ms
+    const startTime = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function (outQuad)
+      const easeProgress = progress * (2 - progress);
+      const nextVal = Math.round(start + (end - start) * easeProgress);
+      
+      setCurrent(nextVal);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  if (isCurrency) {
+    return <span>{current.toLocaleString("pt-AO")} Kz</span>;
+  }
+  return <span>{current}</span>;
+}
+
 export default function ReservasAdminPage() {
+  const router = useRouter();
   const [reservas, setReservas] = useState<Reserva[]>([]);
-  const [motoristasDisponiveis, setMotoristasDisponiveis] = useState<Motorista[]>([]);
+  const [motoristasDisponiveis, setMotoristasDisponiveis] = useState<
+    Motorista[]
+  >([]);
   const [viaturasDisponiveis, setViaturasDisponiveis] = useState<Viatura[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedReserva, setSelectedReserva] = useState<Reserva | null>(null);
 
   // Filtros
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("todos");
-  const [sortBy, setSortBy] = useState("recente");
-
-  // Filtros Avançados
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [routeTypeFilter, setRouteTypeFilter] = useState("todas");
   const [startDateFilter, setStartDateFilter] = useState("");
-  const [endDateFilter, setEndDateFilter] = useState("");
-  const [minPriceFilter, setMinPriceFilter] = useState("");
-  const [maxPriceFilter, setMaxPriceFilter] = useState("");
   const [driverFilter, setDriverFilter] = useState("todos");
-  const [vehicleFilter, setVehicleFilter] = useState("todas");
+  const [quickFilter, setQuickFilter] = useState<string>("todos");
+  const [sortBy, setSortBy] = useState("recente");
 
-  // Modal atribuição
+  // Modal de atribuicao
   const [atribuicaoModal, setAtribuicaoModal] = useState<{
     reservaId: string;
     motoristaId: string;
     viaturaId: string;
   } | null>(null);
 
-  // Buscar dados das reservas
   const fetchReservas = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from("reservas")
-        .select(`
+        .select(
+          `
           *,
-          perfis:cliente_id (
-            id,
-            nome_completo,
-            email,
-            telefone,
-            foto_url
-          ),
-          viaturas:viatura_id (
-            id,
-            marca,
-            modelo,
-            matricula,
-            preco_base
-          ),
+          perfis:cliente_id (id, nome_completo, email, telefone, foto_url),
+          viaturas:viatura_id (id, marca, modelo, matricula, preco_base),
           motoristas:motorista_id (
-            id,
-            perfil_id,
-            perfis:perfil_id (
-              nome_completo,
-              telefone
-            )
+            id, perfil_id,
+            perfis:perfil_id (nome_completo, telefone)
           )
-        `)
+        `,
+        )
         .order("criado_em", { ascending: false });
 
       if (error) throw error;
 
-      // Conversão e limpeza de tipos para joins de tabelas Supabase
-      const formattedReservas = (data || []).map((r: any) => ({
+      const formatted = (data || []).map((r: any) => ({
         ...r,
         perfis: Array.isArray(r.perfis) ? r.perfis[0] : r.perfis,
         viaturas: Array.isArray(r.viaturas) ? r.viaturas[0] : r.viaturas,
-        motoristas: r.motoristas ? {
-          id: r.motoristas.id,
-          perfil_id: r.motoristas.perfil_id,
-          perfis: Array.isArray(r.motoristas.perfis) ? r.motoristas.perfis[0] : r.motoristas.perfis
-        } : null
+        motoristas: r.motoristas
+          ? {
+              id: r.motoristas.id,
+              perfil_id: r.motoristas.perfil_id,
+              perfis: Array.isArray(r.motoristas.perfis)
+                ? r.motoristas.perfis[0]
+                : r.motoristas.perfis,
+            }
+          : null,
       })) as Reserva[];
 
-      setReservas(formattedReservas);
+      setReservas(formatted);
+
+      if (selectedReserva) {
+        const updated = formatted.find((r) => r.id === selectedReserva.id);
+        if (updated) setSelectedReserva(updated);
+      }
     } catch (err) {
       console.error("Erro ao carregar reservas:", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedReserva]);
 
-  // Buscar motoristas e viaturas para atribuição rápida
-  const fetchRecursosDisponiveis = useCallback(async () => {
+  const fetchRecursos = useCallback(async () => {
     try {
-      // Motoristas
       const { data: motData } = await supabase
         .from("motoristas")
-        .select(`
-          id,
-          perfil_id,
-          perfis:perfil_id (
-            nome_completo,
-            telefone
-          )
-        `);
+        .select(`id, perfil_id, perfis:perfil_id (nome_completo, telefone)`);
 
-      const formattedMotoristas = (motData || []).map((m: any) => ({
-        id: m.id,
-        perfil_id: m.perfil_id,
-        perfis: Array.isArray(m.perfis) ? m.perfis[0] : m.perfis
-      })) as Motorista[];
+      setMotoristasDisponiveis(
+        (motData || []).map((m: any) => ({
+          id: m.id,
+          perfil_id: m.perfil_id,
+          perfis: Array.isArray(m.perfis) ? m.perfis[0] : m.perfis,
+        })) as Motorista[],
+      );
 
-      setMotoristasDisponiveis(formattedMotoristas);
-
-      // Viaturas
       const { data: viatData } = await supabase
         .from("viaturas")
         .select("id, marca, modelo, matricula, preco_base")
@@ -194,45 +208,60 @@ export default function ReservasAdminPage() {
 
       setViaturasDisponiveis(viatData || []);
     } catch (err) {
-      console.error("Erro ao buscar recursos disponíveis:", err);
+      console.error("Erro ao buscar recursos:", err);
     }
   }, []);
 
   useEffect(() => {
     fetchReservas();
-    fetchRecursosDisponiveis();
-  }, [fetchReservas, fetchRecursosDisponiveis]);
+    fetchRecursos();
+  }, [fetchRecursos]);
 
-  // Atualizar Status da Reserva
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-reservas-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reservas" },
+        () => {
+          fetchReservas();
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchReservas]);
+
   const handleUpdateStatus = async (id: string, novoStatus: string) => {
     try {
       setActionLoading(id);
       const updates: Record<string, any> = { status: novoStatus };
-      
-      const nowString = new Date().toISOString();
-      if (novoStatus === "pago") updates.pago_em = nowString;
-      if (novoStatus === "em_andamento") updates.iniciado_em = nowString;
-      if (novoStatus === "concluida") updates.concluido_em = nowString;
-      if (novoStatus === "cancelada") updates.cancelado_em = nowString;
+      const now = new Date().toISOString();
+      if (novoStatus === "pago") updates.pago_em = now;
+      if (novoStatus === "em_andamento") updates.iniciado_em = now;
+      if (novoStatus === "concluida") updates.concluido_em = now;
+      if (novoStatus === "cancelada") updates.cancelado_em = now;
 
       const { error } = await supabase
         .from("reservas")
         .update(updates)
         .eq("id", id);
-
       if (error) throw error;
 
       setReservas((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, ...updates } : r))
+        prev.map((r) => (r.id === id ? { ...r, ...updates } : r)),
       );
-    } catch (err) {
+      if (selectedReserva && selectedReserva.id === id) {
+        setSelectedReserva((prev) => (prev ? { ...prev, ...updates } : null));
+      }
+    } catch {
       alert("Erro ao atualizar estado da reserva.");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Salvar Atribuição de Motorista/Viatura
   const handleSaveAtribuicao = async () => {
     if (!atribuicaoModal) return;
     try {
@@ -242,15 +271,19 @@ export default function ReservasAdminPage() {
         .update({
           motorista_id: atribuicaoModal.motoristaId || null,
           viatura_id: atribuicaoModal.viaturaId || null,
-          status: "confirmada" // Muda automaticamente para confirmada ao atribuir recursos
+          status: "confirmada",
         })
         .eq("id", atribuicaoModal.reservaId);
 
       if (error) throw error;
 
-      // Atualizar localmente
-      const motoristaEscolhido = motoristasDisponiveis.find(m => m.id === atribuicaoModal.motoristaId) || null;
-      const viaturaEscolhida = viaturasDisponiveis.find(v => v.id === atribuicaoModal.viaturaId) || null;
+      const motorista =
+        motoristasDisponiveis.find(
+          (m) => m.id === atribuicaoModal.motoristaId,
+        ) || null;
+      const viatura =
+        viaturasDisponiveis.find((v) => v.id === atribuicaoModal.viaturaId) ||
+        null;
 
       setReservas((prev) =>
         prev.map((r) =>
@@ -260,97 +293,117 @@ export default function ReservasAdminPage() {
                 motorista_id: atribuicaoModal.motoristaId || null,
                 viatura_id: atribuicaoModal.viaturaId || null,
                 status: "confirmada",
-                motoristas: motoristaEscolhido,
-                viaturas: viaturaEscolhida
+                motoristas: motorista,
+                viaturas: viatura,
               }
-            : r
-        )
+            : r,
+        ),
       );
 
+      if (selectedReserva && selectedReserva.id === atribuicaoModal.reservaId) {
+        setSelectedReserva((prev) =>
+          prev
+            ? {
+                ...prev,
+                motorista_id: atribuicaoModal.motoristaId || null,
+                viatura_id: atribuicaoModal.viaturaId || null,
+                status: "confirmada",
+                motoristas: motorista,
+                viaturas: viatura,
+              }
+            : null,
+        );
+      }
       setAtribuicaoModal(null);
-    } catch (err) {
-      alert("Erro ao atribuir recursos à reserva.");
+    } catch {
+      alert("Erro ao atribuir recursos.");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Eliminar Reserva
   const handleDelete = async (id: string) => {
-    if (!confirm("Tem a certeza que deseja eliminar permanentemente esta reserva? Esta ação é irreversível!")) return;
+    if (!confirm("Tem a certeza que deseja eliminar esta reserva?")) return;
     try {
       setActionLoading(id);
       const { error } = await supabase.from("reservas").delete().eq("id", id);
       if (error) throw error;
       setReservas((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      alert("Erro ao eliminar a reserva da base de dados.");
+      if (selectedReserva && selectedReserva.id === id)
+        setSelectedReserva(null);
+    } catch {
+      alert("Erro ao eliminar a reserva.");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Estatísticas calculadas dinamicamente
-  const stats = useMemo(() => {
-    const total = reservas.length;
-    const ativas = reservas.filter(r => ["confirmada", "pago", "em_andamento"].includes(r.status)).length;
-    const concluidas = reservas.filter(r => r.status === "concluida").length;
-    const canceladas = reservas.filter(r => r.status === "cancelada").length;
-    const faturamento = reservas
-      .filter(r => ["pago", "concluida", "em_andamento"].includes(r.status))
-      .reduce((sum, r) => sum + r.valor_total, 0);
+  const handleResetFilters = () => {
+    setSearch("");
+    setStatusFilter("todos");
+    setRouteTypeFilter("todas");
+    setStartDateFilter("");
+    setDriverFilter("todos");
+    setSortBy("recente");
+    setQuickFilter("todos");
+  };
 
-    return { total, ativas, concluidas, canceladas, faturamento };
-  }, [reservas]);
+  const today = new Date().toISOString().split("T")[0];
 
-  // Filtragem e ordenação reativa
-  const filteredAndSortedReservas = useMemo(() => {
+  // KPI stats
+  const reservasHoje = reservas.filter((r) => r.data_recolha === today).length;
+  const emAndamento = reservas.filter(
+    (r) => r.status === "em_andamento",
+  ).length;
+  const aguardaMotorista = reservas.filter(
+    (r) => !r.motorista_id && r.status !== "cancelada",
+  ).length;
+  const pagamentoPendente = reservas.filter(
+    (r) => r.status === "aguarda_pagamento",
+  ).length;
+  const canceladas = reservas.filter((r) => r.status === "cancelada").length;
+  const faturamentoHoje = reservas
+    .filter(
+      (r) =>
+        r.data_recolha === today &&
+        ["pago", "concluida", "em_andamento"].includes(r.status),
+    )
+    .reduce((s, r) => s + r.valor_total, 0);
+
+  const filteredReservas = useMemo(() => {
     const filtered = reservas.filter((r) => {
-      const matchesSearch =
-        r.codigo.toLowerCase().includes(search.toLowerCase()) ||
-        r.perfis?.nome_completo.toLowerCase().includes(search.toLowerCase()) ||
-        r.local_partida.toLowerCase().includes(search.toLowerCase()) ||
-        r.local_destino.toLowerCase().includes(search.toLowerCase()) ||
-        r.numero_voo?.toLowerCase().includes(search.toLowerCase());
+      const q = search.toLowerCase();
+      const matchSearch =
+        !q ||
+        r.codigo.toLowerCase().includes(q) ||
+        (r.perfis?.nome_completo || "").toLowerCase().includes(q) ||
+        r.local_partida.toLowerCase().includes(q) ||
+        r.local_destino.toLowerCase().includes(q) ||
+        (r.numero_voo || "").toLowerCase().includes(q);
 
-      const matchesStatus =
-        statusFilter === "todos" || r.status === statusFilter;
-
-      const matchesRouteType =
+      const matchStatus = statusFilter === "todos" || r.status === statusFilter;
+      const matchRoute =
         routeTypeFilter === "todas" || r.tipo_rota === routeTypeFilter;
-
-      const matchesStartDate =
-        !startDateFilter || r.data_recolha >= startDateFilter;
-
-      const matchesEndDate =
-        !endDateFilter || r.data_recolha <= endDateFilter;
-
-      const matchesMinPrice =
-        !minPriceFilter || r.valor_total >= Number(minPriceFilter);
-
-      const matchesMaxPrice =
-        !maxPriceFilter || r.valor_total <= Number(maxPriceFilter);
-
-      const matchesDriver =
+      const matchDate = !startDateFilter || r.data_recolha >= startDateFilter;
+      const matchDriver =
         driverFilter === "todos" ||
         (driverFilter === "sem_motorista" && !r.motorista_id) ||
         r.motorista_id === driverFilter;
 
-      const matchesVehicle =
-        vehicleFilter === "todas" ||
-        (vehicleFilter === "sem_viatura" && !r.viatura_id) ||
-        r.viatura_id === vehicleFilter;
+      const matchQuick =
+        quickFilter === "todos" ||
+        (quickFilter === "hoje" && r.data_recolha === today) ||
+        (quickFilter === "andamento" && r.status === "em_andamento") ||
+        (quickFilter === "pendentes" && r.status === "aguarda_pagamento") ||
+        (quickFilter === "agendadas" && r.status === "confirmada");
 
       return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesRouteType &&
-        matchesStartDate &&
-        matchesEndDate &&
-        matchesMinPrice &&
-        matchesMaxPrice &&
-        matchesDriver &&
-        matchesVehicle
+        matchSearch &&
+        matchStatus &&
+        matchRoute &&
+        matchDate &&
+        matchDriver &&
+        matchQuick
       );
     });
 
@@ -358,7 +411,7 @@ export default function ReservasAdminPage() {
       if (sortBy === "valor-desc") return b.valor_total - a.valor_total;
       if (sortBy === "valor-asc") return a.valor_total - b.valor_total;
       if (sortBy === "antiga") return a.criado_em.localeCompare(b.criado_em);
-      return b.criado_em.localeCompare(a.criado_em); // "recente"
+      return b.criado_em.localeCompare(a.criado_em);
     });
   }, [
     reservas,
@@ -366,88 +419,80 @@ export default function ReservasAdminPage() {
     statusFilter,
     routeTypeFilter,
     startDateFilter,
-    endDateFilter,
-    minPriceFilter,
-    maxPriceFilter,
     driverFilter,
-    vehicleFilter,
+    quickFilter,
     sortBy,
+    today,
   ]);
-
-  const handleResetFilters = () => {
-    setSearch("");
-    setStatusFilter("todos");
-    setRouteTypeFilter("todas");
-    setStartDateFilter("");
-    setEndDateFilter("");
-    setMinPriceFilter("");
-    setMaxPriceFilter("");
-    setDriverFilter("todos");
-    setVehicleFilter("todas");
-    setSortBy("recente");
-  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "aguarda_pagamento":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-amber-500/8 text-amber-700 border border-amber-500/10">
-            <Clock size={10} strokeWidth={2.5} className="shrink-0 animate-pulse" />
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-amber-500/8 text-amber-700 border border-amber-500/10">
+            <Clock size={10} strokeWidth={2.5} className="animate-pulse" />{" "}
             Pendente
           </span>
         );
       case "confirmada":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-blue-500/8 text-blue-700 border border-blue-500/10">
-            <Check size={10} strokeWidth={2.5} className="shrink-0" />
-            Confirmada
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-blue-500/8 text-blue-700 border border-blue-500/10">
+            <Check size={10} strokeWidth={2.5} /> Confirmada
           </span>
         );
       case "pago":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-emerald-500/8 text-emerald-700 border border-emerald-500/10">
-            <CheckCircle2 size={10} strokeWidth={2.5} className="shrink-0" />
-            Pago
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-emerald-500/8 text-emerald-700 border border-emerald-500/10">
+            <CheckCircle2 size={10} strokeWidth={2.5} /> Pago
           </span>
         );
       case "em_andamento":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-purple-500/8 text-purple-700 border border-purple-500/15 animate-pulse">
-            <Compass size={10} strokeWidth={2.5} className="shrink-0" />
-            Em Viagem
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-purple-500/8 text-purple-700 border border-purple-500/15 animate-pulse">
+            <Compass size={10} strokeWidth={2.5} /> Em Viagem
           </span>
         );
       case "concluida":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-slate-500/8 text-slate-700 border border-slate-500/15">
-            <Check size={10} strokeWidth={2.5} className="shrink-0" />
-            Concluída
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-slate-500/8 text-slate-700 border border-slate-500/15">
+            <Check size={10} strokeWidth={2.5} /> Concluida
           </span>
         );
       case "cancelada":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-rose-500/8 text-rose-700 border border-rose-500/10">
-            <X size={10} strokeWidth={2.5} className="shrink-0" />
-            Cancelada
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-rose-500/8 text-rose-700 border border-rose-500/10">
+            <X size={10} strokeWidth={2.5} /> Cancelada
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-wider bg-slate-500/5 text-slate-500 border border-slate-200">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-slate-500/5 text-slate-500 border border-slate-200">
             {status}
           </span>
         );
     }
   };
 
-  const formatCurrency = (val: number) => {
-    return val.toLocaleString("pt-AO") + " Kz";
+  const getRotaLabel = (tipo: string) => {
+    switch (tipo) {
+      case "aeroporto_cidade":
+        return "Aeroporto -> Cidade";
+      case "cidade_aeroporto":
+        return "Cidade -> Aeroporto";
+      case "aeroporto_aeroporto":
+        return "Aeroporto -> Aeroporto";
+      case "taxi":
+        return "Servico Taxi";
+      default:
+        return tipo;
+    }
   };
+
+  const formatCurrency = (val: number) => val.toLocaleString("pt-AO") + " Kz";
 
   const formatDate = (dateStr: string) => {
     try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString("pt-PT", {
+      return new Date(dateStr).toLocaleDateString("pt-PT", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -457,358 +502,328 @@ export default function ReservasAdminPage() {
     }
   };
 
+  const getInitials = (name?: string | null) =>
+    name
+      ? name
+          .split(" ")
+          .filter(Boolean)
+          .map((n) => n[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase()
+      : "CL";
+
+  const hasActiveFilters =
+    quickFilter !== "todos" ||
+    search ||
+    statusFilter !== "todos" ||
+    driverFilter !== "todos" ||
+    routeTypeFilter !== "todas" ||
+    startDateFilter;
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-10">
-      {/* Header */}
+    <div className="space-y-5 animate-in fade-in duration-500 pb-10">
+      {/* Titulo */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-            <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
-              Painel
-            </Link>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-600">Serviços</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-600">Reservas</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">
-            Gestão de Reservas
-          </h1>
+        <div>
+          <h1 className="text-xl font-normal text-[#1a1a1a] tracking-tight">Gestão de Reservas</h1>
+          <p className="text-xs text-slate-400 mt-1">Monitore, filtre e gerencie todas as solicitações de transfer de forma profissional.</p>
         </div>
       </div>
 
-      {/* Estatísticas e Resultados Gerais */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {/* Total Reservas */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-[#902ad1]/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#902ad1]/8 text-[#902ad1] rounded-[10px] flex items-center justify-center border border-[#902ad1]/10">
-            <CalendarRange size={18} strokeWidth={2} />
-          </div>
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Total Reservas
-            </span>
-            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.total}</span>
-          </div>
+      {/* KPI Stats - Separated into Clean Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* Reservas de Hoje */}
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <CalendarRange size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Reservas de Hoje
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={reservasHoje} />
+          </span>
         </div>
 
-        {/* Ativas */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-blue-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-500/8 text-blue-600 rounded-[10px] flex items-center justify-center border border-blue-500/10">
-            <TrendingUp size={18} strokeWidth={2} />
-          </div>
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Ativas
-            </span>
-            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.ativas}</span>
-          </div>
+        {/* Em andamento */}
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <Compass size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Em andamento
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={emAndamento} />
+          </span>
         </div>
 
-        {/* Faturado (Pago) */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-emerald-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-emerald-500/8 text-emerald-650 rounded-[10px] flex items-center justify-center border border-emerald-500/10">
-            <DollarSign size={18} strokeWidth={2} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Faturado (Pago)
-            </span>
-            <span className="text-sm font-mono font-semibold text-slate-800 tracking-tight mt-0.5 block truncate" title={formatCurrency(stats.faturamento)}>
-              {formatCurrency(stats.faturamento)}
-            </span>
-          </div>
+        {/* Aguardar Motorista */}
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <UserCheck size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Aguardar Motorista
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={aguardaMotorista} />
+          </span>
         </div>
 
-        {/* Concluídas */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-slate-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-500/8 text-slate-600 rounded-[10px] flex items-center justify-center border border-slate-500/10">
-            <CheckCircle2 size={18} strokeWidth={2} />
-          </div>
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Concluídas
-            </span>
-            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.concluidas}</span>
-          </div>
+        {/* Pagamento pendente */}
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <Clock size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Pagamento pendente
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={pagamentoPendente} />
+          </span>
         </div>
 
         {/* Canceladas */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-rose-500/15 transition-all duration-300 ease-out p-4 flex items-center gap-3 col-span-2 md:col-span-1">
-          <div className="w-10 h-10 bg-rose-500/8 text-rose-600 rounded-[10px] flex items-center justify-center border border-rose-500/10">
-            <X size={18} strokeWidth={2} />
-          </div>
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Canceladas
-            </span>
-            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">{stats.canceladas}</span>
-          </div>
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <X size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Canceladas
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={canceladas} />
+          </span>
+        </div>
+
+        {/* Faturamento Hoje */}
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <DollarSign size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Faturamento Hoje
+          </span>
+          <span className="text-lg font-medium text-slate-800 font-mono">
+            <AnimatedNumber value={faturamentoHoje} isCurrency={true} />
+          </span>
         </div>
       </div>
 
-      {/* Filtros de Pesquisa */}
-      <div className="space-y-4">
-        <div className="bg-white p-4 rounded-[10px] border border-slate-100/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative flex-1">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+      {/* Filtros */}
+      <div className="bg-white border border-black/[0.22] rounded-[5px] p-4 space-y-3">
+        {/* Linha 1: Pesquisa + Filtros rapidos */}
+        <div className="flex flex-wrap items-center gap-3 justify-between">
+          <div className="relative flex-1 min-w-[200px] max-w-[360px]">
+            <Search
+              size={14}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            />
             <input
               type="text"
-              placeholder="Pesquisar código, cliente, aeroporto, número de voo..."
+              placeholder="Pesquisar por codigo, cliente, telefone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all outline-none"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#902ad1]/60 focus:outline-none transition-all"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`px-4 py-2.5 rounded-[10px] text-xs font-semibold transition-all flex items-center gap-1.5 border active:scale-98 cursor-pointer ${
-                showAdvancedFilters
-                  ? "bg-[#902ad1]/8 text-[#902ad1] border-[#902ad1]/20 font-semibold"
-                  : "bg-white text-slate-650 border-slate-100 hover:bg-slate-50 hover:border-slate-200"
-              }`}
-            >
-              <Filter size={13} strokeWidth={2} />
-              Filtros Avançados
-            </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">
+              Filtros rapidos:
+            </span>
+            {[
+              { key: "hoje", label: "Apenas Hoje" },
+              { key: "andamento", label: "Em Andamento" },
+              { key: "pendentes", label: "Pendentes" },
+              { key: "agendadas", label: "Agendadas" },
+            ].map((f) => (
+              <button
+                key={f.key}
+                onClick={() =>
+                  setQuickFilter(quickFilter === f.key ? "todos" : f.key)
+                }
+                className={`px-3 py-1.5 rounded-[4px] text-[11px] font-medium border transition-all cursor-pointer ${
+                  quickFilter === f.key
+                    ? "bg-[#902ad1] text-white border-[#902ad1]"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-[#902ad1]/40"
+                }`}>
+                {f.label}
+              </button>
+            ))}
+            {hasActiveFilters && (
+              <button
+                onClick={handleResetFilters}
+                className="text-[11px] text-[#902ad1] hover:underline cursor-pointer bg-transparent border-none">
+                Limpar Filtros
+              </button>
+            )}
+          </div>
+        </div>
 
+        {/* Linha 2: Dropdowns */}
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[9px] text-slate-400 uppercase tracking-wider">
+              Status
+            </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
-            >
-              <option value="todos">Todos os Estados</option>
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 cursor-pointer transition-all">
+              <option value="todos">Todos os status</option>
               <option value="aguarda_pagamento">Aguardando Pagamento</option>
               <option value="confirmada">Confirmada</option>
-              <option value="pago">Pago / Pronto</option>
+              <option value="pago">Pago</option>
               <option value="em_andamento">Em Viagem</option>
-              <option value="concluida">Concluída</option>
+              <option value="concluida">Concluida</option>
               <option value="cancelada">Cancelada</option>
             </select>
+          </div>
 
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[9px] text-slate-400 uppercase tracking-wider">
+              Data
+            </label>
+            <input
+              type="date"
+              value={startDateFilter}
+              onChange={(e) => setStartDateFilter(e.target.value)}
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 transition-all"
+            />
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[9px] text-slate-400 uppercase tracking-wider">
+              Categoria
+            </label>
             <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
-            >
-              <option value="recente">Mais Recentes</option>
-              <option value="antiga">Mais Antigas</option>
-              <option value="valor-desc">Maior Valor</option>
-              <option value="valor-asc">Menor Valor</option>
+              value={routeTypeFilter}
+              onChange={(e) => setRouteTypeFilter(e.target.value)}
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 cursor-pointer transition-all">
+              <option value="todas">Todas as Categorias</option>
+              <option value="aeroporto_cidade">Aeroporto - Cidade</option>
+              <option value="cidade_aeroporto">Cidade - Aeroporto</option>
+              <option value="aeroporto_aeroporto">Aeroporto - Aeroporto</option>
+              <option value="taxi">Taxi</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[9px] text-slate-400 uppercase tracking-wider">
+              Parceiros
+            </label>
+            <select className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none cursor-pointer transition-all">
+              <option>Todos os parceiros</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            <label className="text-[9px] text-slate-400 uppercase tracking-wider">
+              Motoristas
+            </label>
+            <select
+              value={driverFilter}
+              onChange={(e) => setDriverFilter(e.target.value)}
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 cursor-pointer transition-all">
+              <option value="todos">Todos os Motoristas</option>
+              <option value="sem_motorista">Sem Motorista</option>
+              {motoristasDisponiveis.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.perfis?.nome_completo}
+                </option>
+              ))}
             </select>
           </div>
         </div>
-
-        {/* Painel de Filtros Avançados */}
-        {showAdvancedFilters && (
-          <div className="bg-white p-6 rounded-[10px] border border-slate-100/90 shadow-sm grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 animate-in slide-in-from-top-3 duration-300 ease-out">
-            {/* Tipo de Rota */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
-                Tipo de Rota
-              </label>
-              <select
-                value={routeTypeFilter}
-                onChange={(e) => setRouteTypeFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
-              >
-                <option value="todas">Todas as Rotas</option>
-                <option value="aeroporto_cidade">Aeroporto → Cidade</option>
-                <option value="cidade_aeroporto">Cidade → Aeroporto</option>
-                <option value="aeroporto_aeroporto">Aeroporto → Aeroporto</option>
-                <option value="taxi">Serviço Táxi</option>
-              </select>
-            </div>
-
-            {/* Motorista */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
-                Motorista Atribuído
-              </label>
-              <select
-                value={driverFilter}
-                onChange={(e) => setDriverFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
-              >
-                <option value="todos">Todos os Motoristas</option>
-                <option value="sem_motorista">Sem Motorista Atribuído</option>
-                {motoristasDisponiveis.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.perfis?.nome_completo}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Viatura */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
-                Viatura Atribuída
-              </label>
-              <select
-                value={vehicleFilter}
-                onChange={(e) => setVehicleFilter(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all cursor-pointer"
-              >
-                <option value="todas">Todas as Viaturas</option>
-                <option value="sem_viatura">Sem Viatura Atribuída</option>
-                {viaturasDisponiveis.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.marca} {v.modelo}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Botão de Limpar */}
-            <div className="flex items-end">
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-150 rounded-[10px] text-xs font-semibold text-slate-600 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
-              >
-                Limpar Filtros
-              </button>
-            </div>
-
-            {/* Filtros de Data */}
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
-                Data de Recolha (Intervalo)
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="date"
-                  value={startDateFilter}
-                  onChange={(e) => setStartDateFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
-                  placeholder="De"
-                />
-                <input
-                  type="date"
-                  value={endDateFilter}
-                  onChange={(e) => setEndDateFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
-                  placeholder="Até"
-                />
-              </div>
-            </div>
-
-            {/* Filtros de Preço */}
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
-                Intervalo de Preço (Kz)
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="number"
-                  value={minPriceFilter}
-                  onChange={(e) => setMinPriceFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
-                  placeholder="Mínimo"
-                />
-                <input
-                  type="number"
-                  value={maxPriceFilter}
-                  onChange={(e) => setMaxPriceFilter(e.target.value)}
-                  className="px-4 py-2 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all"
-                  placeholder="Máximo"
-                />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-      {/* Tabela de Reservas */}
+
+      {/* Tabela */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="w-10 h-10 border-4 border-[#902ad1]/20 border-t-[#902ad1] rounded-full animate-spin" />
+        <div className="flex items-center justify-center py-20 bg-white rounded-[5px] border border-black/[0.22]">
+          <div className="w-8 h-8 border-2 border-[#902ad1]/20 border-t-[#902ad1] rounded-full animate-spin" />
         </div>
-      ) : filteredAndSortedReservas.length > 0 ? (
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm overflow-hidden transition-all duration-300">
-          <div className="overflow-auto max-h-[600px] relative no-scrollbar">
-            <table className="w-full text-left border-collapse relative">
-              <thead className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)] outline outline-1 outline-slate-100">
-                <tr className="border-b border-slate-100">
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-450 uppercase tracking-widest">
-                    ID / Código
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
-                    Cliente
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
-                    Recolha & Viagem
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
-                    Motorista & Frota
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest">
-                    Valor Total
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest text-center">
-                    Estado
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold text-slate-455 uppercase tracking-widest text-right">
-                    Ações Administrativas
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
-                {filteredAndSortedReservas.map((r) => (
-                  <tr key={r.id} className="hover:bg-slate-50/30 hover:shadow-[inset_2.5px_0_0_0_#902ad1] transition-all duration-200">
-                    {/* Código Reserva */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-0.5">
-                        <span className="text-xs font-semibold text-[#902ad1] block font-mono">
+      ) : filteredReservas.length > 0 ? (
+        <div className="bg-white border border-black/[0.22] rounded-[5px] overflow-hidden">
+          <div className="overflow-x-auto">
+            <div
+              className="overflow-y-auto no-scrollbar"
+              style={{ maxHeight: "402px" }}>
+              <table className="w-full text-left border-collapse">
+                <thead className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm border-b border-slate-100">
+                  <tr>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      Cliente
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      Trajeto
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      Horario
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      Motorista
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-5 py-3 text-[9px] font-medium text-slate-400 uppercase tracking-wider text-right">
+                      Acoes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {filteredReservas.map((r) => (
+                    <tr
+                      key={r.id}
+                      onClick={() => router.push(`/admin/reservas/${r.id}`)}
+                      className="hover:bg-[#902ad1]/5 active:bg-[#902ad1]/10 border-l-[3px] border-l-transparent hover:border-l-[#902ad1] transition-all duration-150 cursor-pointer h-[60px]">
+                      <td className="px-5 py-3.5">
+                        <span className="text-xs text-[#902ad1] font-mono font-semibold">
                           {r.codigo}
                         </span>
-                        <span className="text-[9px] text-slate-400 font-medium block">
-                          Criada: {formatDate(r.criado_em)}
-                        </span>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Cliente */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-[#902ad1]/8 text-[#902ad1] flex items-center justify-center text-[10px] font-semibold border border-[#902ad1]/10">
-                          {r.perfis?.nome_completo.slice(0, 2).toUpperCase() || "CL"}
-                        </div>
-                        <div>
-                          <span className="text-xs font-semibold text-slate-750 block">
-                            {r.perfis?.nome_completo || "Utilizador WiTransfer"}
+                      <td
+                        className="px-5 py-3.5"
+                        onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-2.5">
+                          {r.perfis?.foto_url ? (
+                            <div className="relative w-7 h-7 rounded-full overflow-hidden ring-1 ring-slate-100 shrink-0">
+                              <Image
+                                src={r.perfis.foto_url}
+                                alt={r.perfis.nome_completo}
+                                fill
+                                sizes="28px"
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-7 h-7 rounded-full bg-[#902ad1]/10 text-[#902ad1] flex items-center justify-center text-[9px] font-bold border border-[#902ad1]/15 shrink-0">
+                              {getInitials(r.perfis?.nome_completo)}
+                            </div>
+                          )}
+                          <span className="text-xs text-slate-700 truncate max-w-[120px]">
+                            {r.perfis?.nome_completo || "Cliente"}
                           </span>
-                          <span className="text-[9px] text-slate-400 font-medium block">
-                            {r.perfis?.telefone || "Sem telefone"}
-                          </span>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Recolha & Viagem */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-1.5 max-w-[210px]">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-700 font-semibold">
-                          <Clock size={11} className="text-slate-400 shrink-0" strokeWidth={2.5} />
-                          <span>{formatDate(r.data_recolha)} às {r.hora_recolha}</span>
-                        </div>
-                        <div className="text-[9px] font-medium text-slate-450 flex items-center gap-1 min-w-0" title={`${r.local_partida} → ${r.local_destino}`}>
-                          <MapPin size={10} className="text-[#902ad1] shrink-0" strokeWidth={2} />
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-600 max-w-[200px]">
                           <span className="truncate">{r.local_partida}</span>
-                          <ArrowRight size={8} className="text-slate-350 shrink-0" />
+                          <ArrowRight
+                            size={10}
+                            className="text-slate-400 shrink-0"
+                          />
                           <span className="truncate">{r.local_destino}</span>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Recursos Atribuídos (Motorista e Viatura) */}
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1.5 items-start">
+                      <td className="px-5 py-3.5">
+                        <span className="text-xs text-slate-600">
+                          {formatDate(r.data_recolha)}
+                        </span>
+                      </td>
+
+                      <td
+                        className="px-5 py-3.5"
+                        onClick={(e) => e.stopPropagation()}>
                         {r.motoristas ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-500/8 text-blue-700 border border-blue-500/10 rounded-full text-[9px] font-medium">
-                            <UserCheck size={9} strokeWidth={2.5} />
+                          <span className="text-xs text-slate-700 truncate max-w-[120px] block">
                             {r.motoristas.perfis?.nome_completo}
                           </span>
                         ) : (
@@ -816,242 +831,494 @@ export default function ReservasAdminPage() {
                             onClick={() =>
                               setAtribuicaoModal({
                                 reservaId: r.id,
-                                motoristaId: r.motorista_id || "",
+                                motoristaId: "",
                                 viaturaId: r.viatura_id || "",
                               })
                             }
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 hover:bg-[#902ad1]/8 text-slate-500 hover:text-[#902ad1] border border-slate-100 hover:border-[#902ad1]/15 rounded-[10px] text-[9px] font-semibold transition-all cursor-pointer active:scale-95"
-                          >
-                            + Motorista
+                            className="text-[10px] text-[#902ad1] hover:underline cursor-pointer bg-transparent border-none">
+                            + Atribuir
                           </button>
                         )}
+                      </td>
 
-                        {r.viaturas ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-500/8 text-[#902ad1] border border-[#902ad1]/10 rounded-full text-[9px] font-medium">
-                            <Car size={9} strokeWidth={2.5} />
-                            {r.viaturas.modelo} ({r.viaturas.matricula || "S/M"})
-                          </span>
-                        ) : (
+                      <td className="px-5 py-3.5">
+                        {getStatusBadge(r.status)}
+                      </td>
+
+                      <td
+                        className="px-5 py-3.5 text-right"
+                        onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
-                            onClick={() =>
-                              setAtribuicaoModal({
-                                reservaId: r.id,
-                                motoristaId: r.motorista_id || "",
-                                viaturaId: r.viatura_id || "",
-                              })
-                            }
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 hover:bg-[#902ad1]/8 text-slate-500 hover:text-[#902ad1] border border-slate-100 hover:border-[#902ad1]/15 rounded-[10px] text-[9px] font-semibold transition-all cursor-pointer active:scale-95"
-                          >
-                            + Viatura
+                            onClick={() => router.push(`/admin/reservas/${r.id}`)}
+                            className="p-1.5 text-slate-400 hover:text-[#902ad1] transition-colors"
+                            title="Ver detalhes">
+                            <Eye size={14} strokeWidth={2} />
                           </button>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Preço Reserva */}
-                    <td className="px-6 py-4 font-semibold text-slate-700 text-xs font-mono tracking-tight">
-                      {formatCurrency(r.valor_total)}
-                    </td>
-
-                    {/* Estado Badge */}
-                    <td className="px-6 py-4 text-center whitespace-nowrap">
-                      {getStatusBadge(r.status)}
-                    </td>
-
-                    {/* Ações Rápidas */}
-                    <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1">
-                        {/* Ver Ficha Reserva */}
-                        <Link
-                          href={`/admin/reservas/${r.id}`}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-[#902ad1] bg-slate-50/70 hover:bg-[#902ad1]/8 border border-slate-100 hover:border-[#902ad1]/10 rounded-[10px] transition-all active:scale-95"
-                          title="Ficha Detalhada"
-                        >
-                          <Eye size={13} strokeWidth={2.5} />
-                        </Link>
-
-                        {/* Ações de Estado Rápidas */}
-                        {r.status === "aguarda_pagamento" && (
+                          {r.status === "pago" && (
+                            <button
+                              onClick={() =>
+                                handleUpdateStatus(r.id, "em_andamento")
+                              }
+                              disabled={actionLoading === r.id}
+                              className="p-1.5 text-slate-400 hover:text-[#902ad1] transition-colors disabled:opacity-50"
+                              title="Iniciar viagem">
+                              <Play size={14} strokeWidth={2} />
+                            </button>
+                          )}
+                          {r.status === "aguarda_pagamento" && (
+                            <button
+                              onClick={() => handleUpdateStatus(r.id, "pago")}
+                              disabled={actionLoading === r.id}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 transition-colors disabled:opacity-50"
+                              title="Confirmar pagamento">
+                              <Check size={14} strokeWidth={2} />
+                            </button>
+                          )}
                           <button
-                            onClick={() => handleUpdateStatus(r.id, "pago")}
+                            onClick={() => handleDelete(r.id)}
                             disabled={actionLoading === r.id}
-                            className="w-7 h-7 flex items-center justify-center text-emerald-600 hover:text-white bg-emerald-50/40 hover:bg-emerald-500 border border-emerald-100 hover:border-emerald-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
-                            title="Confirmar Pagamento"
-                          >
-                            {actionLoading === r.id ? (
-                              <div className="w-3 h-3 border-2 border-slate-200 border-t-emerald-650 rounded-full animate-spin" />
-                            ) : (
-                              <Check size={13} strokeWidth={2.5} />
-                            )}
+                            className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors disabled:opacity-50"
+                            title="Eliminar">
+                            <X size={14} strokeWidth={2} />
                           </button>
-                        )}
-
-                        {r.status === "pago" && (
-                          <button
-                            onClick={() => handleUpdateStatus(r.id, "em_andamento")}
-                            disabled={actionLoading === r.id}
-                            className="w-7 h-7 flex items-center justify-center text-purple-600 hover:text-white bg-purple-50/40 hover:bg-purple-500 border border-purple-100 hover:border-purple-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
-                            title="Iniciar Viagem"
-                          >
-                            {actionLoading === r.id ? (
-                              <div className="w-3 h-3 border-2 border-slate-200 border-t-purple-600 rounded-full animate-spin" />
-                            ) : (
-                              <Play size={13} strokeWidth={2.5} />
-                            )}
-                          </button>
-                        )}
-
-                        {r.status === "em_andamento" && (
-                          <button
-                            onClick={() => handleUpdateStatus(r.id, "concluida")}
-                            disabled={actionLoading === r.id}
-                            className="w-7 h-7 flex items-center justify-center text-blue-600 hover:text-white bg-blue-50/40 hover:bg-blue-500 border border-blue-100 hover:border-blue-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
-                            title="Concluir Viagem"
-                          >
-                            {actionLoading === r.id ? (
-                              <div className="w-3 h-3 border-2 border-slate-200 border-t-blue-600 rounded-full animate-spin" />
-                            ) : (
-                              <CheckCircle2 size={13} strokeWidth={2.5} />
-                            )}
-                          </button>
-                        )}
-
-                        {/* Botão Cancelar */}
-                        {["aguarda_pagamento", "confirmada", "pago"].includes(r.status) && (
-                          <button
-                            onClick={() => handleUpdateStatus(r.id, "cancelada")}
-                            disabled={actionLoading === r.id}
-                            className="w-7 h-7 flex items-center justify-center text-rose-500 hover:text-white bg-rose-50/40 hover:bg-rose-500 border border-rose-100 hover:border-rose-500 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
-                            title="Cancelar Reserva"
-                          >
-                            <X size={13} strokeWidth={2.5} />
-                          </button>
-                        )}
-
-                        {/* Botão Eliminar */}
-                        <button
-                          onClick={() => handleDelete(r.id)}
-                          disabled={actionLoading === r.id}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-600 bg-slate-50/70 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 rounded-[10px] transition-all active:scale-95 cursor-pointer disabled:opacity-50"
-                          title="Eliminar Reserva"
-                        >
-                          <Trash2 size={13} strokeWidth={2.5} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100/90 shadow-sm">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">
-            <CalendarRange size={32} />
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[5px] border border-black/[0.22]">
+          <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-100">
+            <CalendarRange size={28} />
           </div>
-          <h3 className="text-lg font-semibold text-slate-800">
+          <h3 className="text-base font-semibold text-slate-700">
             Nenhuma reserva encontrada
           </h3>
-          <p className="text-slate-400 mt-1 text-sm max-w-xs text-center font-medium">
-            Tente redefinir os filtros ou aguarde por novas reservas enviadas pelos utilizadores.
+          <p className="text-slate-400 mt-1 text-sm max-w-xs text-center">
+            Tente redefinir os filtros ou aguarde por novas reservas.
           </p>
         </div>
       )}
 
-      {/* Modal de Atribuição Rápida de Recursos */}
+      {/* Drawer de detalhes */}
+      {selectedReserva && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300 cursor-pointer"
+            onClick={() => setSelectedReserva(null)}
+          />
+          <div className="absolute inset-y-0 right-0 flex pl-10 max-w-full">
+            <div className="w-screen max-w-md bg-white border-l border-slate-200 flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+              {/* Header do Drawer */}
+              <div className="px-6 py-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+                <div>
+                  <span className="text-[10px] bg-purple-50 text-[#902ad1] border border-[#902ad1]/15 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    Reserva: {selectedReserva.codigo}
+                  </span>
+                  <h3 className="text-base text-slate-800 tracking-tight mt-1.5">
+                    Detalhes do Agendamento
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setSelectedReserva(null)}
+                  className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-colors cursor-pointer">
+                  <X size={15} strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {/* Conteudo do Drawer */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-5 no-scrollbar">
+                {/* Progresso */}
+                <div className="space-y-3">
+                  <h4 className="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Progresso / Estado
+                  </h4>
+                  <div className="relative pt-2 pb-1 px-1">
+                    <div className="absolute top-4 left-3 right-3 h-[2px] bg-slate-100 z-0" />
+                    <div className="flex justify-between relative z-10">
+                      {[
+                        { key: "aguarda_pagamento", label: "Pendente" },
+                        { key: "pago", label: "Pago" },
+                        { key: "confirmada", label: "Confirmada" },
+                        { key: "em_andamento", label: "Viagem" },
+                        { key: "concluida", label: "Fim" },
+                      ].map((step, idx) => {
+                        const order = [
+                          "aguarda_pagamento",
+                          "pago",
+                          "confirmada",
+                          "em_andamento",
+                          "concluida",
+                        ];
+                        const curIdx = order.indexOf(selectedReserva.status);
+                        const stepIdx = order.indexOf(step.key);
+                        const isDone =
+                          stepIdx <= curIdx &&
+                          selectedReserva.status !== "cancelada";
+                        const isCurrent = step.key === selectedReserva.status;
+                        return (
+                          <div
+                            key={idx}
+                            className="flex flex-col items-center gap-1.5">
+                            <div
+                              className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] border transition-all ${
+                                isCurrent
+                                  ? "bg-[#902ad1] text-white border-[#902ad1] ring-4 ring-[#902ad1]/15 scale-110"
+                                  : isDone
+                                    ? "bg-purple-100 text-[#902ad1] border-[#902ad1]/20"
+                                    : "bg-white text-slate-400 border-slate-200"
+                              }`}>
+                              {isDone && !isCurrent ? (
+                                <Check size={8} strokeWidth={3.5} />
+                              ) : (
+                                idx + 1
+                              )}
+                            </div>
+                            <span
+                              className={`text-[8.5px] tracking-tight uppercase ${isCurrent ? "text-[#902ad1]" : "text-slate-400"}`}>
+                              {step.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {selectedReserva.status === "cancelada" && (
+                    <div className="p-3 bg-rose-50 border border-rose-100 rounded-[5px] text-rose-700 text-[10.5px] flex items-center gap-2">
+                      <AlertTriangle size={13} />
+                      <span>Este servico foi cancelado.</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Passageiro */}
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <h4 className="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Passageiro
+                  </h4>
+                  <div className="flex items-center gap-3 p-3 bg-slate-50/50 border border-slate-100 rounded-[5px]">
+                    {selectedReserva.perfis?.foto_url ? (
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-white">
+                        <Image
+                          src={selectedReserva.perfis.foto_url}
+                          alt={selectedReserva.perfis.nome_completo}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-[#902ad1]/10 text-[#902ad1] flex items-center justify-center text-sm border border-[#902ad1]/15 shrink-0">
+                        {getInitials(selectedReserva.perfis?.nome_completo)}
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-medium text-slate-800 block truncate">
+                        {selectedReserva.perfis?.nome_completo || "Cliente"}
+                      </span>
+                      <span className="text-[10px] text-slate-500 block mt-0.5">
+                        {selectedReserva.perfis?.telefone || "—"}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block truncate">
+                        {selectedReserva.perfis?.email || "—"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trajeto */}
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <h4 className="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Trajeto
+                  </h4>
+                  <div className="flex flex-col gap-2 pl-2">
+                    <div className="flex items-start gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 mt-1 shrink-0 ring-2 ring-emerald-50" />
+                      <span className="text-xs text-slate-700">
+                        {selectedReserva.local_partida}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-2 h-2 rounded-full bg-[#902ad1] mt-1 shrink-0 ring-2 ring-purple-50" />
+                      <span className="text-xs text-slate-700">
+                        {selectedReserva.local_destino}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/50 border border-slate-100 p-3 rounded-[5px]">
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Data
+                      </span>
+                      <span className="text-slate-700">
+                        {formatDate(selectedReserva.data_recolha)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Hora
+                      </span>
+                      <span className="text-slate-700">
+                        {selectedReserva.hora_recolha}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Passageiros
+                      </span>
+                      <span className="text-slate-700">
+                        {selectedReserva.passageiros}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Malas
+                      </span>
+                      <span className="text-slate-700">
+                        {selectedReserva.malas} Vol.
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Categoria
+                      </span>
+                      <span className="text-slate-700">
+                        {getRotaLabel(selectedReserva.tipo_rota)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">
+                        Numero Voo
+                      </span>
+                      <span className="text-slate-700">
+                        {selectedReserva.numero_voo || "—"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recursos */}
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] text-slate-400 uppercase tracking-widest">
+                      Recursos
+                    </h4>
+                    <button
+                      onClick={() =>
+                        setAtribuicaoModal({
+                          reservaId: selectedReserva.id,
+                          motoristaId: selectedReserva.motorista_id || "",
+                          viaturaId: selectedReserva.viatura_id || "",
+                        })
+                      }
+                      className="text-[10px] text-[#902ad1] hover:underline bg-transparent border-none cursor-pointer">
+                      Alterar
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 border border-slate-100 rounded-[5px] bg-slate-50/30 flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <UserCheck size={13} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[9px] text-slate-400 block">
+                          Motorista
+                        </span>
+                        <span className="text-xs text-slate-700 truncate block">
+                          {selectedReserva.motoristas?.perfis?.nome_completo ||
+                            "Pendente"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-3 border border-slate-100 rounded-[5px] bg-slate-50/30 flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-purple-50 text-[#902ad1] flex items-center justify-center shrink-0">
+                        <Car size={13} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[9px] text-slate-400 block">
+                          Veiculo
+                        </span>
+                        <span className="text-xs text-slate-700 truncate block">
+                          {selectedReserva.viaturas
+                            ? `${selectedReserva.viaturas.marca} ${selectedReserva.viaturas.modelo}`
+                            : "Pendente"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financeiro */}
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <h4 className="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Financeiro
+                  </h4>
+                  <div className="border border-slate-100 rounded-[5px] p-4 bg-slate-50/20 space-y-2 text-xs">
+                    <div className="flex justify-between text-slate-500">
+                      <span>Valor Bruto</span>
+                      <span className="font-mono">
+                        {formatCurrency(selectedReserva.valor_total)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Taxa Plataforma (10%)</span>
+                      <span className="font-mono text-rose-500">
+                        -{formatCurrency(selectedReserva.valor_total * 0.1)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Comissao Motorista (20%)</span>
+                      <span className="font-mono text-purple-600">
+                        -{formatCurrency(selectedReserva.valor_total * 0.2)}
+                      </span>
+                    </div>
+                    <div className="h-px bg-slate-100" />
+                    <div className="flex justify-between font-semibold text-slate-800">
+                      <span>Rendimento Liquido</span>
+                      <span className="font-mono text-emerald-600">
+                        {formatCurrency(selectedReserva.valor_total * 0.7)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer do Drawer */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-wrap gap-2.5 shrink-0">
+                {selectedReserva.status === "aguarda_pagamento" && (
+                  <button
+                    onClick={() =>
+                      handleUpdateStatus(selectedReserva.id, "pago")
+                    }
+                    disabled={actionLoading === selectedReserva.id}
+                    className="flex-1 py-2.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-[5px] flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 transition-all">
+                    <Check size={13} /> Confirmar Pagamento
+                  </button>
+                )}
+                {selectedReserva.status === "pago" && (
+                  <button
+                    onClick={() =>
+                      handleUpdateStatus(selectedReserva.id, "em_andamento")
+                    }
+                    disabled={actionLoading === selectedReserva.id}
+                    className="flex-1 py-2.5 text-xs font-semibold text-white bg-[#902ad1] hover:bg-[#7a22b3] rounded-[5px] flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 transition-all">
+                    <Play size={13} /> Iniciar Viagem
+                  </button>
+                )}
+                {selectedReserva.status === "em_andamento" && (
+                  <button
+                    onClick={() =>
+                      handleUpdateStatus(selectedReserva.id, "concluida")
+                    }
+                    disabled={actionLoading === selectedReserva.id}
+                    className="flex-1 py-2.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-[5px] flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 transition-all">
+                    <CheckCircle2 size={13} /> Concluir Viagem
+                  </button>
+                )}
+                {["aguarda_pagamento", "confirmada", "pago"].includes(
+                  selectedReserva.status,
+                ) && (
+                  <button
+                    onClick={() =>
+                      handleUpdateStatus(selectedReserva.id, "cancelada")
+                    }
+                    disabled={actionLoading === selectedReserva.id}
+                    className="py-2.5 px-4 text-xs font-semibold text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-100 hover:border-rose-600 rounded-[5px] transition-all cursor-pointer shrink-0 disabled:opacity-50">
+                    Cancelar
+                  </button>
+                )}
+                <button
+                  onClick={() => handleDelete(selectedReserva.id)}
+                  disabled={actionLoading === selectedReserva.id}
+                  className="py-2.5 px-3 text-xs text-slate-500 hover:text-white bg-white hover:bg-rose-600 border border-slate-200 hover:border-rose-600 rounded-[5px] transition-all cursor-pointer flex items-center justify-center disabled:opacity-50">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Atribuicao */}
       {atribuicaoModal && (
         <div className="fixed inset-0 bg-slate-950/45 backdrop-blur-md z-50 flex items-center justify-center animate-in fade-in duration-300">
-          <div className="bg-white/95 rounded-[10px] border border-slate-100/90 shadow-2xl p-6 w-full max-w-md space-y-6 mx-4 animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-[5px] border border-slate-100 shadow-2xl p-6 w-full max-w-md space-y-6 mx-4 animate-in zoom-in-95 duration-200">
             <div>
-              <h3 className="text-base font-bold text-slate-800">
-                Atribuir Motorista & Frota
+              <h3 className="text-base font-semibold text-slate-800">
+                Atribuir Motorista e Frota
               </h3>
-              <p className="text-xs text-slate-400 font-medium">
-                Selecione os recursos operacionais a atribuir a esta reserva comercial.
+              <p className="text-xs text-slate-400 mt-1">
+                Selecione os recursos a atribuir a esta reserva.
               </p>
             </div>
-
             <div className="space-y-4">
-              {/* Motorista select */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
-                  <UserCheck size={11} className="text-[#902ad1]" />
-                  Motorista Associado
+                <label className="text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                  <UserCheck size={11} className="text-[#902ad1]" /> Motorista
                 </label>
                 <select
                   value={atribuicaoModal.motoristaId}
                   onChange={(e) =>
                     setAtribuicaoModal((prev) =>
-                      prev ? { ...prev, motoristaId: e.target.value } : null
+                      prev ? { ...prev, motoristaId: e.target.value } : null,
                     )
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
-                >
-                  <option value="">Nenhum Motorista Selecionado</option>
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 cursor-pointer">
+                  <option value="">Nenhum Motorista</option>
                   {motoristasDisponiveis.map((m) => (
                     <option key={m.id} value={m.id}>
-                      {m.perfis?.nome_completo} ({m.perfis?.telefone || "Sem contacto"})
+                      {m.perfis?.nome_completo} ({m.perfis?.telefone || "—"})
                     </option>
                   ))}
                 </select>
               </div>
-
-              {/* Viatura select */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
-                  <Car size={11} className="text-[#902ad1]" />
-                  Viatura / Veículo da Frota
+                <label className="text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                  <Car size={11} className="text-[#902ad1]" /> Viatura
                 </label>
                 <select
                   value={atribuicaoModal.viaturaId}
                   onChange={(e) =>
                     setAtribuicaoModal((prev) =>
-                      prev ? { ...prev, viaturaId: e.target.value } : null
+                      prev ? { ...prev, viaturaId: e.target.value } : null,
                     )
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
-                >
-                  <option value="">Nenhuma Viatura Selecionada</option>
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-[4px] text-xs text-slate-700 focus:outline-none focus:border-[#902ad1]/60 cursor-pointer">
+                  <option value="">Nenhuma Viatura</option>
                   {viaturasDisponiveis.map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.marca} {v.modelo} - Matrícula: {v.matricula || "S/M"}
+                      {v.marca} {v.modelo} — {v.matricula || "S/M"}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-
             <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
               <button
                 onClick={() => setAtribuicaoModal(null)}
-                className="flex-1 py-3 text-xs font-bold text-slate-550 bg-slate-50 hover:bg-slate-100 rounded-[10px] border border-slate-150 transition-all active:scale-97 cursor-pointer"
-              >
-                Voltar / Cancelar
+                className="flex-1 py-3 text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-[5px] border border-slate-200 transition-all cursor-pointer">
+                Cancelar
               </button>
               <button
                 onClick={handleSaveAtribuicao}
                 disabled={actionLoading != null}
-                className="flex-1 py-3 text-xs font-bold text-white bg-[#902ad1] hover:bg-[#902ad1]/90 rounded-[10px] transition-all active:scale-97 shadow-md shadow-[#902ad1]/10 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-              >
+                className="flex-1 py-3 text-xs font-semibold text-white bg-[#902ad1] hover:bg-[#902ad1]/90 rounded-[5px] transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50">
                 {actionLoading != null ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                 ) : (
                   <UserCheck size={14} />
                 )}
-                <span>Salvar Atribuição</span>
+                Salvar Atribuicao
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-// Icone Loader local rápido
-function Loader2({ className }: { className?: string }) {
-  return (
-    <div className={`w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin ${className}`} />
   );
 }

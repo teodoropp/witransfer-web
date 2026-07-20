@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "WiTransfer | Dashboard",
   description: "Painel Administrativo e Portal do Parceiro WiTransfer",
   icons: {
-    icon: "/icon.svg",
+    icon: "/icone.png",
   }
 };
 
@@ -31,7 +31,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/icone.png" type="image/png" />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

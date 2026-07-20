@@ -35,12 +35,14 @@ interface ViaturaTableProps {
   viaturas: Viatura[];
   onDelete: (id: string) => void;
   onToggleStatus: (id: string, status: boolean) => void;
+  onViewDetails?: (viatura: Viatura) => void;
 }
 
 export default function ViaturaTable({
   viaturas,
   onDelete,
   onToggleStatus,
+  onViewDetails,
 }: ViaturaTableProps) {
   return (
     <div className="bg-white rounded-[10px] border border-slate-100 shadow-sm overflow-hidden">
@@ -172,13 +174,23 @@ export default function ViaturaTable({
                 {/* Ações */}
                 <td className="py-4 px-6 text-right whitespace-nowrap">
                   <div className="flex items-center justify-end gap-1.5">
-                    <Link
-                      href={`/admin/viaturas/${viatura.id}`}
-                      className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
-                      title="Visualizar Viatura"
-                    >
-                      <Eye size={16} />
-                    </Link>
+                    {onViewDetails ? (
+                      <button
+                        onClick={() => onViewDetails(viatura)}
+                        className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all cursor-pointer border-none bg-transparent"
+                        title="Visualizar Viatura"
+                      >
+                        <Eye size={16} />
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/admin/viaturas/${viatura.id}`}
+                        className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"
+                        title="Visualizar Viatura"
+                      >
+                        <Eye size={16} />
+                      </Link>
+                    )}
                     <Link
                       href={`/admin/viaturas/${viatura.id}/editar`}
                       className="p-2 text-slate-400 hover:text-[#902ad1] hover:bg-slate-100 rounded-[10px] transition-all"

@@ -9,7 +9,6 @@ import {
   Search,
   Edit2,
   Trash2,
-  Loader2,
   CheckCircle2,
   XCircle,
   MapPin,
@@ -26,6 +25,36 @@ interface Aeroporto {
   cidade: string | null;
   ativo: boolean;
   criado_em?: string;
+}
+
+function AnimatedNumber({ value }: { value: number }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const start = current;
+    const end = value;
+    if (start === end) return;
+
+    const duration = 800; // ms
+    const startTime = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = progress * (2 - progress);
+      const nextVal = Math.round(start + (end - start) * easeProgress);
+      
+      setCurrent(nextVal);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return <span>{current}</span>;
 }
 
 export default function AeroportosPage() {
@@ -79,8 +108,8 @@ export default function AeroportosPage() {
     return aeroportos.filter((a) => {
       const matchesSearch =
         a.nome.toLowerCase().includes(search.toLowerCase()) ||
-        a.codigo_iata?.toLowerCase().includes(search.toLowerCase()) ||
-        a.cidade?.toLowerCase().includes(search.toLowerCase());
+        (a.codigo_iata || "").toLowerCase().includes(search.toLowerCase()) ||
+        (a.cidade || "").toLowerCase().includes(search.toLowerCase());
 
       const matchesStatus =
         statusFilter === "todos" ||
@@ -115,7 +144,7 @@ export default function AeroportosPage() {
     setIsModalOpen(true);
   };
 
-  // Handle Form Submission (Create or Edit)
+  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formNome.trim()) {
@@ -199,97 +228,76 @@ export default function AeroportosPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-10">
+    <div className="space-y-5 animate-in fade-in duration-500 pb-10">
+      
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-            <Link href="/admin/dashboard" className="hover:text-[#902ad1] transition-all">
-              Painel
-            </Link>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-600">Reservas & Viagens</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-600">Aeroportos</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight mt-1">
-            Gestão de Aeroportos
-          </h1>
+        <div>
+          <h1 className="text-xl font-normal text-[#1a1a1a] tracking-tight">Gestão de Aeroportos</h1>
+          <p className="text-xs text-slate-400 mt-1">Monitore, filtre e gerencie todos os terminais de transfer de forma profissional.</p>
         </div>
         <button
           onClick={handleOpenCreate}
-          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-5 py-3 rounded-[10px] font-semibold text-xs transition-all shadow-md shadow-[#902ad1]/10 active:scale-97 cursor-pointer hover:scale-[1.01]"
+          className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#7a22b3] text-white px-5 py-2.5 rounded-[5px] font-normal text-xs transition-colors shadow-sm active:scale-95 cursor-pointer"
         >
-          <Plus size={15} strokeWidth={2.5} />
+          <Plus size={14} strokeWidth={2} />
           <span>Adicionar Aeroporto</span>
         </button>
       </div>
 
-      {/* Stats Summary Panel - Bento Box Grid */}
+      {/* KPI Stats - Separated into Clean Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Terminais */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-[#902ad1]/15 transition-all duration-300 ease-out p-4 flex items-center justify-between">
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Total Terminais
-            </span>
-            <span className="text-lg font-semibold text-slate-800 tracking-tight mt-0.5 block">
-              {loading ? "..." : stats.total}
-            </span>
-          </div>
-          <div className="w-10 h-10 bg-[#902ad1]/8 text-[#902ad1] rounded-[10px] flex items-center justify-center border border-[#902ad1]/10">
-            <Plane size={18} strokeWidth={2} />
-          </div>
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-5 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <Plane size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Total Terminais
+          </span>
+          <span className="text-xl font-medium text-slate-800">
+            <AnimatedNumber value={stats.total} />
+          </span>
         </div>
 
         {/* Terminais Ativos */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-emerald-500/15 transition-all duration-300 ease-out p-4 flex items-center justify-between">
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Terminais Ativos
-            </span>
-            <span className="text-lg font-semibold text-emerald-600 tracking-tight mt-0.5 block">
-              {loading ? "..." : stats.ativos}
-            </span>
-          </div>
-          <div className="w-10 h-10 bg-emerald-500/8 text-emerald-600 rounded-[10px] flex items-center justify-center border border-emerald-500/10">
-            <CheckCircle2 size={18} strokeWidth={2} />
-          </div>
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-5 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <CheckCircle2 size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Terminais Ativos
+          </span>
+          <span className="text-xl font-medium text-emerald-600">
+            <AnimatedNumber value={stats.ativos} />
+          </span>
         </div>
 
         {/* Terminais Inativos */}
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm hover:shadow-md hover:scale-[1.01] hover:shadow-[#902ad1]/3 hover:border-rose-500/15 transition-all duration-300 ease-out p-4 flex items-center justify-between">
-          <div>
-            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block">
-              Terminais Inativos
-            </span>
-            <span className="text-lg font-semibold text-rose-600 tracking-tight mt-0.5 block">
-              {loading ? "..." : stats.inativos}
-            </span>
-          </div>
-          <div className="w-10 h-10 bg-rose-500/8 text-rose-600 rounded-[10px] flex items-center justify-center border border-rose-500/10">
-            <XCircle size={18} strokeWidth={2} />
-          </div>
+        <div className="bg-white border border-black/[0.22] rounded-[5px] p-5 flex flex-col items-center justify-center text-center gap-1.5 hover:shadow-sm transition-all duration-300">
+          <XCircle size={18} strokeWidth={2} className="text-[#902ad1]" />
+          <span className="text-[10px] text-slate-500 leading-tight font-medium">
+            Terminais Inativos
+          </span>
+          <span className="text-xl font-medium text-rose-600">
+            <AnimatedNumber value={stats.inativos} />
+          </span>
         </div>
       </div>
 
       {/* Filters Card */}
-      <div className="bg-white p-4 rounded-[10px] border border-slate-100/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in duration-300">
-        <div className="relative flex-1">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+      <div className="bg-white p-4 rounded-[5px] border border-black/[0.22] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-[460px]">
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Pesquise por nome, código IATA ou cidade..."
-            className="w-full pl-11 pr-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 transition-all outline-none"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs font-normal text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#902ad1]/60 focus:ring-4 focus:ring-[#902ad1]/5 transition-all outline-none"
           />
         </div>
         <div className="flex items-center gap-3">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-3 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs font-normal text-slate-700 focus:bg-white focus:border-[#902ad1]/60 focus:ring-4 focus:ring-[#902ad1]/5 outline-none cursor-pointer transition-all"
           >
             <option value="todos">Todos os Estados</option>
             <option value="ativos">Apenas Ativos</option>
@@ -298,148 +306,122 @@ export default function AeroportosPage() {
         </div>
       </div>
 
-      {/* Table Container */}
+      {/* Cards Container */}
       {loading ? (
-        <div className="flex items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100/90 shadow-sm">
-          <Loader2 className="w-8 h-8 animate-spin text-[#902ad1]" />
+        <div className="flex items-center justify-center py-20 bg-white rounded-[5px] border border-black/[0.22]">
+          <div className="w-8 h-8 border-2 border-[#902ad1]/20 border-t-[#902ad1] rounded-full animate-spin" />
         </div>
       ) : filteredAeroportos.length > 0 ? (
-        <div className="bg-white rounded-[10px] border border-slate-100/90 shadow-sm overflow-hidden transition-all duration-300">
-          <div className="overflow-x-auto max-h-[500px] overflow-y-auto no-scrollbar">
-            <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 shadow-[0_1px_0_0_rgba(241,245,249,1)]">
-                <tr className="border-b border-slate-100">
-                  <th className="px-6 py-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                    Terminal
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                    Código IATA
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                    Cidade
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold uppercase tracking-widest text-slate-400 text-center">
-                    Estado
-                  </th>
-                  <th className="px-6 py-4 text-[9px] font-bold uppercase tracking-widest text-slate-400 text-right">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
-                {filteredAeroportos.map((a) => (
-                  <tr
-                    key={a.id}
-                    className="hover:bg-slate-50/40 hover:shadow-[inset_3.5px_0_0_0_#902ad1] transition-all duration-300"
+        <div className="overflow-y-auto no-scrollbar pr-1" style={{ maxHeight: "480px" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-2">
+            {filteredAeroportos.map((a) => (
+              <div
+                key={a.id}
+                onClick={() => handleOpenEdit(a)}
+                className="bg-white border border-black/[0.22] rounded-[5px] p-4 flex flex-col justify-between hover:shadow-md hover:scale-[1.01] transition-all duration-300 cursor-pointer group h-[140px]"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Plane size={15} className="text-[#902ad1]" />
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-normal bg-slate-50 border border-slate-100 text-slate-500 tracking-wider">
+                      {a.codigo_iata || "—"}
+                    </span>
+                  </div>
+                  <h3 className="text-xs font-normal text-slate-800 mt-3 truncate" title={a.nome}>
+                    {a.nome}
+                  </h3>
+                  <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-1">
+                    <MapPin size={10} className="text-[#902ad1]/70" />
+                    <span className="truncate">{a.cidade || "—"}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-slate-50 pt-2.5 mt-2" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={() => handleToggleStatus(a.id, a.ativo)}
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8.5px] uppercase tracking-wider cursor-pointer border transition-colors ${
+                      a.ativo
+                        ? "bg-emerald-500/8 text-emerald-700 border-emerald-500/10 hover:bg-emerald-500/15"
+                        : "bg-rose-500/8 text-rose-700 border-rose-500/10 hover:bg-rose-500/15"
+                    }`}
                   >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-[10px] bg-[#902ad1]/8 text-[#902ad1] flex items-center justify-center border border-[#902ad1]/10 shrink-0">
-                          <Plane size={14} />
-                        </div>
-                        <span className="text-xs font-semibold text-slate-800">{a.nome}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-mono font-bold bg-slate-50 border border-slate-100 text-slate-600 tracking-wider">
-                        {a.codigo_iata || "—"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-                        <MapPin size={12} className="text-[#902ad1] shrink-0" />
-                        <span>{a.cidade || "—"}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleToggleStatus(a.id, a.ativo)}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all cursor-pointer border ${
-                          a.ativo
-                            ? "bg-emerald-500/8 text-emerald-700 border-emerald-500/10 hover:bg-emerald-500/15 animate-none"
-                            : "bg-rose-500/8 text-rose-700 border-rose-500/10 hover:bg-rose-500/15"
-                        }`}
-                      >
-                        <span className={`w-1 h-1 rounded-full ${a.ativo ? "bg-emerald-500" : "bg-rose-500"}`} />
-                        <span>{a.ativo ? "Ativo" : "Inativo"}</span>
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => handleOpenEdit(a)}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-[#902ad1] bg-slate-50/70 hover:bg-[#902ad1]/8 border border-slate-100 hover:border-[#902ad1]/10 rounded-[10px] transition-all active:scale-95 cursor-pointer hover:scale-[1.05]"
-                          title="Editar Aeroporto"
-                        >
-                          <Edit2 size={13} strokeWidth={2.5} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(a.id, a.nome)}
-                          className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-650 bg-slate-50/70 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 rounded-[10px] transition-all active:scale-95 cursor-pointer hover:scale-[1.05]"
-                          title="Eliminar Aeroporto"
-                        >
-                          <Trash2 size={13} strokeWidth={2.5} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    <span className={`w-1 h-1 rounded-full ${a.ativo ? "bg-emerald-500" : "bg-rose-500"}`} />
+                    <span>{a.ativo ? "Ativo" : "Inativo"}</span>
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleOpenEdit(a)}
+                      className="p-1 text-slate-400 hover:text-[#902ad1] transition-colors cursor-pointer"
+                      title="Editar Aeroporto"
+                    >
+                      <Edit2 size={12} strokeWidth={2} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(a.id, a.nome)}
+                      className="p-1 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                      title="Eliminar Aeroporto"
+                    >
+                      <Trash2 size={12} strokeWidth={2} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[10px] border border-slate-100/90 shadow-sm text-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-350 mb-4 border border-slate-100 shadow-inner">
-            <Plane size={32} className="text-[#902ad1]" />
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[5px] border border-black/[0.22] text-center">
+          <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-slate-350 mb-4 border border-slate-100">
+            <Plane size={24} className="text-[#902ad1]" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-800">Nenhum aeroporto encontrado</h3>
-          <p className="text-slate-400 mt-1 mb-6 text-sm max-w-xs font-medium">
+          <h3 className="text-sm font-normal text-slate-800">Nenhum aeroporto encontrado</h3>
+          <p className="text-slate-400 mt-1 mb-6 text-xs max-w-xs font-normal">
             Tente ajustar a sua pesquisa ou adicione um novo terminal ao sistema.
           </p>
           <button
             onClick={handleOpenCreate}
-            className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#902ad1]/90 text-white px-5 py-2.5 rounded-[10px] font-semibold text-xs transition-all shadow-md active:scale-95 cursor-pointer"
+            className="flex items-center justify-center gap-2 bg-[#902ad1] hover:bg-[#7a22b3] text-white px-4 py-2 rounded-[5px] font-normal text-xs transition-colors cursor-pointer"
           >
-            <Plus size={15} strokeWidth={2.5} />
+            <Plus size={14} strokeWidth={2} />
             <span>Adicionar Novo</span>
           </button>
         </div>
       )}
 
-      {/* Modal - Elegant Side Drawer or Center Card */}
+      {/* Modal - Centered dialog */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-955/45 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white/95 rounded-[10px] border border-slate-100/90 w-full max-w-md shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-slate-950/45 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-[5px] border border-slate-100 w-full max-w-md shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-[10px]">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
-                <h3 className="text-base font-bold text-slate-800 tracking-tight">
+                <h3 className="text-sm font-normal text-slate-800 tracking-tight">
                   {modalMode === "criar" ? "Novo Aeroporto" : "Editar Aeroporto"}
                 </h3>
-                <span className="text-[9px] font-medium text-slate-400 uppercase tracking-widest block mt-0.5">
+                <span className="text-[9px] text-slate-400 uppercase tracking-widest block mt-0.5">
                   Dados do Terminal de Origem/Destino
                 </span>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-650 transition-all cursor-pointer active:scale-90"
+                className="w-8 h-8 rounded-[4px] hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
               >
-                <X size={16} />
+                <X size={15} />
               </button>
             </div>
 
             {/* Modal Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               {formError && (
-                <div className="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-[10px] text-rose-700 text-xs font-semibold flex items-center gap-2 animate-pulse">
-                  <AlertTriangle size={15} />
+                <div className="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-[4px] text-rose-700 text-xs flex items-center gap-2">
+                  <AlertTriangle size={14} />
                   <span>{formError}</span>
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 uppercase tracking-wider ml-1 flex items-center gap-1">
                   <Plane size={11} className="text-[#902ad1]" />
                   Nome do Aeroporto <span className="text-rose-500">*</span>
                 </label>
@@ -449,13 +431,13 @@ export default function AeroportosPage() {
                   onChange={(e) => setFormNome(e.target.value)}
                   placeholder="Ex: Aeroporto Internacional 4 de Fevereiro"
                   required
-                  className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs font-normal text-slate-700 focus:bg-white focus:border-[#902ad1]/60 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase tracking-wider ml-1">
                     Código IATA
                   </label>
                   <input
@@ -464,12 +446,12 @@ export default function AeroportosPage() {
                     onChange={(e) => setFormIata(e.target.value.toUpperCase().slice(0, 3))}
                     placeholder="Ex: LAD"
                     maxLength={3}
-                    className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-mono font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs font-mono font-normal text-slate-700 focus:bg-white focus:border-[#902ad1]/60 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase tracking-wider ml-1 flex items-center gap-1">
                     <MapPin size={11} className="text-[#902ad1]" />
                     Cidade
                   </label>
@@ -478,7 +460,7 @@ export default function AeroportosPage() {
                     value={formCidade}
                     onChange={(e) => setFormCidade(e.target.value)}
                     placeholder="Ex: Luanda"
-                    className="w-full px-4 py-2.5 bg-slate-50/70 border border-slate-100 rounded-[10px] text-xs font-semibold text-slate-700 focus:bg-white focus:border-[#902ad1]/80 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] text-xs font-normal text-slate-700 focus:bg-white focus:border-[#902ad1]/60 focus:ring-4 focus:ring-[#902ad1]/5 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -486,19 +468,19 @@ export default function AeroportosPage() {
               {/* Toggle switch for Ativo */}
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-slate-800 block">Aeroporto Ativo</span>
-                  <span className="text-[10px] text-slate-400 block font-medium">Disponível para seleção nas reservas</span>
+                  <span className="text-xs font-normal text-slate-800 block">Aeroporto Ativo</span>
+                  <span className="text-[10px] text-slate-400 block">Disponível para seleção nas reservas</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setFormAtivo(!formAtivo)}
-                  className={`w-11 h-6 rounded-full p-0.5 transition-all duration-300 focus:outline-none cursor-pointer ${
+                  className={`w-10 h-5.5 rounded-full p-0.5 transition-all duration-300 focus:outline-none cursor-pointer ${
                     formAtivo ? "bg-[#902ad1]" : "bg-slate-200"
                   }`}
                 >
                   <div
-                    className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-all duration-300 ${
-                      formAtivo ? "translate-x-5" : "translate-x-0"
+                    className={`w-4.5 h-4.5 rounded-full bg-white shadow transform transition-all duration-300 ${
+                      formAtivo ? "translate-x-4.5" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -509,22 +491,16 @@ export default function AeroportosPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-3 text-xs font-bold text-slate-550 bg-slate-50 hover:bg-slate-100 rounded-[10px] border border-slate-150 transition-all active:scale-97 cursor-pointer"
+                  className="flex-1 py-2 bg-slate-50 hover:bg-slate-100 rounded-[5px] border border-slate-200 text-xs font-normal text-slate-650 transition-all cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 py-3 text-xs font-bold text-white bg-[#902ad1] hover:bg-[#902ad1]/90 rounded-[10px] transition-all active:scale-97 shadow-md shadow-[#902ad1]/10 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 hover:scale-[1.01]"
+                  className="flex-1 py-2 bg-[#902ad1] hover:bg-[#7a22b3] text-white text-xs font-normal rounded-[5px] transition-colors cursor-pointer"
                 >
-                  {submitting ? (
-                    <Loader2 size={14} className="animate-spin text-white" />
-                  ) : modalMode === "criar" ? (
-                    "Guardar"
-                  ) : (
-                    "Salvar"
-                  )}
+                  {modalMode === "criar" ? "Guardar" : "Salvar"}
                 </button>
               </div>
             </form>

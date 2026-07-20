@@ -5,13 +5,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  ArrowLeft,
-  Loader2,
-  AlertCircle,
-  Mail,
-  CheckCircle2,
-} from "lucide-react";
+import { Loader2, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 
 export default function RecuperarPasswordPage() {
@@ -24,7 +18,7 @@ export default function RecuperarPasswordPage() {
   const handleRecuperar = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      setErrorMsg("Por favor, introduza o seu email.");
+      setErrorMsg("Por favor, introduza o seu e-mail.");
       return;
     }
 
@@ -44,156 +38,155 @@ export default function RecuperarPasswordPage() {
     } catch (err: unknown) {
       const error = err as Error;
       setErrorMsg(
-        error.message || "Ocorreu um erro ao processar o seu pedido.",
+        error.message === "User not found"
+          ? "Não foi encontrado nenhum utilizador com este e-mail."
+          : error.message || "Ocorreu um erro ao processar o seu pedido.",
       );
     } finally {
       setLoading(false);
     }
   };
 
-  if (success) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-white rounded-[10px] border-2 border-slate-100 shadow-2xl p-10 text-center animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-green-100">
-            <CheckCircle2 size={40} />
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-4 tracking-tight">
-            Email Enviado!
-          </h2>
-          <p className="text-slate-500 mb-10 leading-relaxed font-medium">
-            Verifique a sua caixa de entrada para redefinir a sua password. Se
-            não vir o email, verifique a pasta de spam.
-          </p>
-          <button
-            onClick={() => router.push("/login")}
-            className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-primary/20">
-            Voltar ao Login
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row font-sans bg-white overflow-hidden text-slate-800">
-      {/* Painel Esquerdo (Desktop) */}
-      <div className="hidden lg:flex flex-1 bg-primary relative items-center justify-center p-16 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] border-[2px] border-white rounded-full blur-3xl" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] border-[1px] border-white/40 rounded-full blur-2xl" />
-          <svg
-            className="absolute top-10 left-10 w-32 h-32 text-white/20"
-            viewBox="0 0 100 100"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.5">
-            <path d="M10,10 Q50,90 90,10" />
-            <path d="M10,30 Q50,110 90,30" />
-          </svg>
-        </div>
-
-        <div className="relative z-10 text-white max-w-md w-full">
-          <div className="mb-12">
-            <Image
-              src="/logo.png"
-              alt="WiTransfer"
-              width={220}
-              height={70}
-              className="brightness-0 invert object-contain"
-              style={{ height: "auto" }}
-            />
-          </div>
-          <h2 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
-            Recupere o acesso ao seu portal
-          </h2>
-          <p className="text-lg text-primary-foreground/70 font-medium leading-relaxed">
-            Esqueceu a sua palavra-passe? Não se preocupe. Enviaremos instruções
-            para o seu email para definir uma nova.
-          </p>
-        </div>
+    <div className="min-h-screen w-full bg-[#F1E9F7] text-slate-800 font-sans flex flex-col justify-between p-4 lg:p-6 overflow-y-auto select-none">
+      {/* Cabeçalho com Link de Voltar */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-8 flex items-center justify-between z-10 mb-2">
+        <button
+          onClick={() => router.push("/login")}
+          className="flex items-center gap-2 text-sm font-semibold text-slate-550 hover:text-[#902AD1] transition-all cursor-pointer bg-transparent border-none">
+          <ArrowLeft size={16} />
+          <span>Voltar para o Login</span>
+        </button>
       </div>
 
-      {/* Painel Direito (Formulário) */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-24 bg-white relative">
-        <div className="w-full max-w-sm">
-          {/* Voltar */}
-          <div className="flex items-center justify-between mb-12">
-            <div className="lg:hidden">
+      {/* Área de Conteúdo Principal Centralizada */}
+      <div className="flex-1 flex justify-center items-center py-8 z-10 w-full">
+        <div
+          className="w-full max-w-[440px] rounded-[30px] border border-purple-200/40 p-8 lg:p-10 relative overflow-hidden transition-all duration-300 shrink-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255, 255, 255, 0.45) 10%, rgba(255, 255, 255, 0.15) 80%), rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            boxShadow:
+              "0 20px 40px -12px rgba(144, 42, 209, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.4)",
+          }}>
+          
+          {/* Logo do WiTransfer */}
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 rounded-full bg-[#902AD1] flex items-center justify-center shadow-lg shadow-[#902AD1]/20 select-none relative overflow-hidden">
               <Image
-                src="/logo.png"
-                alt="WiTransfer"
-                width={160}
-                height={50}
+                src="/imagem/icone_white.png"
+                alt="WiTransfer Logo"
+                width={34}
+                height={34}
                 className="object-contain"
-                style={{ height: "auto" }}
               />
             </div>
           </div>
 
-          <div className="mb-10">
-            <h2 className="text-4xl font-bold text-slate-800 mb-2 tracking-tight">
-              Recuperar Password
-            </h2>
-            <p className="text-slate-400 font-medium">
-              Introduza o seu email para receber o link de recuperação.
-            </p>
-          </div>
+          {!success ? (
+            <>
+              {/* Título com Sublinhado */}
+              <h2 className="text-center text-xl font-bold text-slate-800 mb-4 tracking-tight">
+                <span className="relative pb-1">
+                  Recuperar
+                  <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#902AD1] rounded-full" />
+                </span>{" "}
+                Palavra-passe
+              </h2>
 
-          {errorMsg && (
-            <div className="mb-8 p-4 bg-red-50 border-l-4 border-red-500 flex items-center gap-3 text-red-700 text-sm animate-in fade-in slide-in-from-top-1 rounded-r-md">
-              <AlertCircle size={18} className="shrink-0" />
-              <p className="font-medium">{errorMsg}</p>
-            </div>
-          )}
+              {/* Descrição */}
+              <p className="text-slate-500 font-medium text-xs text-center leading-relaxed max-w-[260px] mx-auto mb-6">
+                Introduz o seu email para receber o link de recuperação
+              </p>
 
-          <form onSubmit={handleRecuperar} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
-                Email de Utilizador
-              </label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors border-r border-slate-200 pr-3">
-                  <Mail size={18} />
+              {/* Mensagem de Erro */}
+              {errorMsg && (
+                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-2.5 text-red-750 text-xs animate-in fade-in slide-in-from-top-1">
+                  <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                  <p className="font-semibold leading-normal">{errorMsg}</p>
                 </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-14 pl-14 pr-4 bg-slate-50 border-2 border-slate-200 rounded-[10px] outline-none transition-all text-slate-800 font-medium focus:bg-white focus:border-primary placeholder:text-slate-300"
-                  placeholder="seu@email.com"
-                  required
-                  disabled={loading}
-                />
-              </div>
-            </div>
+              )}
 
-            <div className="pt-4">
+              {/* Formulário */}
+              <form onSubmit={handleRecuperar} className="space-y-5">
+                {/* Campo Email */}
+                <div className="space-y-1">
+                  <label className="text-[12px] font-semibold text-slate-650 pl-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-10 px-4 bg-white/50 border border-slate-300/80 rounded-[5px] outline-none transition-all text-slate-800 text-[13.5px] focus:border-[#902AD1] focus:bg-white focus:ring-1 focus:ring-[#902AD1]/30 placeholder:text-slate-400 disabled:opacity-50"
+                    placeholder="witransfer@email.com"
+                    disabled={loading}
+                    required
+                  />
+                </div>
+
+                {/* Botão Enviar */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-10 bg-[#902AD1] hover:bg-[#7a22b3] active:scale-[0.98] text-white rounded-[5px] font-bold text-sm transition-all flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-md shadow-[#902AD1]/10 cursor-pointer">
+                    {loading ? (
+                      <Loader2 className="animate-spin text-white" size={16} />
+                    ) : (
+                      "Enviar"
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              {/* Link de Login */}
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => router.push("/login")}
+                  className="text-[11.5px] font-bold text-[#902AD1] hover:underline transition-all cursor-pointer bg-transparent border-none">
+                  Fazer Login
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-2 animate-in fade-in duration-300">
+              {/* Ícone de Sucesso */}
+              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                <CheckCircle2 size={24} />
+              </div>
+
+              {/* Título de Sucesso */}
+              <h2 className="text-lg font-bold text-slate-800 mb-2 tracking-tight">
+                E-mail Enviado!
+              </h2>
+
+              {/* Descrição de Sucesso */}
+              <p className="text-slate-500 text-xs leading-relaxed max-w-[280px] mx-auto mb-6 font-medium">
+                Enviámos um link de recuperação para <strong>{email}</strong>. Por favor, verifique a sua caixa de entrada (e a pasta de spam).
+              </p>
+
+              {/* Botão Voltar ao Login */}
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-14 bg-primary text-white rounded-[10px] font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70">
-                {loading ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  "Enviar Instruções"
-                )}
+                onClick={() => router.push("/login")}
+                className="w-full h-10 bg-[#902AD1] hover:bg-[#7a22b3] text-white rounded-[5px] font-bold text-sm transition-all flex items-center justify-center cursor-pointer shadow-md shadow-[#902AD1]/10">
+                Voltar ao Login
               </button>
             </div>
-          </form>
-
-          <div className="mt-12 text-center">
-            <p className="text-sm text-slate-400 font-medium">
-              Lembrou-se da password?{" "}
-              <a
-                href="/login"
-                className="font-bold text-primary hover:underline underline-offset-4">
-                Voltar ao Login
-              </a>
-            </p>
-          </div>
+          )}
         </div>
+      </div>
+
+      {/* Direitos Reservados */}
+      <div className="w-full text-center py-2 z-10">
+        <p className="text-[10px] font-medium text-slate-450">
+          © 2026 witransfer. Todos os direitos reservados.
+        </p>
       </div>
     </div>
   );
 }
+
